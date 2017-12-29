@@ -73,7 +73,9 @@ public class Standard extends Constructed {
             }
         }
         banned.add("Aetherworks Marvel");
+        banned.add("Emrakul, the Promised End");
         banned.add("Felidar Guardian");
+        banned.add("Reflector Mage");
         banned.add("Smuggler's Copter");
     }
 
