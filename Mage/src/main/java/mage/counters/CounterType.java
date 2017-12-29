@@ -1,0 +1,199 @@
+/*
+ * Copyright 2010 BetaSteward_at_googlemail.com. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are
+ * permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice, this list of
+ *       conditions and the following disclaimer.
+ *
+ *    2. Redistributions in binary form must reproduce the above copyright notice, this list
+ *       of conditions and the following disclaimer in the documentation and/or other materials
+ *       provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY BetaSteward_at_googlemail.com ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BetaSteward_at_googlemail.com OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * The views and conclusions contained in the software and documentation are those of the
+ * authors and should not be interpreted as representing official policies, either expressed
+ * or implied, of BetaSteward_at_googlemail.com.
+ */
+package mage.counters;
+
+/**
+ * Enum for counters, names and instances.
+ *
+ * @author nantuko
+ */
+public enum CounterType {
+
+    AGE("age"),
+    AIM("aim"),
+    ARROWHEAD("arrowhead"),
+    AWAKENING("awakening"),
+    BLAZE("blaze"),
+    BOUNTY("bounty"),
+    BRIBERY("bribery"),
+    BRICK("brick"),
+    CAGE("cage"),
+    CARRION("carrion"),
+    CHARGE("charge"),
+    CORPSE("corpse"),
+    CREDIT("credit"),
+    CRYSTAL("crystal"),
+    CUBE("cube"),
+    DELAY("delay"),
+    DEPLETION("depletion"),
+    DESPAIR("despair"),
+    DEVOTION("devotion"),
+    DIVINITY("divinity"),
+    DOOM("doom"),
+    DREAM("dream"),
+    ECHO("echo"),
+    ELIXIR("elixir"),
+    ENERGY("energy"),
+    EON("eon"),
+    EXPERIENCE("experience"),
+    EYEBALL("eyeball"),
+    FADE("fade"),
+    FATE("fate"),
+    FEATHER("feather"),
+    FLOOD("flood"),
+    FURY("fury"),
+    FUSE("fuse"),
+    GOLD("gold"),
+    GROWTH("growth"),
+    HATCHLING("hatchling"),
+    HEALING("healing"),
+    HOOFPRINT("hoofprint"),
+    HOUR("hour"),
+    HOURGLASS("hourglass"),
+    ICE("ice"),
+    INFECTION("infection"),
+    INTERVENTION("intervention"),
+    JAVELIN("javelin"),
+    KI("ki"),
+    LANDMARK("landmark"),
+    LEVEL("level"),
+    LORE("lore"),
+    LUCK("luck"),
+    LOYALTY("loyalty"),
+    MANNEQUIN("mannequin"),
+    M1M1(new BoostCounter(-1, -1).name),
+    M2M1(new BoostCounter(-2, -1).name),
+    M2M2(new BoostCounter(-2, -2).name),
+    MINE("mine"),
+    MINING("mining"),
+    MIRE("mire"),
+    MUSTER("muster"),
+    P0P1(new BoostCounter(0, 1).name),
+    P1P0(new BoostCounter(1, 0).name),
+    P1P1(new BoostCounter(1, 1).name),
+    P1P2(new BoostCounter(1, 2).name),
+    P2P2(new BoostCounter(2, 2).name),
+    PAGE("page"),
+    PAIN("pain"),
+    PETAL("petal"),
+    PETRIFICATION("petrification"),
+    PLAGUE("plague"),
+    PLOT("plot"),
+    POLYP("polyp"),
+    POISON("poison"),
+    PRESSURE("pressure"),
+    PREY("prey"),
+    REPAIR("repair"),
+    RUST("rust"),
+    QUEST("quest"),
+    SCREAM("scream"),
+    SHELL("shell"),
+    SHIELD("shield"),
+    SHRED("shred"),
+    SLIME("slime"),
+    SPITE("spite"),
+    SPORE("spore"),
+    STORAGE("storage"),
+    STRIFE("strife"),
+    STUDY("study"),
+    THEFT("theft"),
+    TIDE("tide"),
+    TIME("time"),
+    TOWER("tower"),
+    TRAP("trap"),
+    TREASURE("treasure"),
+    UNITY("unity"),
+    VELOCITY("velocity"),
+    VERSE("verse"),
+    VITALITY("vitality"),
+    WIND("wind"),
+    WISH("wish");
+
+    private final String name;
+
+    CounterType(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Get counter string name.
+     *
+     * @return
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Create instance of counter type with amount equal to 1.
+     *
+     * @return
+     */
+    public Counter createInstance() {
+        return createInstance(1);
+    }
+
+    /**
+     * Create instance of counter type with defined amount of counters of the
+     * given type.
+     *
+     * @param amount amount of counters of the given type.
+     * @return
+     */
+    public Counter createInstance(int amount) {
+        switch (this) {
+            case P0P1:
+                return new BoostCounter(0, 1, amount);
+            case P1P0:
+                return new BoostCounter(1, 0, amount);
+            case P1P1:
+                return new BoostCounter(1, 1, amount);
+            case P1P2:
+                return new BoostCounter(1, 2, amount);
+            case P2P2:
+                return new BoostCounter(2, 2, amount);
+            case M1M1:
+                return new BoostCounter(-1, -1, amount);
+            case M2M1:
+                return new BoostCounter(-2, -1, amount);
+            case M2M2:
+                return new BoostCounter(-2, -2, amount);
+            default:
+                return new Counter(name, amount);
+        }
+    }
+
+    public static CounterType findByName(String name) {
+        for (CounterType counterType : values()) {
+            if (counterType.getName().equals(name)) {
+                return counterType;
+            }
+        }
+        return null;
+    }
+}
