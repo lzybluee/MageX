@@ -1,5 +1,5 @@
 /*
-* Copyright 2010 BetaSteward_at_googlemail.com. All rights reserved.
+* Copyright 2011 BetaSteward_at_googlemail.com. All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without modification, are
 * permitted provided that the following conditions are met:
@@ -24,53 +24,20 @@
 * The views and conclusions contained in the software and documentation are those of the
 * authors and should not be interpreted as representing official policies, either expressed
 * or implied, of BetaSteward_at_googlemail.com.
-*/
+ */
+package mage.deck;
 
-package mage.choices;
-
-import java.util.Map;
-import java.util.Set;
+import mage.cards.decks.Constructed;
 
 /**
  *
- * @author BetaSteward_at_googlemail.com
+ * @author LevelX2
  */
-public interface Choice {
+public class LorwynBlock extends Constructed {
 
-    String getMessage();
-    void setMessage(String message);
-
-    String getSubMessage();
-    void setSubMessage(String subMessage);
-
-    void clearChoice();
-    boolean isChosen();
-    boolean isRequired();
-
-    Choice copy();
-
-    // string choice
-    void setChoices(Set<String> choices);
-    Set<String> getChoices();
-    void setChoice(String choice);
-    String getChoice();
-
-    // key-value choice
-    boolean isKeyChoice();
-    void setKeyChoices(Map<String, String> choices);
-    Map<String,String> getKeyChoices();
-    void setChoiceByKey(String choiceKey);
-    String getChoiceKey();
-    String getChoiceValue();
-
-    // search
-    boolean isSearchEnabled();
-    void setSearchEnabled(boolean isEnabled);
-    void setSearchText(String searchText);
-    String getSearchText();
-
-    // sorting
-    boolean isSortEnabled();
-    void setSortData(Map<String, Integer> sortData);
-    Map<String, Integer> getSortData();
+    public LorwynBlock() {
+        super("Constructed - Lorwyn Block");
+        setCodes.add("LRW");
+        setCodes.add("MOR");
+    }
 }
