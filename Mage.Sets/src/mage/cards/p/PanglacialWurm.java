@@ -25,12 +25,12 @@
  *  authors and should not be interpreted as representing official policies, either expressed
  *  or implied, of BetaSteward_at_googlemail.com.
  */
-package mage.cards.d;
+package mage.cards.p;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.costs.mana.ManaCostsImpl;
-import mage.abilities.keyword.UnearthAbility;
+import mage.abilities.common.WhileSearchingPlayFromLibraryAbility;
+import mage.abilities.keyword.TrampleAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -38,27 +38,29 @@ import mage.constants.SubType;
 
 /**
  *
- * @author Loki
+ * @author L_J
  */
-public class DregscapeZombie extends CardImpl {
+public class PanglacialWurm extends CardImpl {
 
-    public DregscapeZombie(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{B}");
-        this.subtype.add(SubType.ZOMBIE);
+    public PanglacialWurm(UUID ownerId, CardSetInfo setInfo) {
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{5}{G}{G}");
+        this.subtype.add(SubType.WURM);
+        this.power = new MageInt(9);
+        this.toughness = new MageInt(5);
 
-        this.power = new MageInt(2);
-        this.toughness = new MageInt(1);
-        // Unearth {B} ({B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)
-        this.addAbility(new UnearthAbility(new ManaCostsImpl("{B}")));
+        // Trample
+        this.addAbility(TrampleAbility.getInstance());
+
+        // While you're searching your library, you may cast Panglacial Wurm from your library.
+        this.addAbility(WhileSearchingPlayFromLibraryAbility.getInstance());
     }
 
-    public DregscapeZombie(final DregscapeZombie card) {
+    public PanglacialWurm(final PanglacialWurm card) {
         super(card);
     }
 
     @Override
-    public DregscapeZombie copy() {
-        return new DregscapeZombie(this);
+    public PanglacialWurm copy() {
+        return new PanglacialWurm(this);
     }
-
 }

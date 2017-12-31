@@ -25,79 +25,75 @@
  *  authors and should not be interpreted as representing official policies, either expressed
  *  or implied, of BetaSteward_at_googlemail.com.
  */
-package mage.cards.s;
+package mage.cards.g;
 
 import java.util.UUID;
+import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
-import mage.abilities.effects.ReplacementEffectImpl;
+import mage.abilities.effects.PreventionEffectImpl;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
+import mage.constants.SubType;
 import mage.constants.Duration;
-import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
+import mage.game.permanent.Permanent;
 
 /**
  *
- * @author spjspj
+ * @author LevelX2 & L_J
  */
-public class SquirrelPoweredScheme extends CardImpl {
+public class GoblinFurrier extends CardImpl {
 
-    public SquirrelPoweredScheme(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{2}{B}");
+    public GoblinFurrier(UUID ownerId, CardSetInfo setInfo) {
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{R}");
+        this.subtype.add(SubType.GOBLIN);
+        this.subtype.add(SubType.WARRIOR);
+        this.power = new MageInt(2);
+        this.toughness = new MageInt(2);
 
-        // Increase the result of each die you roll by 2.
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new SquirrelPoweredSchemeEffect()));
+        // Prevent all damage that Goblin Furrier would deal to snow creatures.
+        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GoblinFurrierPreventEffectEffect(Duration.WhileOnBattlefield)));
     }
 
-    public SquirrelPoweredScheme(final SquirrelPoweredScheme card) {
+    public GoblinFurrier(final GoblinFurrier card) {
         super(card);
     }
 
     @Override
-    public SquirrelPoweredScheme copy() {
-        return new SquirrelPoweredScheme(this);
+    public GoblinFurrier copy() {
+        return new GoblinFurrier(this);
     }
 }
 
-class SquirrelPoweredSchemeEffect extends ReplacementEffectImpl {
+class GoblinFurrierPreventEffectEffect extends PreventionEffectImpl {
 
-    SquirrelPoweredSchemeEffect() {
-        super(Duration.WhileOnBattlefield, Outcome.Benefit);
-        staticText = "Increase the result of each die you roll by 2";
+    public GoblinFurrierPreventEffectEffect(Duration duration) {
+        super(duration, Integer.MAX_VALUE, false);
+        staticText = "Prevent all damage that {this} would deal to snow creatures";
     }
 
-    SquirrelPoweredSchemeEffect(final SquirrelPoweredSchemeEffect effect) {
+    public GoblinFurrierPreventEffectEffect(final GoblinFurrierPreventEffectEffect effect) {
         super(effect);
     }
 
     @Override
-    public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(event.getAmount() + 2);
-        return false;
-    }
-
-    @Override
-    public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.ROLL_DICE;
+    public GoblinFurrierPreventEffectEffect copy() {
+        return new GoblinFurrierPreventEffectEffect(this);
     }
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        // ignore planar dies (dice roll amount of planar dies is equal to 0)
-        return event.getAmount() > 0 && source.getControllerId().equals(event.getPlayerId());
-    }
-
-    @Override
-    public boolean apply(Game game, Ability source) {
+        if (super.applies(event, source, game)) {
+            if (event.getSourceId().equals(source.getSourceId())) {
+                Permanent damageTo = game.getPermanent(event.getTargetId());
+                return damageTo != null && damageTo.isSnow();
+            }
+        }
         return false;
     }
 
-    @Override
-    public SquirrelPoweredSchemeEffect copy() {
-        return new SquirrelPoweredSchemeEffect(this);
-    }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 BetaSteward_at_googlemail.com. All rights reserved.
+ *  Copyright 2011 BetaSteward_at_googlemail.com. All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without modification, are
  *  permitted provided that the following conditions are met:
@@ -25,40 +25,43 @@
  *  authors and should not be interpreted as representing official policies, either expressed
  *  or implied, of BetaSteward_at_googlemail.com.
  */
-package mage.cards.d;
+package mage.abilities.common;
 
-import java.util.UUID;
-import mage.MageInt;
-import mage.abilities.costs.mana.ManaCostsImpl;
-import mage.abilities.keyword.UnearthAbility;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.SubType;
+import mage.abilities.MageSingleton;
+import mage.abilities.StaticAbility;
+
+import java.io.ObjectStreamException;
+
+import mage.constants.AbilityType;
+import mage.constants.Zone;
 
 /**
- *
- * @author Loki
+ * @author L_J
  */
-public class DregscapeZombie extends CardImpl {
+public class WhileSearchingPlayFromLibraryAbility extends StaticAbility implements MageSingleton {
 
-    public DregscapeZombie(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{B}");
-        this.subtype.add(SubType.ZOMBIE);
+    private static final WhileSearchingPlayFromLibraryAbility instance =  new WhileSearchingPlayFromLibraryAbility();
 
-        this.power = new MageInt(2);
-        this.toughness = new MageInt(1);
-        // Unearth {B} ({B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)
-        this.addAbility(new UnearthAbility(new ManaCostsImpl("{B}")));
+    private Object readResolve() throws ObjectStreamException {
+        return instance;
     }
 
-    public DregscapeZombie(final DregscapeZombie card) {
-        super(card);
+    public static WhileSearchingPlayFromLibraryAbility getInstance() {
+        return instance;
+    }
+
+    private WhileSearchingPlayFromLibraryAbility() {
+        super(AbilityType.STATIC, Zone.LIBRARY);
     }
 
     @Override
-    public DregscapeZombie copy() {
-        return new DregscapeZombie(this);
+    public String getRule() {
+        return "While you're searching your library, you may cast {this} from your library.";
+    }
+
+    @Override
+    public WhileSearchingPlayFromLibraryAbility copy() {
+        return instance;
     }
 
 }

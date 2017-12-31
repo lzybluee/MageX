@@ -29,36 +29,37 @@ package mage.cards.d;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.costs.mana.ManaCostsImpl;
-import mage.abilities.keyword.UnearthAbility;
+import mage.abilities.keyword.ChangelingAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
+import mage.constants.SuperType;
 
 /**
  *
- * @author Loki
+ * @author vereena42 & L_J
  */
-public class DregscapeZombie extends CardImpl {
+public class DrJuliusJumblemorph extends CardImpl {
 
-    public DregscapeZombie(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{B}");
-        this.subtype.add(SubType.ZOMBIE);
+    public DrJuliusJumblemorph(UUID ownerId, CardSetInfo setInfo) {
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{G}{W}");
+        this.addSuperType(SuperType.LEGENDARY);
+        this.power = new MageInt(4);
+        this.toughness = new MageInt(4);
 
-        this.power = new MageInt(2);
-        this.toughness = new MageInt(1);
-        // Unearth {B} ({B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)
-        this.addAbility(new UnearthAbility(new ManaCostsImpl("{B}")));
+        // Dr. Julius Jumblemorph is every creature type (even if this card isn't on the battlefield).
+        this.addAbility(ChangelingAbility.getInstance());
+        
+        // Whenever a host enters the battlefield under your control, you may search your library and/or graveyard for a card with augment and combine it with that host. If you search your library this way, shuffle it.
+        // TODO: Host currently isn't implemented, so this ability currently would never trigger
     }
 
-    public DregscapeZombie(final DregscapeZombie card) {
+    public DrJuliusJumblemorph(final DrJuliusJumblemorph card) {
         super(card);
     }
 
     @Override
-    public DregscapeZombie copy() {
-        return new DregscapeZombie(this);
+    public DrJuliusJumblemorph copy() {
+        return new DrJuliusJumblemorph(this);
     }
-
 }
