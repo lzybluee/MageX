@@ -25,48 +25,49 @@
  *  authors and should not be interpreted as representing official policies, either expressed
  *  or implied, of BetaSteward_at_googlemail.com.
  */
-package mage.cards.m;
+package mage.cards.k;
 
 import java.util.UUID;
-import mage.MageInt;
-import mage.abilities.Ability;
-import mage.abilities.common.SimpleActivatedAbility;
-import mage.abilities.costs.common.TapSourceCost;
-import mage.abilities.effects.common.continuous.AddCardTypeTargetEffect;
+import mage.abilities.dynamicvalue.IntPlusDynamicValue;
+import mage.abilities.dynamicvalue.common.CardsInAllGraveyardsCount;
+import mage.abilities.effects.Effect;
+import mage.abilities.effects.common.continuous.BoostControlledEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Duration;
-import mage.constants.Zone;
-import mage.target.Target;
-import mage.target.common.TargetLandPermanent;
+import mage.filter.FilterCard;
+import mage.filter.common.FilterCreaturePermanent;
+import mage.filter.predicate.mageobject.NamePredicate;
 
 /**
  *
- * @author daagar
+ * @author L_J
  */
-public class MyrLandshaper extends CardImpl {
+public class KjeldoranWarCry extends CardImpl {
 
-    public MyrLandshaper(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT,CardType.CREATURE},"{3}");
-        this.subtype.add(SubType.MYR);
-        this.power = new MageInt(1);
-        this.toughness = new MageInt(1);
+    private static final FilterCard filter = new FilterCard("cards named Kjeldoran War Cry");
 
-        // {tap}: Target land becomes an artifact in addition to its other types until end of turn.
-        Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new AddCardTypeTargetEffect(Duration.EndOfTurn, CardType.ARTIFACT), new TapSourceCost());
-        Target target = new TargetLandPermanent();
-        ability.addTarget(target);
-        this.addAbility(ability);
+    static {
+        filter.add(new NamePredicate("Kjeldoran War Cry"));
     }
 
-    public MyrLandshaper(final MyrLandshaper card) {
+    public KjeldoranWarCry(UUID ownerId, CardSetInfo setInfo) {
+        super(ownerId,setInfo,new CardType[]{CardType.INSTANT},"{1}{W}");
+
+        // Creatures you control get +X/+X until end of turn, where X is 1 plus the number of cards named Kjeldoran War Cry in all graveyards.
+        IntPlusDynamicValue value = new IntPlusDynamicValue(1, new CardsInAllGraveyardsCount(filter));
+        Effect effect = new BoostControlledEffect(value, value, Duration.EndOfTurn, new FilterCreaturePermanent("creatures"), false, true);
+        effect.setText("Creatures you control get +X/+X until end of turn, where X is 1 plus the number of cards named {source} in all graveyards");
+        this.getSpellAbility().addEffect(effect);
+    }
+
+    public KjeldoranWarCry(final KjeldoranWarCry card) {
         super(card);
     }
 
     @Override
-    public MyrLandshaper copy() {
-        return new MyrLandshaper(this);
+    public KjeldoranWarCry copy() {
+        return new KjeldoranWarCry(this);
     }
 }
