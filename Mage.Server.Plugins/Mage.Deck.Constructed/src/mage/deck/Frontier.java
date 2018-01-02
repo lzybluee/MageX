@@ -46,7 +46,7 @@ public class Frontier extends Constructed {
         Date cutoff = new GregorianCalendar(2014, 6, 18).getTime(); // M15 release date
         for (ExpansionSet set : Sets.getInstance().values()) {
             if ((set.getReleaseDate().after(cutoff) || set.getReleaseDate().equals(cutoff))
-                    && (set.getSetType() == SetType.CORE || set.getSetType() == SetType.EXPANSION)) {
+                    && (set.getSetType() == SetType.CORE || set.getSetType() == SetType.EXPANSION || set.getSetType() == SetType.SUPPLEMENTAL_STANDARD_LEGAL)) {
                 setCodes.add(set.getCode());
             }
         }
