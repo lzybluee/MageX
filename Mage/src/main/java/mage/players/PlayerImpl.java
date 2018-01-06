@@ -53,6 +53,7 @@ import mage.cards.Card;
 import mage.cards.Cards;
 import mage.cards.CardsImpl;
 import mage.cards.SplitCard;
+import mage.cards.SplitCardHalf;
 import mage.cards.decks.Deck;
 import mage.choices.ChoiceImpl;
 import mage.constants.*;
@@ -817,6 +818,11 @@ public abstract class PlayerImpl implements Player, Serializable {
                 Player attachedToPlayer = game.getPlayer(permanent.getAttachedTo());
                 if (attachedToPlayer != null) {
                     attachedToPlayer.removeAttachment(permanent, game);
+                } else {
+                    Card attachedToCard = game.getCard(permanent.getAttachedTo());
+                    if (attachedToCard != null) {
+                        attachedToCard.removeAttachment(permanent.getId(), game);
+                    }
                 }
             }
 
@@ -1336,7 +1342,11 @@ public abstract class PlayerImpl implements Player, Serializable {
                     }
                 }
             }
-            if (zone != Zone.BATTLEFIELD && game.getContinuousEffects().asThough(object.getId(), AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE, this.getId(), game)) {
+            UUID sourceId = object.getId();
+            if (object instanceof SplitCardHalf) {
+                sourceId = ((SplitCardHalf) object).getParentCard().getId();
+            }
+            if (zone != Zone.BATTLEFIELD && game.getContinuousEffects().asThough(sourceId, AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE, playerId, game)) {
                 for (Ability ability : candidateAbilites) {
                     if (canUse || ability.getAbilityType() == AbilityType.SPECIAL_ACTION) {
                         ability.setControllerId(this.getId());
@@ -2326,7 +2336,7 @@ public abstract class PlayerImpl implements Player, Serializable {
                     newTarget.setCardLimit(Math.min(librarySearchLimit, cardsFromTop.size()));
                     count = Math.min(searchedLibrary.count(target.getFilter(), game), librarySearchLimit);
                 }
-    
+
                 if (count < target.getNumberOfTargets()) {
                     newTarget.setMinNumberOfTargets(count);
                 }
@@ -3278,9 +3288,7 @@ public abstract class PlayerImpl implements Player, Serializable {
     }
 
     @Override
-    public boolean moveCards(Card card, Zone toZone,
-            Ability source, Game game
-    ) {
+    public boolean moveCards(Card card, Zone toZone, Ability source, Game game) {
         return moveCards(card, toZone, source, game, false, false, false, null);
     }
 
