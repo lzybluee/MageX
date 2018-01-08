@@ -77,7 +77,6 @@ public class DoIfCostPaid extends OneShotEffect {
                     && (!optional || player.chooseUse(executingEffects.get(0).getOutcome(), message, source, game))) {
                 cost.clearPaid();
                 if (cost.pay(source, game, source.getSourceId(), player.getId(), false)) {
-                    game.applyEffects(); // To end effects e.g. of sacrificed permanents
                     for (Effect effect : executingEffects) {
                         effect.setTargetPointer(this.targetPointer);
                         if (effect instanceof OneShotEffect) {
@@ -87,7 +86,8 @@ public class DoIfCostPaid extends OneShotEffect {
                         }
                     }
                     player.resetStoredBookmark(game); // otherwise you can e.g. undo card drawn with Mentor of the Meek
-                } else if (!otherwiseEffects.isEmpty()) {
+                }
+                else if (!otherwiseEffects.isEmpty()) {
                     for (Effect effect : otherwiseEffects) {
                         effect.setTargetPointer(this.targetPointer);
                         if (effect instanceof OneShotEffect) {
@@ -97,7 +97,8 @@ public class DoIfCostPaid extends OneShotEffect {
                         }
                     }
                 }
-            } else if (!otherwiseEffects.isEmpty()) {
+            }
+            else if (!otherwiseEffects.isEmpty()) {
                 for (Effect effect : otherwiseEffects) {
                     effect.setTargetPointer(this.targetPointer);
                     if (effect instanceof OneShotEffect) {

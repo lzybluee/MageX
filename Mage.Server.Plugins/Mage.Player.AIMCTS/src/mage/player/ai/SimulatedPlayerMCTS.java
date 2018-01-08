@@ -28,8 +28,11 @@
 package mage.player.ai;
 
 import java.io.Serializable;
-import java.util.*;
-
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.ActivatedAbility;
 import mage.abilities.Mode;
@@ -376,7 +379,13 @@ public class SimulatedPlayerMCTS extends MCTSPlayer {
     @Override
     public boolean choose(Outcome outcome, Choice choice, Game game) {
         if (this.isHuman()) {
-            choice.setRandomChoice();
+            Iterator<String> it = choice.getChoices().iterator();
+            String sChoice = it.next();
+            int choiceNum = RandomUtil.nextInt(choice.getChoices().size());
+            for (int i = 0; i < choiceNum; i++) {
+                sChoice = it.next();
+            }
+            choice.setChoice(sChoice);
             return true;
         }
         return super.choose(outcome, choice, game);

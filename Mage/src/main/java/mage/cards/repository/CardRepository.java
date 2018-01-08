@@ -327,19 +327,12 @@ public enum CardRepository {
     }
 
     public CardInfo findPreferedCoreExpansionCard(String name, boolean caseInsensitive) {
-        return findPreferedCoreExpansionCard(name, caseInsensitive, null);
-    }
-
-
-    public CardInfo findPreferedCoreExpansionCard(String name, boolean caseInsensitive, String preferedSetCode) {
-
         List<CardInfo> cards;
         if (caseInsensitive) {
             cards = findCardsCaseInsensitive(name);
         } else {
             cards = findCards(name);
         }
-
         if (!cards.isEmpty()) {
             Date lastReleaseDate = null;
             Date lastExpansionDate = null;
@@ -347,11 +340,6 @@ public enum CardRepository {
             for (CardInfo cardinfo : cards) {
                 ExpansionInfo set = ExpansionRepository.instance.getSetByCode(cardinfo.getSetCode());
                 if (set != null) {
-
-                    if ((preferedSetCode != null) && (preferedSetCode.equals(set.getCode()))){
-                        return cardinfo;
-                    }
-
                     if ((set.getType() == SetType.EXPANSION || set.getType() == SetType.CORE)
                             && (lastExpansionDate == null || set.getReleaseDate().after(lastExpansionDate))) {
                         cardToUse = cardinfo;

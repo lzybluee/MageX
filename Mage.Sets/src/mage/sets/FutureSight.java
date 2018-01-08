@@ -94,7 +94,6 @@ public class FutureSight extends ExpansionSet {
         cards.add(new SetCardInfo("Emberwilde Augur", 97, Rarity.COMMON, mage.cards.e.EmberwildeAugur.class));
         cards.add(new SetCardInfo("Emblem of the Warmind", 112, Rarity.UNCOMMON, mage.cards.e.EmblemOfTheWarmind.class));
         cards.add(new SetCardInfo("Epochrasite", 162, Rarity.RARE, mage.cards.e.Epochrasite.class));
-        cards.add(new SetCardInfo("Even the Odds", 6, Rarity.UNCOMMON, mage.cards.e.EvenTheOdds.class));
         cards.add(new SetCardInfo("Fatal Attraction", 98, Rarity.COMMON, mage.cards.f.FatalAttraction.class));
         cards.add(new SetCardInfo("Festering March", 65, Rarity.UNCOMMON, mage.cards.f.FesteringMarch.class));
         cards.add(new SetCardInfo("Fleshwrither", 84, Rarity.UNCOMMON, mage.cards.f.Fleshwrither.class));
@@ -200,7 +199,6 @@ public class FutureSight extends ExpansionSet {
         cards.add(new SetCardInfo("Snake Cult Initiation", 89, Rarity.UNCOMMON, mage.cards.s.SnakeCultInitiation.class));
         cards.add(new SetCardInfo("Soultether Golem", 164, Rarity.UNCOMMON, mage.cards.s.SoultetherGolem.class));
         cards.add(new SetCardInfo("Sparkspitter", 109, Rarity.UNCOMMON, mage.cards.s.Sparkspitter.class));
-        cards.add(new SetCardInfo("Spellweaver Volute", 59, Rarity.RARE, mage.cards.s.SpellweaverVolute.class));
         cards.add(new SetCardInfo("Spellwild Ouphe", 151, Rarity.UNCOMMON, mage.cards.s.SpellwildOuphe.class));
         cards.add(new SetCardInfo("Spin into Myth", 60, Rarity.UNCOMMON, mage.cards.s.SpinIntoMyth.class));
         cards.add(new SetCardInfo("Spirit en-Dal", 17, Rarity.UNCOMMON, mage.cards.s.SpiritEnDal.class));

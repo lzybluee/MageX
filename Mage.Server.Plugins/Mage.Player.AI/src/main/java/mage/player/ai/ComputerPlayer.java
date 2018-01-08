@@ -1301,13 +1301,9 @@ public class ComputerPlayer extends PlayerImpl implements Player {
     public boolean choose(Outcome outcome, Choice choice, Game game) {
         log.debug("choose 3");
         //TODO: improve this
-
-        // choose creature type
-        // TODO: WTF?! Creature types dialog text can changes, need to replace that code
-        if (choice.getMessage() != null && (choice.getMessage().equals("Choose creature type") || choice.getMessage().equals("Choose a creature type"))) {
+        if (choice.getMessage() != null && choice.getMessage().equals("Choose creature type")) {
             chooseCreatureType(outcome, choice, game);
         }
-
         // choose the correct color to pay a spell
         if (outcome == Outcome.PutManaInPool && choice instanceof ChoiceColor && currentUnpaidMana != null) {
             if (currentUnpaidMana.containsColor(ColoredManaSymbol.W) && choice.getChoices().contains("White")) {
@@ -1335,12 +1331,19 @@ public class ComputerPlayer extends PlayerImpl implements Player {
                 return true;
             }
         }
-
         // choose by random
         if (!choice.isChosen()) {
-            choice.setRandomChoice();
+            int choiceIdx = (int) (Math.random() * choice.getChoices().size() + 1);
+            for (String next : choice.getChoices()) {
+                if (--choiceIdx > 0) {
+                    continue;
+                }
+                if (!next.isEmpty()) {
+                    choice.setChoice(next);
+                    break;
+                }
+            }
         }
-
         return true;
     }
 

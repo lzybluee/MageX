@@ -791,7 +791,7 @@ public final class GamePanel extends javax.swing.JPanel {
             if (!exiles.containsKey(exile.getId())) {
                 CardInfoWindowDialog newExile = new CardInfoWindowDialog(ShowType.EXILE, exile.getName());
                 exiles.put(exile.getId(), newExile);
-                MageFrame.getDesktop().add(newExile, JLayeredPane.PALETTE_LAYER);
+                MageFrame.getDesktop().add(newExile, JLayeredPane.MODAL_LAYER);
                 newExile.show();
             }
             exiles.get(exile.getId()).loadCards(exile, bigCard, gameId);
@@ -1004,7 +1004,7 @@ public final class GamePanel extends javax.swing.JPanel {
         }
         CardInfoWindowDialog newGraveyard = new CardInfoWindowDialog(ShowType.GRAVEYARD, playerName);
         graveyardWindows.put(playerName, newGraveyard);
-        MageFrame.getDesktop().add(newGraveyard, JLayeredPane.PALETTE_LAYER);
+        MageFrame.getDesktop().add(newGraveyard, JLayeredPane.MODAL_LAYER);
         newGraveyard.loadCards(graveyards.get(playerName), bigCard, gameId, false);
     }
 
@@ -1039,7 +1039,7 @@ public final class GamePanel extends javax.swing.JPanel {
         if (!windowMap.containsKey(name)) {
             cardInfoWindowDialog = new CardInfoWindowDialog(showType, name);
             windowMap.put(name, cardInfoWindowDialog);
-            MageFrame.getDesktop().add(cardInfoWindowDialog, JLayeredPane.PALETTE_LAYER);
+            MageFrame.getDesktop().add(cardInfoWindowDialog, JLayeredPane.MODAL_LAYER);
         } else {
             cardInfoWindowDialog = windowMap.get(name);
         }
@@ -1115,7 +1115,7 @@ public final class GamePanel extends javax.swing.JPanel {
         }
         this.feedbackPanel.getFeedback(required ? FeedbackMode.INFORM : FeedbackMode.CANCEL, message, gameView.getSpecial(), options0, messageId);
         if (dialog != null) {
-            this.pickTarget.add(dialog); // TODO: 01.01.2018, JayDi85: why feedbackPanel saved to pickTarget list? Need to research
+            this.pickTarget.add(dialog);
         }
     }
 

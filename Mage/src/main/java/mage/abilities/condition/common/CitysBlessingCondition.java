@@ -47,6 +47,6 @@ public enum CitysBlessingCondition implements Condition {
 
     @Override
     public String toString() {
-        return "you have the city's blessing";
+        return "If you have the city's blessing";
     }
 }

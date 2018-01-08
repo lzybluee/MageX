@@ -53,7 +53,9 @@ public class GoblinBoomKeg extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new SacrificeSourceEffect(), TargetController.YOU, false));
 
         // When Goblin Boom Keg is put into a graveyard from the battlefield, it deals 3 damage to target creature or player.
-        Ability ability = new PutIntoGraveFromBattlefieldSourceTriggeredAbility(new DamageTargetEffect(3, "it"), false);
+        Effect effect = new DamageTargetEffect(3);
+        effect.setText("it deals 3 damage to target creature or player");
+        Ability ability = new PutIntoGraveFromBattlefieldSourceTriggeredAbility(effect, false);
         ability.addTarget(new TargetCreatureOrPlayer());
         this.addAbility(ability);
     }

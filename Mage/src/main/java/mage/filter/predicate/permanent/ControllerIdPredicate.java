@@ -27,11 +27,10 @@
  */
 package mage.filter.predicate.permanent;
 
+import java.util.UUID;
 import mage.filter.predicate.Predicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-
-import java.util.UUID;
 
 /**
  *
@@ -47,12 +46,6 @@ public class ControllerIdPredicate implements Predicate<Permanent> {
 
     @Override
     public boolean apply(Permanent input, Game game) {
-        if(controllerId == null){
-            return false;
-        }
-        if(input.getControllerId() == null){
-            return false;
-        }
         return controllerId.equals(input.getControllerId());
     }
 

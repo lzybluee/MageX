@@ -45,8 +45,8 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
-import javax.swing.*;
-
+import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import mage.client.MageFrame;
 import org.apache.log4j.Logger;
 
@@ -74,34 +74,11 @@ public class MageDialog extends javax.swing.JInternalFrame {
     @Override
     public void show() {
         super.show();
-
-        // frames desktop ordering
-        // more info https://docs.oracle.com/javase/7/docs/api/javax/swing/JLayeredPane.html
-        // WARNING, use
-        // - JLayeredPane.DEFAULT_LAYER: tables and games (tabs)
-        // - JLayeredPane.PALETTE_LAYER: toolbars and info windows like cards list, not modal dialogs (not required user actions)
-        // - JLayeredPane.MODAL_LAYER: all modal dialogs (user required actions - select cards in game, new game window, error windows)
-        // - JLayeredPane.POPUP_LAYER: hints and other top level graphics
-        // - JLayeredPane.DRAG_LAYER: top most layer for critical actions and user controls
-        /*
-        JInternalFrame[] frames  = MageFrame.getDesktop().getAllFrames();
-        System.out.println("---");
-        for(JInternalFrame frame: frames){
-            int zorder = -1;
-            if (frame.getParent() != null){
-                frame.getParent().getComponentZOrder(frame);
-            }
-            System.out.println(frame.getClass() + " (" + frame.getTitle() + ") : layer = " + frame.getLayer() + ", zorder = " + zorder);
-        }
-        */
-
+        this.toFront();
         if (modal) {
             this.setClosable(false);
         }
-
-        this.toFront();
-
-        if (modal){
+        if (this.modal) {
             startModal();
         }
     }
@@ -131,6 +108,7 @@ public class MageDialog extends javax.swing.JInternalFrame {
     }
 
     private synchronized void startModal() {
+
         try {
             if (SwingUtilities.isEventDispatchThread()) {
                 EventQueue theQueue = getToolkit().getSystemEventQueue();

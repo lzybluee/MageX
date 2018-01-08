@@ -65,7 +65,7 @@ public class LightningDiadem extends CardImpl {
         this.addAbility(ability);
 
         // When Lightning Diadem enters the battlefield, it deals 2 damage to target creature or player.
-        ability = new EntersBattlefieldTriggeredAbility(new DamageTargetEffect(2, "it"));
+        ability = new EntersBattlefieldTriggeredAbility(new DamageTargetEffect(2));
         ability.addTarget(new TargetCreatureOrPlayer());
         this.addAbility(ability);
 

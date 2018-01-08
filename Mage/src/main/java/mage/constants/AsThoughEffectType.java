@@ -17,7 +17,6 @@ public enum AsThoughEffectType {
     CAST_AS_INSTANT,
     ACTIVATE_AS_INSTANT,
     DAMAGE,
-    SHROUD,
     HEXPROOF,
     PAY,
     LOOK_AT_FACE_DOWN,

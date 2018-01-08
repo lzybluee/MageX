@@ -46,15 +46,9 @@ import mage.target.Target;
 public class DamageMultiEffect extends OneShotEffect {
 
     protected DynamicValue amount;
-    private String sourceName = "{source}";
 
     public DamageMultiEffect(int amount) {
         this(new StaticValue(amount));
-    }
-
-    public DamageMultiEffect(int amount, String whoDealDamageName) {
-        this(new StaticValue(amount));
-        this.sourceName = whoDealDamageName;
     }
 
     public DamageMultiEffect(DynamicValue amount) {
@@ -65,7 +59,6 @@ public class DamageMultiEffect extends OneShotEffect {
     public DamageMultiEffect(final DamageMultiEffect effect) {
         super(effect);
         this.amount = effect.amount;
-        this.sourceName = effect.sourceName;
     }
 
     @Override
@@ -97,14 +90,6 @@ public class DamageMultiEffect extends OneShotEffect {
         if (staticText != null && !staticText.isEmpty()) {
             return staticText;
         }
-        return this.sourceName + " deals " + amount.toString() + " damage divided as you choose among any number of target " + mode.getTargets().get(0).getTargetName();
-    }
-
-    public String getSourceName() {
-        return sourceName;
-    }
-
-    public void setSourceName(String sourceName) {
-        this.sourceName = sourceName;
+        return "{source} deals " + amount.toString() + " damage divided as you choose among any number of target " + mode.getTargets().get(0).getTargetName();
     }
 }

@@ -39,19 +39,17 @@ import mage.target.common.TargetCreaturePermanent;
 /**
  *
  * @author LoneFox
- *
+
  */
 public class Humble extends CardImpl {
 
     public Humble(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{1}{W}");
+        super(ownerId,setInfo,new CardType[]{CardType.INSTANT},"{1}{W}");
 
         // Target creature loses all abilities and becomes 0/1 until end of turn.
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
-        this.getSpellAbility().addEffect(new LoseAllAbilitiesTargetEffect(Duration.EndOfTurn)
-                .setText("Target creature loses all abilities"));
-        this.getSpellAbility().addEffect(new SetPowerToughnessTargetEffect(0, 1, Duration.EndOfTurn)
-                .setText("and becomes 0/1 until end of turn"));
+        this.getSpellAbility().addEffect(new LoseAllAbilitiesTargetEffect(Duration.EndOfTurn));
+        this.getSpellAbility().addEffect(new SetPowerToughnessTargetEffect(0, 1, Duration.EndOfTurn));
     }
 
     public Humble(final Humble card) {

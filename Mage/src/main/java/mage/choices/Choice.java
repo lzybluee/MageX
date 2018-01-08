@@ -28,13 +28,12 @@
 
 package mage.choices;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
  *
- * @author BetaSteward_at_googlemail.com, JayDi85
+ * @author BetaSteward_at_googlemail.com
  */
 public interface Choice {
 
@@ -74,8 +73,4 @@ public interface Choice {
     boolean isSortEnabled();
     void setSortData(Map<String, Integer> sortData);
     Map<String, Integer> getSortData();
-
-    // random choice
-    void setRandomChoice();
-    boolean setChoiceByAnswers(List<String> answers, boolean removeSelectAnswerFromList);
 }

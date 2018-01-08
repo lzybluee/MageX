@@ -45,16 +45,10 @@ import mage.players.Player;
 public class DamageAttachedEffect extends OneShotEffect {
 
     protected DynamicValue amount;
-    private String sourceName = "{source}";
 
     public DamageAttachedEffect(int amount) {
         super(Outcome.Damage);
         this.amount = new StaticValue(amount);
-    }
-
-    public DamageAttachedEffect(int amount, String whoDealDamageName) {
-        this(amount);
-        this.sourceName = whoDealDamageName;
     }
     
     public DamageAttachedEffect(DynamicValue amount) {
@@ -65,7 +59,6 @@ public class DamageAttachedEffect extends OneShotEffect {
     public DamageAttachedEffect(final DamageAttachedEffect effect) {
         super(effect);
         this.amount = effect.amount;
-        this.sourceName = effect.sourceName;
     }
 
     @Override
@@ -93,16 +86,8 @@ public class DamageAttachedEffect extends OneShotEffect {
             return staticText;
         }
         if ("equal to".equals(amount.toString())) {
-            return this.sourceName + " deals damage " + amount + " that creatures toughness to that creature";
+            return "{this} deals damage " + amount + " that creatures toughness to that creature";
         }
-         return this.sourceName + " deals " + amount + " damage to that creature";
-    }
-
-    public String getSourceName() {
-        return sourceName;
-    }
-
-    public void setSourceName(String sourceName) {
-        this.sourceName = sourceName;
+         return "{this} deals " + amount + " damage to that creature";
     }
 }

@@ -53,7 +53,7 @@ public class GoblinMedics extends CardImpl {
         this.toughness = new MageInt(1);
 
         // Whenever Goblin Medics becomes tapped, it deals 1 damage to target creature or player.
-        Ability ability = new BecomesTappedSourceTriggeredAbility(new DamageTargetEffect(1, "it"));
+        Ability ability = new BecomesTappedSourceTriggeredAbility(new DamageTargetEffect(1));
         ability.addTarget(new TargetCreatureOrPlayer());
         this.addAbility(ability);
     }

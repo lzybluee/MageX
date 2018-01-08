@@ -16,20 +16,12 @@ import mage.constants.Zone;
  */
 public class MenaceAbility extends StaticAbility { // Menace may not be a Singleton because the source ability is needed in the continuous effect
 
-    private boolean showAbilityHint = true;
-
     public MenaceAbility() {
-        this(true);
-    }
-
-    public MenaceAbility(boolean showAbilityHint) {
         super(Zone.BATTLEFIELD, new CantBeBlockedByOneEffect(2));
-        this.showAbilityHint = showAbilityHint;
     }
 
     public MenaceAbility(final MenaceAbility ability) {
         super(ability);
-        this.showAbilityHint = ability.showAbilityHint;
     }
 
     @Override
@@ -39,11 +31,7 @@ public class MenaceAbility extends StaticAbility { // Menace may not be a Single
 
     @Override
     public String getRule() {
-        String res = "Menace";
-        if (this.showAbilityHint) {
-            res += " <i>(This creature can't be blocked except by two or more creatures.)</i>";
-        }
-        return res;
+        return "Menace <i>(This creature can't be blocked except by two or more creatures.)</i>";
     }
 
 }

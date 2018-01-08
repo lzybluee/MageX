@@ -1,7 +1,5 @@
 package org.mage.plugins.card.images;
 
-import mage.util.CardUtil;
-
 import java.util.Objects;
 
 /**
@@ -128,15 +126,6 @@ public class CardDownloadData {
 
     public String getCollectorId() {
         return collectorId;
-    }
-
-    public Integer getCollectorIdAsInt() {
-        return CardUtil.parseCardNumberAsInt(collectorId);
-    }
-
-    public boolean isCollectorIdWithStr(){
-        // card have special numbers like "103a", "180b" (scryfall style)
-        return !getCollectorId().equals(getCollectorIdAsInt().toString());
     }
 
     public String getName() {

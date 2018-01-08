@@ -473,16 +473,18 @@ public class ComputerPlayer2 extends ComputerPlayer implements Player {
 
     @Override
     public boolean choose(Outcome outcome, Choice choice, Game game) {
-        if (choices.isEmpty()) {
+        if (choices.isEmpty())
             return super.choose(outcome, choice, game);
-        }
-
         if (!choice.isChosen()) {
-            if(!choice.setChoiceByAnswers(choices, true)){
-                choice.setRandomChoice();
+            for (String achoice: choices) {
+                choice.setChoice(achoice);
+                if (choice.isChosen()) {
+                    choices.clear();
+                    return true;
+                }
             }
+            return false;
         }
-
         return true;
     }
 

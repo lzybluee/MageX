@@ -47,7 +47,7 @@ public class UnravelTheAether extends CardImpl {
 
         // Choose target artifact or enchantment. Its owner shuffles it into his or her library.
         this.getSpellAbility().addEffect(new ShuffleIntoLibraryTargetEffect());
-        this.getSpellAbility().addTarget(new TargetPermanent(StaticFilters.FILTER_PERMANENT_ARTIFACT_OR_ENCHANTMENT));
+        this.getSpellAbility().addTarget(new TargetPermanent(StaticFilters.ARTIFACT_OR_ENCHANTMENT_PERMANENT));
     }
 
     public UnravelTheAether(final UnravelTheAether card) {

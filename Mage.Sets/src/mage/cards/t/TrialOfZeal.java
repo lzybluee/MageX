@@ -57,7 +57,7 @@ public class TrialOfZeal extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{2}{R}");
 
         // When Trial of Zeal enters the battlefield, it deals 3 damage to target creature or player.
-        Ability ability = new EntersBattlefieldTriggeredAbility(new DamageTargetEffect(3, "it"));
+        Ability ability = new EntersBattlefieldTriggeredAbility(new DamageTargetEffect(3));
         ability.addTarget(new TargetCreatureOrPlayer());
         this.addAbility(ability);
 

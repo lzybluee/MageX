@@ -29,9 +29,12 @@ package mage.abilities.effects.keyword;
 
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.keyword.AscendAbility;
 import mage.constants.Outcome;
+import mage.designations.CitysBlessing;
+import mage.designations.DesignationType;
+import mage.filter.StaticFilters;
 import mage.game.Game;
+import mage.players.Player;
 
 /**
  *
@@ -41,7 +44,7 @@ public class AscendEffect extends OneShotEffect {
 
     public AscendEffect() {
         super(Outcome.Detriment);
-        staticText = AscendAbility.ASCEND_RULE + "<br>";
+        staticText = "Ascend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)<br>";
     }
 
     public AscendEffect(final AscendEffect effect) {
@@ -55,6 +58,20 @@ public class AscendEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        return AscendAbility.checkAscend(game, source, true);
+        Player controller = game.getPlayer(source.getControllerId());
+        if (controller != null) {
+            if (game.getBattlefield().countAll(StaticFilters.FILTER_PERMANENT_ARTIFACT_CREATURE_ENCHANTMENT_OR_LAND, controller.getId(), game) > 9) {
+                if (!controller.hasDesignation(DesignationType.CITYS_BLESSING)) {
+                    controller.addDesignation(new CitysBlessing());
+                    game.informPlayers(controller.getLogName() + " gets the city's blessing for the rest of the game.");
+                } else {
+                    game.informPlayers(controller.getLogName() + " already has the city's blessing.");
+                }
+            } else {
+                game.informPlayers(controller.getLogName() + " does not get the city's blessing.");
+            }
+            return true;
+        }
+        return false;
     }
 }
