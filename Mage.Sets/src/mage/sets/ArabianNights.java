@@ -107,7 +107,7 @@ public class ArabianNights extends ExpansionSet {
         cards.add(new SetCardInfo("Jandor's Ring", 78, Rarity.RARE, mage.cards.j.JandorsRing.class));
         cards.add(new SetCardInfo("Jandor's Saddlebags", 79, Rarity.RARE, mage.cards.j.JandorsSaddlebags.class));
         cards.add(new SetCardInfo("Jihad", 60, Rarity.RARE, mage.cards.j.Jihad.class));
-        cards.add(new SetCardInfo("Junún Efreet", 8, Rarity.RARE, mage.cards.j.JununEfreet.class));
+        cards.add(new SetCardInfo("Junun Efreet", 8, Rarity.RARE, mage.cards.j.JununEfreet.class));
         cards.add(new SetCardInfo("Juzam Djinn", 9, Rarity.RARE, mage.cards.j.JuzamDjinn.class));
         cards.add(new SetCardInfo("Khabal Ghoul", 10, Rarity.UNCOMMON, mage.cards.k.KhabalGhoul.class));
         cards.add(new SetCardInfo("King Suleiman", 61, Rarity.RARE, mage.cards.k.KingSuleiman.class));
@@ -130,7 +130,7 @@ public class ArabianNights extends ExpansionSet {
         cards.add(new SetCardInfo("Piety", 65, Rarity.COMMON, Piety.class, NON_FULL_USE_VARIOUS));
         cards.add(new SetCardInfo("Pyramids", 81, Rarity.RARE, mage.cards.p.Pyramids.class));
         cards.add(new SetCardInfo("Repentant Blacksmith", 66, Rarity.RARE, mage.cards.r.RepentantBlacksmith.class));
-        cards.add(new SetCardInfo("Ring of Ma'rûf", 82, Rarity.RARE, mage.cards.r.RingOfMaruf.class));
+        cards.add(new SetCardInfo("Ring of Ma'ruf", 82, Rarity.RARE, mage.cards.r.RingOfMaruf.class));
         cards.add(new SetCardInfo("Rukh Egg", 52, Rarity.COMMON, RukhEgg.class, NON_FULL_USE_VARIOUS));
         cards.add(new SetCardInfo("Rukh Egg", 53, Rarity.COMMON, RukhEgg.class, NON_FULL_USE_VARIOUS));
         cards.add(new SetCardInfo("Sandals of Abdallah", 83, Rarity.UNCOMMON, mage.cards.s.SandalsOfAbdallah.class));
