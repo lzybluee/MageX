@@ -80,6 +80,7 @@ public class FifthEdition extends ExpansionSet {
         cards.add(new SetCardInfo("Brainwash", 289, Rarity.COMMON, mage.cards.b.Brainwash.class));
         cards.add(new SetCardInfo("Brassclaw Orcs", 213, Rarity.COMMON, BrassclawOrcs.class));
         cards.add(new SetCardInfo("Breeding Pit", 10, Rarity.UNCOMMON, mage.cards.b.BreedingPit.class));
+        cards.add(new SetCardInfo("Broken Visage", 11, Rarity.RARE, mage.cards.b.BrokenVisage.class));
         cards.add(new SetCardInfo("Brothers of Fire", 214, Rarity.COMMON, mage.cards.b.BrothersOfFire.class));
         cards.add(new SetCardInfo("Brushland", 412, Rarity.RARE, mage.cards.b.Brushland.class));
         cards.add(new SetCardInfo("Carapace", 143, Rarity.COMMON, mage.cards.c.Carapace.class));
@@ -242,6 +243,7 @@ public class FifthEdition extends ExpansionSet {
         cards.add(new SetCardInfo("Jester's Cap", 385, Rarity.RARE, mage.cards.j.JestersCap.class));
         cards.add(new SetCardInfo("Johtull Wurm", 168, Rarity.UNCOMMON, mage.cards.j.JohtullWurm.class));
         cards.add(new SetCardInfo("Jokulhaups", 246, Rarity.RARE, mage.cards.j.Jokulhaups.class));
+        cards.add(new SetCardInfo("Joven's Tools", 386, Rarity.UNCOMMON, mage.cards.j.JovensTools.class));
         cards.add(new SetCardInfo("Justice", 317, Rarity.UNCOMMON, mage.cards.j.Justice.class));
         cards.add(new SetCardInfo("Juxtapose", 95, Rarity.RARE, mage.cards.j.Juxtapose.class));
         cards.add(new SetCardInfo("Karma", 318, Rarity.UNCOMMON, mage.cards.k.Karma.class));
@@ -409,6 +411,7 @@ public class FifthEdition extends ExpansionSet {
         cards.add(new SetCardInfo("Torture", 61, Rarity.COMMON, Torture.class));
         cards.add(new SetCardInfo("Touch of Death", 62, Rarity.COMMON, mage.cards.t.TouchOfDeath.class));
         cards.add(new SetCardInfo("Tranquility", 195, Rarity.COMMON, mage.cards.t.Tranquility.class));
+        cards.add(new SetCardInfo("Truce", 341, Rarity.RARE, mage.cards.t.Truce.class));
         cards.add(new SetCardInfo("Tsunami", 196, Rarity.UNCOMMON, mage.cards.t.Tsunami.class));
         cards.add(new SetCardInfo("Tundra Wolves", 342, Rarity.COMMON, mage.cards.t.TundraWolves.class));
         cards.add(new SetCardInfo("Twiddle", 130, Rarity.COMMON, mage.cards.t.Twiddle.class));

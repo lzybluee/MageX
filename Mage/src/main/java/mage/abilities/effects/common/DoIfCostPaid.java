@@ -36,7 +36,9 @@ public class DoIfCostPaid extends OneShotEffect {
 
     public DoIfCostPaid(Effect effect, Cost cost, String chooseUseText, boolean optional) {
         super(Outcome.Benefit);
-        this.executingEffects.add(effect);
+        if (effect != null) {
+            this.executingEffects.add(effect);
+        }
         this.cost = cost;
         this.chooseUseText = chooseUseText;
         this.optional = optional;
@@ -74,7 +76,7 @@ public class DoIfCostPaid extends OneShotEffect {
             message = CardUtil.replaceSourceName(message, mageObject.getLogName());
             boolean result = true;
             if (cost.canPay(source, source.getSourceId(), player.getId(), game)
-                    && (!optional || player.chooseUse(executingEffects.get(0).getOutcome(), message, source, game))) {
+                    && executingEffects.size() > 0 && (!optional || player.chooseUse(executingEffects.get(0).getOutcome(), message, source, game))) {
                 cost.clearPaid();
                 if (cost.pay(source, game, source.getSourceId(), player.getId(), false)) {
                     for (Effect effect : executingEffects) {

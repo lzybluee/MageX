@@ -121,7 +121,7 @@ public class HumanPlayer extends PlayerImpl {
     public HumanPlayer(final HumanPlayer player) {
         super(player);
         this.replacementEffectChoice = player.replacementEffectChoice;
-        this.autoSelectReplacementEffects.addAll(autoSelectReplacementEffects);
+        this.autoSelectReplacementEffects.addAll(player.autoSelectReplacementEffects);
         this.currentlyUnpaidMana = player.currentlyUnpaidMana;
 
         this.triggerAutoOrderAbilityFirst.addAll(player.triggerAutoOrderAbilityFirst);
@@ -371,8 +371,13 @@ public class HumanPlayer extends PlayerImpl {
                 game.fireChooseChoiceEvent(playerId, choice);
             }
             waitForResponse(game);
-            if (response.getString() != null) {
-                choice.setChoice(response.getString());
+            String val = response.getString();
+            if (val != null) {
+                if(choice.isKeyChoice()){
+                    choice.setChoiceByKey(val);
+                } else {
+                    choice.setChoice(val);
+                }
                 return true;
             } else if (!choice.isRequired()) {
                 return false;
