@@ -79,7 +79,7 @@ public class FourthEdition extends ExpansionSet {
         cards.add(new SetCardInfo("Greed", 140, Rarity.RARE, mage.cards.g.Greed.class));
         cards.add(new SetCardInfo("Howl from Beyond", 141, Rarity.COMMON, mage.cards.h.HowlFromBeyond.class));
         cards.add(new SetCardInfo("Hypnotic Specter", 142, Rarity.UNCOMMON, mage.cards.h.HypnoticSpecter.class));
-        cards.add(new SetCardInfo("Junún Efreet", 143, Rarity.UNCOMMON, mage.cards.j.JununEfreet.class));
+        cards.add(new SetCardInfo("Junun Efreet", 143, Rarity.UNCOMMON, mage.cards.j.JununEfreet.class));
         cards.add(new SetCardInfo("Lord of the Pit", 144, Rarity.RARE, mage.cards.l.LordOfThePit.class));
         cards.add(new SetCardInfo("Lost Soul", 145, Rarity.COMMON, mage.cards.l.LostSoul.class));
         cards.add(new SetCardInfo("Marsh Gas", 146, Rarity.COMMON, mage.cards.m.MarshGas.class));
