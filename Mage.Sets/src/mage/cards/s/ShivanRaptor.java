@@ -45,7 +45,7 @@ public class ShivanRaptor extends CardImpl {
 
     public ShivanRaptor(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{R}");
-        this.subtype.add(SubType.DINOSAUR);
+        this.subtype.add(SubType.LIZARD);
 
         this.power = new MageInt(3);
         this.toughness = new MageInt(1);

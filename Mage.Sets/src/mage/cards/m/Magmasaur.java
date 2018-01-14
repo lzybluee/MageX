@@ -60,7 +60,7 @@ public class Magmasaur extends CardImpl {
     public Magmasaur(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{R}{R}");
         this.subtype.add(SubType.ELEMENTAL);
-        this.subtype.add(SubType.DINOSAUR);
+        this.subtype.add(SubType.LIZARD);
         this.power = new MageInt(0);
         this.toughness = new MageInt(0);
 

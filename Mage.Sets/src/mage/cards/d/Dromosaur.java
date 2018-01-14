@@ -45,7 +45,7 @@ public class Dromosaur extends CardImpl {
 
     public Dromosaur(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{R}");
-        this.subtype.add(SubType.DINOSAUR);
+        this.subtype.add(SubType.LIZARD);
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(3);

@@ -47,7 +47,7 @@ public class Fungusaur extends CardImpl {
     public Fungusaur(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{G}");
         this.subtype.add(SubType.FUNGUS);
-        this.subtype.add(SubType.DINOSAUR);
+        this.subtype.add(SubType.LIZARD);
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);

@@ -43,7 +43,7 @@ public class RidgetopRaptor extends CardImpl {
 
     public RidgetopRaptor(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{R}");
-        this.subtype.add(SubType.DINOSAUR);
+        this.subtype.add(SubType.LIZARD);
         this.subtype.add(SubType.BEAST);
 
         this.power = new MageInt(2);

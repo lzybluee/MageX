@@ -48,7 +48,7 @@ public class Pangosaur extends CardImpl {
 
     public Pangosaur(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{G}{G}");
-        this.subtype.add(SubType.DINOSAUR);
+        this.subtype.add(SubType.LIZARD);
         this.power = new MageInt(6);
         this.toughness = new MageInt(6);
 
