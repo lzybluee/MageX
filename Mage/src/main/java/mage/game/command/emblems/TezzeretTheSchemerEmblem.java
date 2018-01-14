@@ -48,7 +48,7 @@ public class TezzeretTheSchemerEmblem extends Emblem {
 
     public TezzeretTheSchemerEmblem() {
         this.setName("Emblem Tezzeret");
-
+        this.setExpansionSetCodeForImage("AER");
         Effect effect = new AddCardTypeTargetEffect(Duration.EndOfGame, CardType.ARTIFACT, CardType.CREATURE);
         effect.setText("target artifact you control becomes an artifact creature");
         Ability ability = new BeginningOfCombatTriggeredAbility(Zone.COMMAND, effect, TargetController.YOU, false, true);

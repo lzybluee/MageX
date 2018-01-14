@@ -66,6 +66,19 @@ public class VerifyCardDataTest {
         skipListAddName("SUBTYPE", "Scissors Lizard"); // UGL, mtgjson error
         skipListAddName("SUBTYPE", "Urza's Science Fair Project"); // UGL, mtgjson error
 
+        skipListAddName("SUBTYPE", "Alpha Tyrranax");
+        skipListAddName("SUBTYPE", "Deathmist Raptor");
+        skipListAddName("SUBTYPE", "Dromosaur");
+        skipListAddName("SUBTYPE", "Frenetic Raptor");
+        skipListAddName("SUBTYPE", "Fungusaur");
+        skipListAddName("SUBTYPE", "Imperiosaur");
+        skipListAddName("SUBTYPE", "Magmasaur");
+        skipListAddName("SUBTYPE", "Pangosaur");
+        skipListAddName("SUBTYPE", "Putrid Raptor");
+        skipListAddName("SUBTYPE", "Pygmy Allosaurus");
+        skipListAddName("SUBTYPE", "Ridgetop Raptor");
+        skipListAddName("SUBTYPE", "Shivan Raptor");
+        skipListAddName("SUBTYPE", "Tyrranax");
 
         // number
         skipListCreate("NUMBER");
