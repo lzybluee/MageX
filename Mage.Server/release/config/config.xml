@@ -75,6 +75,7 @@
         <gameType name="Penny Dreadful Commander Free For All" jar="mage-game-pennydreadfulcommanderfreeforall-${project.version}.jar" className="mage.game.PennyDreadfulCommanderFreeForAllMatch" typeName="mage.game.PennyDreadfulCommanderFreeForAllType"/>
         <gameType name="Freeform Commander Free For All" jar="mage-game-freeformcommanderfreeforall-${project.version}.jar" className="mage.game.FreeformCommanderFreeForAllMatch" typeName="mage.game.FreeformCommanderFreeForAllType"/>
         <gameType name="Momir Basic Two Player Duel" jar="mage-game-momirduel-${project.version}.jar" className="mage.game.MomirDuelMatch" typeName="mage.game.MomirDuelType"/>
+        <gameType name="Momir Basic Free For All" jar="mage-game-momir-${project.version}.jar" className="mage.game.MomirFreeForAllMatch" typeName="mage.game.MomirFreeForAllType"/>
     </gameTypes>
     <tournamentTypes>
         <tournamentType name="Constructed Elimination" jar="mage-tournament-constructed-${project.version}.jar" className="mage.tournament.ConstructedEliminationTournament" typeName="mage.tournament.ConstructedEliminationTournamentType"/>
@@ -122,6 +123,7 @@
         <draftCube name="MTGO Vintage Cube June 2016" jar="mage-tournament-booster-draft-${project.version}.jar" className="mage.tournament.cubes.VintageCubeJune2016"/>
         <draftCube name="MTGO Vintage Cube November 2016" jar="mage-tournament-booster-draft-${project.version}.jar" className="mage.tournament.cubes.VintageCubeNovember2016"/>
         <draftCube name="MTGO Vintage Cube June 2017" jar="mage-tournament-booster-draft-${project.version}.jar" className="mage.tournament.cubes.VintageCubeJune2017"/>
+        <draftCube name="MTGO Vintage Cube December 2017" jar="mage-tournament-booster-draft-${project.version}.jar" className="mage.tournament.cubes.VintageCubeDecember2017"/>
         <draftCube name="The Peasant's Toolbox" jar="mage-tournament-booster-draft-${project.version}.jar" className="mage.tournament.cubes.PeasantsToolboxCube"/>
         <draftCube name="www.MTGCube.com" jar="mage-tournament-booster-draft-${project.version}.jar" className="mage.tournament.cubes.MTGCube"/>
         <draftCube name="Cube From Deck" jar="mage-tournament-booster-draft-${project.version}.jar" className="mage.tournament.cubes.CubeFromDeck"/>
@@ -152,6 +154,7 @@
         <deckType name="Block Constructed - Amonkhet" jar="mage-deck-constructed-${project.version}.jar" className="mage.deck.AmonkhetBlock"/>
         <deckType name="Block Constructed - Battle for Zendikar" jar="mage-deck-constructed-${project.version}.jar" className="mage.deck.BattleForZendikarBlock"/>
         <deckType name="Block Constructed - Innistrad" jar="mage-deck-constructed-${project.version}.jar" className="mage.deck.InnistradBlock"/>
+        <deckType name="Block Constructed - Ixalan" jar="mage-deck-constructed-${project.version}.jar" className="mage.deck.IxalanBlock"/>
         <deckType name="Block Constructed - Kaladesh" jar="mage-deck-constructed-${project.version}.jar" className="mage.deck.KaladeshBlock"/>
         <deckType name="Block Constructed - Kamigawa" jar="mage-deck-constructed-${project.version}.jar" className="mage.deck.KamigawaBlock"/>
         <deckType name="Block Constructed - Khans of Tarkir" jar="mage-deck-constructed-${project.version}.jar" className="mage.deck.KhansOfTarkirBlock"/>

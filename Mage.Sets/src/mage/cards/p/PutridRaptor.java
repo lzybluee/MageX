@@ -53,7 +53,7 @@ public class PutridRaptor extends CardImpl {
     public PutridRaptor(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{4}{B}{B}");
         this.subtype.add(SubType.ZOMBIE);
-        this.subtype.add(SubType.LIZARD);
+        this.subtype.add(SubType.DINOSAUR);
         this.subtype.add(SubType.BEAST);
         this.power = new MageInt(4);
         this.toughness = new MageInt(4);

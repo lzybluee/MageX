@@ -42,6 +42,7 @@ public class AlphaTyrranax extends CardImpl {
 
     public AlphaTyrranax(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{4}{G}{G}");
+        this.subtype.add(SubType.DINOSAUR);
         this.subtype.add(SubType.BEAST);
 
         this.power = new MageInt(6);
