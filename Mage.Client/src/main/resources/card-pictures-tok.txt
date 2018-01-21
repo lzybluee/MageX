@@ -945,10 +945,17 @@
 |Generate|TOK:RAV|Spirit|||SpiritWhiteToken|
 |Generate|TOK:RAV|Wolf|||VojaToken|
 |Generate|TOK:RAV|Faerie|||FaerieToken|
+|Generate|TOK:RIX|Dinosaur|||DinosaurToken|
 |Generate|TOK:RIX|Elemental|1||RekindlingPhoenixToken|
 |Generate|TOK:RIX|Elemental|2||TilonallisSummonerElementalToken|
 |Generate|TOK:RIX|Golem|||GoldForgeGarrisonGolemToken|
+|Generate|TOK:RIX|Merfolk|||MerfolkHexproofToken|
 |Generate|TOK:RIX|Saproling|||SaprolingToken|
+|Generate|TOK:RIX|Treasure|1||TreasureToken|
+|Generate|TOK:RIX|Treasure|2||TreasureToken|
+|Generate|TOK:RIX|Treasure|3||TreasureToken|
+|Generate|TOK:RIX|Treasure|4||TreasureToken|
+|Generate|TOK:RIX|Vampire|||IxalanVampireToken|
 |Generate|TOK:ROE|Dragon|||DragonToken2|
 |Generate|TOK:ROE|Eldrazi Spawn|1||EldraziSpawnToken|
 |Generate|TOK:ROE|Eldrazi Spawn|2||EldraziSpawnToken|
