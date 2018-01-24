@@ -44,7 +44,7 @@ public class RivalsOfIxalan extends ExpansionSet {
     }
 
     private RivalsOfIxalan() {
-        super("Rivals of Ixalan", "RIX", ExpansionSet.buildDate(2015, 9, 10), SetType.EXPANSION);
+        super("Rivals of Ixalan", "RIX", ExpansionSet.buildDate(2018, 1, 19), SetType.EXPANSION);
         this.blockName = "Ixalan";
         this.parentSet = Ixalan.getInstance();
         this.hasBoosters = true;

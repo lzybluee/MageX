@@ -22,7 +22,7 @@ public class Ixalan extends ExpansionSet {
     }
 
     private Ixalan() {
-        super("Ixalan", "XLN", ExpansionSet.buildDate(2015, 9, 1), SetType.EXPANSION);
+        super("Ixalan", "XLN", ExpansionSet.buildDate(2017, 9, 29), SetType.EXPANSION);
         this.blockName = "Ixalan";
         this.hasBoosters = true;
         this.hasBasicLands = true;

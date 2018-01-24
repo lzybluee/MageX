@@ -56,7 +56,7 @@ public class Standard extends Constructed {
             }
         });
         int blocksAdded = 0;
-        int blocksToAdd = 3;
+        int blocksToAdd = 5;
         for (Iterator<ExpansionSet> iter = sets.iterator(); iter.hasNext() && blocksAdded < blocksToAdd;) {
             ExpansionSet set = iter.next();
             if (set.getSetType() == SetType.CORE || set.getSetType() == SetType.EXPANSION || set.getSetType() == SetType.SUPPLEMENTAL_STANDARD_LEGAL) {    // Still adding core sets because of Magic Origins
@@ -72,11 +72,6 @@ public class Standard extends Constructed {
                 }
             }
         }
-        banned.add("Aetherworks Marvel");
-        banned.add("Emrakul, the Promised End");
-        banned.add("Felidar Guardian");
-        banned.add("Reflector Mage");
-        banned.add("Smuggler's Copter");
     }
 
     private static boolean isFallBlock(ExpansionSet set) {
