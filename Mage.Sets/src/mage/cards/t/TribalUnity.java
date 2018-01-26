@@ -75,7 +75,7 @@ class TribalUnityEffect extends OneShotEffect {
     protected DynamicValue amount;
 
     public TribalUnityEffect(DynamicValue amount) {
-        super(Outcome.UnboostCreature);
+        super(Outcome.BoostCreature);
         staticText = "Creatures of the creature type of your choice get +X/+X until end of turn.";
         this.amount = amount;
     }

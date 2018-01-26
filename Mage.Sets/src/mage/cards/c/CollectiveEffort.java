@@ -120,7 +120,7 @@ public class CollectiveEffort extends CardImpl {
 class CollectiveEffortEffect extends OneShotEffect {
 
     CollectiveEffortEffect() {
-        super(Outcome.UnboostCreature);
+        super(Outcome.BoostCreature);
         staticText = "Put a +1/+1 counter on each creature target player controls";
     }
 
