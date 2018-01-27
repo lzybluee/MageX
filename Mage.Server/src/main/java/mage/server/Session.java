@@ -66,7 +66,6 @@ public class Session {
     private final Date timeConnected;
     private boolean isAdmin = false;
     private final AsynchInvokerCallbackHandler callbackHandler;
-    private boolean error = false;
 
     private final ReentrantLock lock;
 
@@ -371,14 +370,10 @@ public class Session {
     }
 
     public void fireCallback(final ClientCallback call) {
-        if (error) {
-            return;
-        }
         try {
             call.setMessageId(messageId++);
             callbackHandler.handleCallbackOneway(new Callback(call));
         } catch (HandleCallbackException ex) {
-            error = true; // to reduce repeated SESSION CALLBACK EXCEPTION
             UserManager.instance.getUser(userId).ifPresent(user -> {
                 user.setUserState(User.UserState.Disconnected);
                 logger.warn("SESSION CALLBACK EXCEPTION - " + user.getName() + " userId " + userId + " - cause: " + getBasicCause(ex).toString());
