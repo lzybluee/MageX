@@ -127,6 +127,12 @@
 |Generate|TOK:AER|Etherium Cell|||EtheriumCellToken|
 |Generate|TOK:AER|Gremlin|||GremlinToken|
 |Generate|TOK:AER|Ragavan|||RagavanToken|
+|Generate|TOK:AER|Servo|1||ServoToken|
+|Generate|TOK:AER|Servo|2||ServoToken|
+|Generate|TOK:AER|Servo|3||ServoToken|
+|Generate|TOK:AER|Thopter|1||ThopterColorlessToken|
+|Generate|TOK:AER|Thopter|2||ThopterColorlessToken|
+|Generate|TOK:AER|Thopter|3||ThopterColorlessToken|
 |Generate|TOK:AKH|Angel of Sanctions||
 |Generate|TOK:AKH|Anointer Priest||
 |Generate|TOK:AKH|Aven Initiate||
@@ -610,6 +616,7 @@
 |Generate|TOK:HOP|Pest|||PestToken|
 |Generate|TOK:HOP|Saproling|||SaprolingToken|
 |Generate|TOK:HOU|Adorned Pouncer||||
+|Generate|TOK:HOU|Cat|||CatToken2|
 |Generate|TOK:HOU|Champion of Wits||||
 |Generate|TOK:HOU|Dreamstealer||||
 |Generate|TOK:HOU|Earthshaker Khenra||||
