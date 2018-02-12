@@ -502,8 +502,8 @@
 |Generate|TOK:DKA|Zombie|||ZombieToken|
 |Generate|TOK:DRB|Saproling|||SaprolingToken|
 |Generate|TOK:DST|Beast|||BeastToken|
-|Generate|TOK:DST|Elemental|||WandOfTheElementsFirstToken|
-|Generate|TOK:DST|Elemental|||WandOfTheElementsSecondToken|
+|Generate|TOK:DST|Elemental|1||WandOfTheElementsFirstToken|
+|Generate|TOK:DST|Elemental|2||WandOfTheElementsSecondToken|
 |Generate|TOK:DST|InsectWirefly|||WireflyToken|
 |Generate|TOK:DST|Insect|||InsectToken|
 |Generate|TOK:DST|Myr|||MyrToken|
@@ -1027,8 +1027,7 @@
 |Generate|TOK:SOM|Cat|||CatToken|
 |Generate|TOK:SOM|Goblin|||GoblinToken|
 |Generate|TOK:SOM|Golem|||GolemToken|
-|Generate|TOK:SOM|Insect|1||InsectToken|
-|Generate|TOK:SOM|Insect|2||InsectInfectToken|
+|Generate|TOK:SOM|Insect|||InsectInfectToken|
 |Generate|TOK:SOM|Myr|||MyrToken|
 |Generate|TOK:SOM|Soldier|||SoldierToken|
 |Generate|TOK:SOM|Wolf|||WolfToken|
@@ -1095,7 +1094,7 @@
 |Generate|TOK:USG|Minion|||MinionToken|
 |Generate|TOK:USG|Saproling|||SaprolingToken|
 |Generate|TOK:UST|Dragon|||DragonTokenGold|
-|Generate|TOK:UST|StormCrow|||StormCrowToken|
+|Generate|TOK:UST|Storm Crow|||StormCrowToken|
 |Generate|TOK:V10|Wolf|||WolfToken|
 |Generate|TOK:V11|Faerie Rogue|||OonaQueenFaerieToken|
 |Generate|TOK:V12|Spirit|||SpiritToken|
