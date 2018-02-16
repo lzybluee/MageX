@@ -44,6 +44,7 @@ public class MediaInserts extends ExpansionSet {
         super("Media Inserts", "MBP", ExpansionSet.buildDate(1990, 1, 1), SetType.PROMOTIONAL);
         this.hasBoosters = false;
         this.hasBasicLands = false;
+        cards.add(new SetCardInfo("Nalathni Dragon", 3, Rarity.SPECIAL, mage.cards.n.NalathniDragon.class));
         cards.add(new SetCardInfo("Windseeker Centaur", 7, Rarity.SPECIAL, mage.cards.w.WindseekerCentaur.class));
     }
 }
