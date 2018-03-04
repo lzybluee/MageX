@@ -72,6 +72,13 @@ public class Standard extends Constructed {
                 }
             }
         }
+        // banned.add("Attune with Aether"); // since 2008-01-15
+        // banned.add("Aetherworks Marvel");
+        // banned.add("Felidar Guardian");
+        // banned.add("Rampaging Ferocidon"); // since 2008-01-15
+        // banned.add("Ramunap Ruins"); // since 2008-01-15
+        // banned.add("Rogue Refiner"); // since 2008-01-15
+        // banned.add("Smuggler's Copter");
     }
 
     private static boolean isFallBlock(ExpansionSet set) {
