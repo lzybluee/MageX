@@ -28,8 +28,6 @@
 
 package mage.view;
 
-import com.google.gson.annotations.Expose;
-
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -38,7 +36,6 @@ import java.util.UUID;
  * @author BetaSteward_at_googlemail.com
  */
 public class SimpleCardView implements Serializable {
-    @Expose
     protected UUID id;
     protected String expansionSetCode;
     protected String tokenSetCode;

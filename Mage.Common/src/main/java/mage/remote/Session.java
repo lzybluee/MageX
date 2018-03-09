@@ -24,7 +24,8 @@
 * The views and conclusions contained in the software and documentation are those of the
 * authors and should not be interpreted as representing official policies, either expressed
 * or implied, of BetaSteward_at_googlemail.com.
- */
+*/
+
 package mage.remote;
 
 import mage.remote.interfaces.ChatSession;
@@ -45,5 +46,4 @@ import mage.remote.interfaces.Testable;
  */
 public interface Session extends ClientData, Connect, GamePlay, GameTypes, ServerState, ChatSession, Feedback, PlayerActions, Replays, Testable {
 
-    public void appendJsonLog(ActionData actionData);
 }

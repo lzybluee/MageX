@@ -28,17 +28,11 @@
 package mage.view;
 
 import java.io.Serializable;
-import java.io.BufferedWriter;
-import java.io.PrintWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
 import mage.MageObject;
 import mage.abilities.costs.Cost;
 import mage.cards.Card;
@@ -60,8 +54,6 @@ import mage.game.stack.StackObject;
 import mage.players.Player;
 import mage.watchers.common.CastSpellLastTurnWatcher;
 import org.apache.log4j.Logger;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  *
@@ -72,6 +64,7 @@ public class GameView implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(GameView.class);
+
     private final int priorityTime;
     private final List<PlayerView> players = new ArrayList<>();
     private CardsView hand;
@@ -358,8 +351,4 @@ public class GameView implements Serializable {
         return rollbackTurnsAllowed;
     }
 
-    public String toJson() {
-        Gson gson = new GsonBuilder().create();
-        return gson.toJson(this);
-    }
 }
