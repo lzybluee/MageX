@@ -25,47 +25,46 @@
  *  authors and should not be interpreted as representing official policies, either expressed
  *  or implied, of BetaSteward_at_googlemail.com.
  */
-package mage.cards.a;
+package mage.cards.m;
 
 import java.util.UUID;
-import mage.MageInt;
-import mage.abilities.common.BeginningOfEndStepTriggeredAbility;
-import mage.abilities.effects.common.ReturnToHandSourceEffect;
-import mage.abilities.keyword.FlyingAbility;
-import mage.abilities.keyword.HasteAbility;
+import mage.Mana;
+import mage.abilities.Ability;
+import mage.abilities.costs.common.TapSourceCost;
+import mage.abilities.costs.mana.ManaCostsImpl;
+import mage.abilities.effects.common.AddManaOfAnyColorEffect;
+import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.TargetController;
+import mage.constants.Zone;
 
 /**
  *
- * @author Loki
+ * @author spjspj/psjpsj
  */
-public class ArchwingDragon extends CardImpl {
+public class MoxLotus extends CardImpl {
 
-    public ArchwingDragon(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{R}{R}");
-        this.subtype.add(SubType.DRAGON);
+    public MoxLotus(UUID ownerId, CardSetInfo setInfo) {
+        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT}, "{15}");
 
-        this.power = new MageInt(4);
-        this.toughness = new MageInt(4);
+        // {t}: Add infinity (or 1*10^9 to account for a potential mana reflection) to your mana pool.        
+        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, Mana.ColorlessMana(1000000000), new TapSourceCost()));
 
-        this.addAbility(FlyingAbility.getInstance());
-        this.addAbility(HasteAbility.getInstance());
+        // {100}: Add one mana of any color to your mana pool.
+        Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, new AddManaOfAnyColorEffect(1), new ManaCostsImpl("{100}"));
+        this.addAbility(ability);
 
-        // At the beginning of the end step, return Archwing Dragon to its owner's hand.
-        this.addAbility(new BeginningOfEndStepTriggeredAbility(new ReturnToHandSourceEffect(true), TargetController.ANY, false));
-
+        // You don't lose life due to mana burn.
+        // Situation normal??
     }
 
-    public ArchwingDragon(final ArchwingDragon card) {
+    public MoxLotus(final MoxLotus card) {
         super(card);
     }
 
     @Override
-    public ArchwingDragon copy() {
-        return new ArchwingDragon(this);
+    public MoxLotus copy() {
+        return new MoxLotus(this);
     }
 }
