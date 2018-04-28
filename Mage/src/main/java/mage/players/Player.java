@@ -57,6 +57,7 @@ import mage.choices.Choice;
 import mage.constants.AbilityType;
 import mage.constants.ManaType;
 import mage.constants.Outcome;
+import mage.constants.PlanarDieRoll;
 import mage.constants.PlayerAction;
 import mage.constants.RangeOfInfluence;
 import mage.constants.Zone;
@@ -111,7 +112,9 @@ public interface Player extends MageItem, Copyable<Player> {
 
     void initLife(int life);
 
-    void setLife(int life, Game game);
+    void setLife(int life, Game game, Ability source);
+
+    void setLife(int life, Game game, UUID sourceId);
 
     /**
      *
@@ -122,7 +125,9 @@ public interface Player extends MageItem, Copyable<Player> {
      */
     int loseLife(int amount, Game game, boolean atCombat);
 
-    int gainLife(int amount, Game game);
+    int gainLife(int amount, Game game, Ability source);
+
+    int gainLife(int amount, Game game, UUID sourceId);
 
     int damage(int damage, UUID sourceId, Game game, boolean combatDamage, boolean preventable);
 
@@ -422,6 +427,12 @@ public interface Player extends MageItem, Copyable<Player> {
     int rollDice(Game game, int numSides);
 
     int rollDice(Game game, ArrayList<UUID> appliedEffects, int numSides);
+
+    PlanarDieRoll rollPlanarDie(Game game);
+
+    PlanarDieRoll rollPlanarDie(Game game, ArrayList<UUID> appliedEffects);
+
+    PlanarDieRoll rollPlanarDie(Game game, ArrayList<UUID> appliedEffects, int numberChaosSides, int numberPlanarSides);
 
     @Deprecated
     void discard(int amount, Ability source, Game game);
@@ -731,7 +742,8 @@ public interface Player extends MageItem, Copyable<Player> {
 
     /**
      * Uses card.moveToExile and posts a inform message about moving the card to
-     * exile into the game log
+     * exile into the game log. Don't use this in replacement effects, because
+     * list of applied effects is not saved
      *
      * @param card
      * @param exileId exile zone id (optional)

@@ -135,3 +135,5 @@ client_secrets.json
 dependency-reduced-pom.xml
 mage-bundle
 /Mage.Server.Plugins/Mage.Game.FreeformCommanderFreeForAll/target/
+/Mage.Server.Plugins/Mage.Game.BrawlDuel/target/
+/Mage.Server.Plugins/Mage.Game.BrawlFreeForAll/target/

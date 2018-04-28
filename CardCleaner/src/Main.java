@@ -28,13 +28,13 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		File folder = new File("D:\\z7z8\\xMage\\mage\\Mage.Sets\\src\\mage\\sets"); 
+		File folder = new File("E:\\MageX\\MageX\\Mage.Sets\\src\\mage\\sets"); 
 		for(File f : folder.listFiles()) {
 			processSet(f);
 		}
 		
 		Vector<File> delCards = new Vector<>();
-		folder = new File("D:\\z7z8\\xMage\\mage\\Mage.Sets\\src\\mage\\cards");
+		folder = new File("E:\\MageX\\MageX\\Mage.Sets\\src\\mage\\cards");
 		for(File f : folder.listFiles()) {
 			if(f.isDirectory()) {
 				for(File c : f.listFiles()) {

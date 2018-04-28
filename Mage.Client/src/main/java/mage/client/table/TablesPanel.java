@@ -60,6 +60,7 @@ import mage.client.util.ButtonColumn;
 import mage.client.util.GUISizeHelper;
 import mage.client.util.IgnoreList;
 import mage.client.util.MageTableRowSorter;
+import mage.client.util.URLHandler;
 import mage.client.util.gui.GuiDisplayUtil;
 import mage.client.util.gui.TableUtil;
 import mage.constants.*;
@@ -579,7 +580,7 @@ public class TablesPanel extends javax.swing.JPanel {
             this.jPanelBottom.setVisible(false);
         } else {
             this.jPanelBottom.setVisible(true);
-            this.jLabelFooterText.setText(serverMessages.get(0));
+            URLHandler.handleMessage(serverMessages.get(0), this.jLabelFooterText);
             this.jButtonFooterNext.setVisible(serverMessages.size() > 1);
         }
     }
@@ -647,7 +648,7 @@ public class TablesPanel extends javax.swing.JPanel {
             formatFilterList.add(RowFilter.regexFilter("^Constructed - Vintage", TableTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatCommander.isSelected()) {
-            formatFilterList.add(RowFilter.regexFilter("^Commander|^Duel Commander|^Penny Dreadful Commander|^Freeform Commander|^MTGO 1v1 Commander", TableTableModel.COLUMN_DECK_TYPE));
+            formatFilterList.add(RowFilter.regexFilter("^Commander|^Duel Commander|^Penny Dreadful Commander|^Freeform Commander|^MTGO 1v1 Commander|^Duel Brawl|^Brawl", TableTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatTinyLeader.isSelected()) {
             formatFilterList.add(RowFilter.regexFilter("^Tiny", TableTableModel.COLUMN_DECK_TYPE));
@@ -1283,7 +1284,9 @@ public class TablesPanel extends javax.swing.JPanel {
                 if (currentMessage >= messages.size()) {
                     currentMessage = 0;
                 }
-                this.jLabelFooterText.setText(messages.get(currentMessage));
+                
+                URLHandler.RemoveMouseAdapter(jLabelFooterText);
+                URLHandler.handleMessage(messages.get(currentMessage), this.jLabelFooterText);
             }
         }
     }//GEN-LAST:event_jButtonFooterNextActionPerformed

@@ -34,9 +34,9 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.DiesTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
-import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
+import mage.cards.CardsImpl;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Outcome;
@@ -61,7 +61,7 @@ public class VeteranExplorer extends CardImpl {
         this.power = new MageInt(1);
         this.toughness = new MageInt(1);
 
-        // When Veteran Explorer dies, each player may search his or her library for up to two basic land cards and put them onto the battlefield. Then each player who searched his or her library this way shuffles it.
+        // When Veteran Explorer dies, each player may search their library for up to two basic land cards and put them onto the battlefield. Then each player who searched their library this way shuffles it.
         this.addAbility(new DiesTriggeredAbility(new VeteranExplorerEffect()));
     }
 
@@ -79,7 +79,7 @@ class VeteranExplorerEffect extends OneShotEffect {
 
     public VeteranExplorerEffect() {
         super(Outcome.Detriment);
-        this.staticText = "each player may search his or her library for up to two basic land cards and put them onto the battlefield. Then each player who searched his or her library this way shuffles it";
+        this.staticText = "each player may search their library for up to two basic land cards and put them onto the battlefield. Then each player who searched their library this way shuffles it";
     }
 
     public VeteranExplorerEffect(final VeteranExplorerEffect effect) {
@@ -119,12 +119,7 @@ class VeteranExplorerEffect extends OneShotEffect {
             TargetCardInLibrary target = new TargetCardInLibrary(0, 2, StaticFilters.FILTER_BASIC_LAND_CARD);
             if (player.searchLibrary(target, game)) {
                 if (!target.getTargets().isEmpty()) {
-                    for (UUID cardId : (List<UUID>) target.getTargets()) {
-                        Card card = player.getLibrary().getCard(cardId, game);
-                        if (card != null) {
-                            card.putOntoBattlefield(game, Zone.LIBRARY, source.getSourceId(), player.getId());
-                        }
-                    }
+                    player.moveCards(new CardsImpl(target.getTargets()), Zone.BATTLEFIELD, source, game);
                 }
             }
         }

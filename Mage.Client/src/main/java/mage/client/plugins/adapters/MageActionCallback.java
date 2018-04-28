@@ -6,12 +6,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -26,10 +21,12 @@ import mage.cards.MageCard;
 import mage.cards.action.ActionCallback;
 import mage.cards.action.TransferData;
 import mage.client.MageFrame;
+import mage.client.MagePane;
 import mage.client.SessionHandler;
 import mage.client.cards.BigCard;
 import mage.client.components.MageComponents;
 import mage.client.dialog.PreferencesDialog;
+import mage.client.game.GamePane;
 import mage.client.plugins.impl.Plugins;
 import mage.client.util.DefaultActionCallback;
 import mage.client.util.gui.ArrowBuilder;
@@ -367,6 +364,16 @@ public class MageActionCallback implements ActionCallback {
     }
 
     private void handleOverNewView(TransferData data) {
+        // Prevent to show tooltips from panes not in front
+        MagePane topPane = MageFrame.getTopMost(null);
+        if (topPane instanceof GamePane) {
+            if (!((GamePane) topPane).getGameId().equals(data.gameId)) {
+                return;
+            }
+        } else if (data.gameId != null) {
+            return;
+        }
+
         hideTooltipPopup();
         cancelTimeout();
         Component parentComponent = SwingUtilities.getRoot(data.component);
@@ -388,10 +395,10 @@ public class MageActionCallback implements ActionCallback {
     private void handlePopup(TransferData transferData) {
         MageCard mageCard = (MageCard) transferData.component;
         if (!popupTextWindowOpen
-                || mageCard.getOriginal().getId() != bigCard.getCardId()) {
+                || !Objects.equals(mageCard.getOriginal().getId(), bigCard.getCardId())) {
             if (bigCard.getWidth() > 0) {
                 synchronized (MageActionCallback.class) {
-                    if (!popupTextWindowOpen || mageCard.getOriginal().getId() != bigCard.getCardId()) {
+                    if (!popupTextWindowOpen || !Objects.equals(mageCard.getOriginal().getId(), bigCard.getCardId())) {
                         if (!popupTextWindowOpen) {
                             bigCard.resetCardId();
                         }

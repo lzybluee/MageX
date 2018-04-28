@@ -56,7 +56,7 @@ public class Standard extends Constructed {
             }
         });
         int blocksAdded = 0;
-        int blocksToAdd = 5;
+        int blocksToAdd = 3;
         for (Iterator<ExpansionSet> iter = sets.iterator(); iter.hasNext() && blocksAdded < blocksToAdd;) {
             ExpansionSet set = iter.next();
             if (set.getSetType() == SetType.CORE || set.getSetType() == SetType.EXPANSION || set.getSetType() == SetType.SUPPLEMENTAL_STANDARD_LEGAL) {    // Still adding core sets because of Magic Origins
@@ -72,13 +72,13 @@ public class Standard extends Constructed {
                 }
             }
         }
-        // banned.add("Attune with Aether"); // since 2008-01-15
-        // banned.add("Aetherworks Marvel");
-        // banned.add("Felidar Guardian");
-        // banned.add("Rampaging Ferocidon"); // since 2008-01-15
-        // banned.add("Ramunap Ruins"); // since 2008-01-15
-        // banned.add("Rogue Refiner"); // since 2008-01-15
-        // banned.add("Smuggler's Copter");
+        banned.add("Attune with Aether"); // since 2008-01-15
+        banned.add("Aetherworks Marvel");
+        banned.add("Felidar Guardian");
+        banned.add("Rampaging Ferocidon"); // since 2008-01-15
+        banned.add("Ramunap Ruins"); // since 2008-01-15
+        banned.add("Rogue Refiner"); // since 2008-01-15
+        banned.add("Smuggler's Copter");
     }
 
     private static boolean isFallBlock(ExpansionSet set) {

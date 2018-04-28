@@ -28,17 +28,7 @@
 package mage.player.ai;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -522,19 +512,19 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
                     continue;
                 }
                 if (!sim.checkIfGameIsOver()
-                        && action.isUsesStack()) {
+                        && (action.isUsesStack() || action instanceof PassAbility)) {
                     // only pass if the last action uses the stack
                     UUID nextPlayerId = sim.getPlayerList().get();
                     do {
                         sim.getPlayer(nextPlayerId).pass(game);
                         nextPlayerId = sim.getPlayerList().getNext();
-                    } while (nextPlayerId != this.getId());
+                    } while (!Objects.equals(nextPlayerId, this.getId()));
                 }
                 SimulationNode2 newNode = new SimulationNode2(node, sim, action, depth, currentPlayer.getId());
                 sim.checkStateAndTriggered();
                 int val;
-                if (action instanceof PassAbility) {
-                    // Stop to simulate deeper if PassAbility
+                if (action instanceof PassAbility && sim.getStack().isEmpty()) {
+                    // Stop to simulate deeper if PassAbility and stack is empty
                     val = GameStateEvaluator2.evaluate(this.getId(), sim);
                 } else {
                     val = addActions(newNode, depth - 1, alpha, beta);
@@ -617,7 +607,7 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
         } // end of for (allActions)
 
         if (depth == maxDepth) {
-            logger.info(new StringBuilder("Sim Prio [").append(depth).append("] -- End for Max Depth  -- Nodes calculated: ").append(SimulationNode2.nodeCount));
+            logger.info("Sim Prio [" + depth + "] -- End for Max Depth  -- Nodes calculated: " + SimulationNode2.nodeCount);
         }
         if (bestNode != null) {
             node.children.clear();
@@ -957,10 +947,11 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
     }
 
     protected final void getSuggestedActions() {
+        Scanner scanner = null;
         try {
             File file = new File(FILE_WITH_INSTRUCTIONS);
             if (file.exists()) {
-                Scanner scanner = new Scanner(file);
+                scanner = new Scanner(file);
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
                     if (line.startsWith("cast:")
@@ -976,6 +967,10 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
         } catch (Exception e) {
             // swallow
             e.printStackTrace();
+        } finally {
+            if(scanner != null) {
+                scanner.close();
+            }
         }
     }
 

@@ -95,14 +95,14 @@ class IceCaveEffect extends OneShotEffect {
             if (spellController != null) {
                 for (UUID playerId : game.getState().getPlayersInRange(source.getControllerId(), game)) {
                     Player player = game.getPlayer(playerId);
-                    if (player != null && player != spellController) {
+                    if (player != null && !player.equals(spellController)) {
                         cost.clearPaid();
                         if (cost.canPay(source, source.getSourceId(), player.getId(), game)
                                 && player.chooseUse(outcome, "Pay " + cost.getText() + " to counter " + spell.getIdName() + '?', source, game)) {
                             if (cost.pay(source, game, source.getSourceId(), playerId, false, null)) {
                                 game.informPlayers(player.getLogName() + " pays" + cost.getText() + " to counter " + spell.getIdName() + '.');
                                 game.getStack().counter(spell.getId(), source.getSourceId(), game);
-                                return true;
+                                break;
                             }
                         }
                     }

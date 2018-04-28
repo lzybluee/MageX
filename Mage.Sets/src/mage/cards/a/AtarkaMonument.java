@@ -41,6 +41,7 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
+import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 
 /**
@@ -52,7 +53,7 @@ public class AtarkaMonument extends CardImpl {
     public AtarkaMonument(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT},"{3}");
 
-        // {T}: Add {R} or {G} to your mana pool.
+        // {T}: Add {R} or {G}.
         this.addAbility(new RedManaAbility());
         this.addAbility(new GreenManaAbility());
         
@@ -70,17 +71,24 @@ public class AtarkaMonument extends CardImpl {
         return new AtarkaMonument(this);
     }
 
-    private static class AtarkaMonumentToken extends Token {
+    private static class AtarkaMonumentToken extends TokenImpl {
         AtarkaMonumentToken() {
             super("", "4/4 red and green Dragon artifact creature with flying");
-            cardType.add(CardType.ARTIFACT);
-            cardType.add(CardType.CREATURE);
-            color.setRed(true);
-            color.setGreen(true);
+            this.cardType.add(CardType.ARTIFACT);
+            this.cardType.add(CardType.CREATURE);
+            this.color.setRed(true);
+            this.color.setGreen(true);
             this.subtype.add(SubType.DRAGON);
-            power = new MageInt(4);
-            toughness = new MageInt(4);
+            this.power = new MageInt(4);
+            this.toughness = new MageInt(4);
             this.addAbility(FlyingAbility.getInstance());
+        }
+        public AtarkaMonumentToken(final AtarkaMonumentToken token) {
+            super(token);
+        }
+
+        public AtarkaMonumentToken copy() {
+            return new AtarkaMonumentToken(this);
         }
     }
 }

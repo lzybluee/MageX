@@ -29,15 +29,15 @@ public class Pauper extends Constructed {
         rarities.add(Rarity.COMMON);
         rarities.add(Rarity.LAND);
 
-        // banned.add("Cloud of Faeries");
-        // banned.add("Cloudpost");
-        // banned.add("Cranial Plating");
-        // banned.add("Empty the Warrens");
-        // banned.add("Frantic Search");
-        // banned.add("Grapeshot");
-        // banned.add("Invigorate");
-        // banned.add("Peregrine Drake");
-        // banned.add("Temporal Fissure");
-        // banned.add("Treasure Cruise");
+        banned.add("Cloud of Faeries");
+        banned.add("Cloudpost");
+        banned.add("Cranial Plating");
+        banned.add("Empty the Warrens");
+        banned.add("Frantic Search");
+        banned.add("Grapeshot");
+        banned.add("Invigorate");
+        banned.add("Peregrine Drake");
+        banned.add("Temporal Fissure");
+        banned.add("Treasure Cruise");
     }
 }

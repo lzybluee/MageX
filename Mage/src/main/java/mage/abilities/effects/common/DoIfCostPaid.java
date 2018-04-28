@@ -1,5 +1,6 @@
 package mage.abilities.effects.common;
 
+import java.util.Locale;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.Mode;
@@ -70,6 +71,7 @@ public class DoIfCostPaid extends OneShotEffect {
                 }
                 message = getCostText() + " and " + effectText + '?';
                 message = Character.toUpperCase(message.charAt(0)) + message.substring(1);
+                CardUtil.replaceSourceName(message, mageObject.getName());
             } else {
                 message = chooseUseText;
             }
@@ -78,6 +80,7 @@ public class DoIfCostPaid extends OneShotEffect {
             if (cost.canPay(source, source.getSourceId(), player.getId(), game)
                     && executingEffects.size() > 0 && (!optional || player.chooseUse(executingEffects.get(0).getOutcome(), message, source, game))) {
                 cost.clearPaid();
+                int bookmark = game.bookmarkState();
                 if (cost.pay(source, game, source.getSourceId(), player.getId(), false)) {
                     for (Effect effect : executingEffects) {
                         effect.setTargetPointer(this.targetPointer);
@@ -88,19 +91,21 @@ public class DoIfCostPaid extends OneShotEffect {
                         }
                     }
                     player.resetStoredBookmark(game); // otherwise you can e.g. undo card drawn with Mentor of the Meek
-                }
-                else if (!otherwiseEffects.isEmpty()) {
-                    for (Effect effect : otherwiseEffects) {
-                        effect.setTargetPointer(this.targetPointer);
-                        if (effect instanceof OneShotEffect) {
-                            result &= effect.apply(game, source);
-                        } else {
-                            game.addEffect((ContinuousEffect) effect, source);
+                } else {
+                    // Paying cost was cancels so try to undo payment so far
+                    game.restoreState(bookmark, DoIfCostPaid.class.getName());
+                    if (!otherwiseEffects.isEmpty()) {
+                        for (Effect effect : otherwiseEffects) {
+                            effect.setTargetPointer(this.targetPointer);
+                            if (effect instanceof OneShotEffect) {
+                                result &= effect.apply(game, source);
+                            } else {
+                                game.addEffect((ContinuousEffect) effect, source);
+                            }
                         }
                     }
                 }
-            }
-            else if (!otherwiseEffects.isEmpty()) {
+            } else if (!otherwiseEffects.isEmpty()) {
                 for (Effect effect : otherwiseEffects) {
                     effect.setTargetPointer(this.targetPointer);
                     if (effect instanceof OneShotEffect) {
@@ -135,12 +140,12 @@ public class DoIfCostPaid extends OneShotEffect {
         StringBuilder sb = new StringBuilder();
         String costText = cost.getText();
         if (costText != null
-                && !costText.toLowerCase().startsWith("put")
-                && !costText.toLowerCase().startsWith("exile")
-                && !costText.toLowerCase().startsWith("discard")
-                && !costText.toLowerCase().startsWith("sacrifice")
-                && !costText.toLowerCase().startsWith("remove")
-                && !costText.toLowerCase().startsWith("pay")) {
+                && !costText.toLowerCase(Locale.ENGLISH).startsWith("put")
+                && !costText.toLowerCase(Locale.ENGLISH).startsWith("exile")
+                && !costText.toLowerCase(Locale.ENGLISH).startsWith("discard")
+                && !costText.toLowerCase(Locale.ENGLISH).startsWith("sacrifice")
+                && !costText.toLowerCase(Locale.ENGLISH).startsWith("remove")
+                && !costText.toLowerCase(Locale.ENGLISH).startsWith("pay")) {
             sb.append("pay ");
         }
         return sb.append(costText).toString();

@@ -1083,6 +1083,22 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         }
         repaint();
     }
+    
+    private void chooseMatching() {
+        Collection<CardView> toMatch = dragCardList();
+        
+        for (DragCardGridListener l : listeners) {
+            for (CardView card : allCards) {
+                for (CardView aMatch : toMatch) {
+                    if (card.getName().equals(aMatch.getName())) {
+                        card.setSelected(true);
+                        cardViews.get(card.getId()).update(card);
+                    }
+                }
+            }
+        }
+        repaint();
+    }
 
     private void showAll() {
         for (DragCardGridListener l : listeners) {
@@ -1217,7 +1233,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         String searchStr = "";
         if (searchByTextField.getText().length() >= 3) {
             useText = true;
-            searchStr = searchByTextField.getText().toLowerCase();
+            searchStr = searchByTextField.getText().toLowerCase(Locale.ENGLISH);
         }
 
         for (CardType cardType : selectByTypeButtons.keySet()) {
@@ -1267,20 +1283,20 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                         boolean s = card.isSelected();
                         // Name
                         if (!s) {
-                            s |= card.getName().toLowerCase().contains(searchStr);
+                            s |= card.getName().toLowerCase(Locale.ENGLISH).contains(searchStr);
                         }
                         // Sub & Super Types
                         if (!s) {
                             for (SuperType str : card.getSuperTypes()) {
-                                s |= str.toString().toLowerCase().contains(searchStr);
+                                s |= str.toString().toLowerCase(Locale.ENGLISH).contains(searchStr);
                             }
                             for (SubType str : card.getSubTypes()) {
-                                s |= str.toString().toLowerCase().contains(searchStr);
+                                s |= str.toString().toLowerCase(Locale.ENGLISH).contains(searchStr);
                             }
                         }
                         // Rarity
                         if (!s) {
-                            s |= card.getRarity().toString().toLowerCase().contains(searchStr);
+                            s |= card.getRarity().toString().toLowerCase(Locale.ENGLISH).contains(searchStr);
                         }
                         // Type line
                         if (!s) {
@@ -1288,7 +1304,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                             for (CardType type : card.getCardTypes()) {
                                 t += ' ' + type.toString();
                             }
-                            s |= t.toLowerCase().contains(searchStr);
+                            s |= t.toLowerCase(Locale.ENGLISH).contains(searchStr);
                         }
                         // Casting cost
                         if (!s) {
@@ -1296,12 +1312,12 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                             for (String m : card.getManaCost()) {
                                 mc += m;
                             }
-                            s |= mc.toLowerCase().contains(searchStr);
+                            s |= mc.toLowerCase(Locale.ENGLISH).contains(searchStr);
                         }
                         // Rules
                         if (!s) {
                             for (String str : card.getRules()) {
-                                s |= str.toLowerCase().contains(searchStr);
+                                s |= str.toLowerCase(Locale.ENGLISH).contains(searchStr);
                             }
                         }
                         card.setSelected(s);
@@ -1316,7 +1332,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         repaint();
     }
 
-    private static final Pattern pattern = Pattern.compile(".*Add(.*)(\\{[WUBRGXC]\\})(.*)to your mana pool");
+    private static final Pattern pattern = Pattern.compile(".*Add(.*)(\\{[WUBRGXC]\\})");
 
     public void analyseDeck() {
         HashMap<String, Integer> qtys = new HashMap<>();
@@ -1348,21 +1364,21 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                     }
                     // Sub & Super Types
                     for (SuperType type : card.getSuperTypes()) {
-                        t += ' ' + type.toString().toLowerCase();
+                        t += ' ' + type.toString().toLowerCase(Locale.ENGLISH);
                     }
                     for (SubType str : card.getSubTypes()) {
-                        t += " " + str.toString().toLowerCase();
+                        t += " " + str.toString().toLowerCase(Locale.ENGLISH);
                     }
 
                     for (String qty : qtys.keySet()) {
                         int value = qtys.get(qty);
-                        if (t.toLowerCase().contains(qty)) {
+                        if (t.toLowerCase(Locale.ENGLISH).contains(qty)) {
                             qtys.put(qty, ++value);
                         }
 
                         // Rules
                         for (String str : card.getRules()) {
-                            if (str.toLowerCase().contains(qty)) {
+                            if (str.toLowerCase(Locale.ENGLISH).contains(qty)) {
                                 qtys.put(qty, ++value);
                             }
                         }
@@ -1380,10 +1396,10 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                     }
                     mc = mc.replaceAll("\\{([WUBRG]).([WUBRG])\\}", "{$1}{$2}");
                     mc = mc.replaceAll("\\{", "#");
-                    mc = mc.toLowerCase();
+                    mc = mc.toLowerCase(Locale.ENGLISH);
                     for (String pip : pips.keySet()) {
                         int value = pips.get(pip);
-                        while (mc.toLowerCase().contains(pip)) {
+                        while (mc.toLowerCase(Locale.ENGLISH).contains(pip)) {
                             pips.put(pip, ++value);
                             mc = mc.replaceFirst(pip, "");
                         }
@@ -1392,10 +1408,9 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                     // Adding mana
                     for (String str : card.getRules()) {
                         Matcher m = pattern.matcher(str);
-                        // ".*Add(.*)(\\{[WUBRGXC]\\})(.*)to your mana pool"
+                        // ".*Add(.*)(\\{[WUBRGXC]\\})(.*)"
                         while (m.find()) {
-                            System.out.println("0=" + m.group(0) + ",,,1=" + m.group(1) + ",,,2=" + m.group(2) + ",,,3=" + m.group(3));
-                            str = "Add" + m.group(1) + m.group(3) + "to your mana pool";
+                            str = "Add" + m.group(1);
                             int num = 1;
                             if (manaCounts.get(m.group(2)) != null) {
                                 num = manaCounts.get(m.group(2));
@@ -1704,6 +1719,10 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         JMenuItem invertSelection = new JMenuItem("Invert Selection");
         invertSelection.addActionListener(e2 -> invertSelection());
         menu.add(invertSelection);
+        
+        JMenuItem chooseMatching = new JMenuItem("Choose Matching");
+        chooseMatching.addActionListener(e2 -> chooseMatching());
+        menu.add(chooseMatching);
 
         // Show 'Duplicate Selection' for FREE_BUILDING
         if (this.mode == Constants.DeckEditorMode.FREE_BUILDING) {

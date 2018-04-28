@@ -56,44 +56,44 @@ public class Commander extends Constructed {
                 setCodes.add(set.getCode());
             }
         }
-        // banned.add("Ancestral Recall");
-        // banned.add("Balance");
-        // banned.add("Biorhythm");
-        // banned.add("Black Lotus");
-        // banned.add("Braids, Cabal Minion");
-        // banned.add("Channel");
-        // banned.add("Coalition Victory");
-        // banned.add("Emrakul, the Aeons Torn");
-        // banned.add("Erayo, Soratami Ascendant");
-        // banned.add("Fastbond");
-        // banned.add("Gifts Ungiven");
-        // banned.add("Griselbrand");
-        // banned.add("Karakas");
-        // banned.add("Leovold, Emissary of Trest");
-        // banned.add("Library of Alexandria");
-        // banned.add("Limited Resources");
-        // banned.add("Mox Emerald");
-        // banned.add("Mox Jet");
-        // banned.add("Mox Pearl");
-        // banned.add("Mox Ruby");
-        // banned.add("Mox Sapphire");
-        // banned.add("Painter's Servant");
-        // banned.add("Panoptic Mirror");
-        // banned.add("Primeval Titan");
-        // banned.add("Prophet of Kruphix");
-        // banned.add("Recurring Nightmare");
-        // banned.add("Rofellos, Llanowar Emissary");
-        // banned.add("Sundering Titan");
-        // banned.add("Sway of the Stars");
-        // banned.add("Sylvan Primordial");
-        // banned.add("Time Vault");
-        // banned.add("Time Walk");
-        // banned.add("Tinker");
-        // banned.add("Tolarian Academy");
-        // banned.add("Trade Secrets");
-        // banned.add("Upheaval");
-        // banned.add("Worldfire");
-        // banned.add("Yawgmoth's Bargain");
+        banned.add("Ancestral Recall");
+        banned.add("Balance");
+        banned.add("Biorhythm");
+        banned.add("Black Lotus");
+        banned.add("Braids, Cabal Minion");
+        banned.add("Channel");
+        banned.add("Coalition Victory");
+        banned.add("Emrakul, the Aeons Torn");
+        banned.add("Erayo, Soratami Ascendant");
+        banned.add("Fastbond");
+        banned.add("Gifts Ungiven");
+        banned.add("Griselbrand");
+        banned.add("Karakas");
+        banned.add("Leovold, Emissary of Trest");
+        banned.add("Library of Alexandria");
+        banned.add("Limited Resources");
+        banned.add("Mox Emerald");
+        banned.add("Mox Jet");
+        banned.add("Mox Pearl");
+        banned.add("Mox Ruby");
+        banned.add("Mox Sapphire");
+        banned.add("Painter's Servant");
+        banned.add("Panoptic Mirror");
+        banned.add("Primeval Titan");
+        banned.add("Prophet of Kruphix");
+        banned.add("Recurring Nightmare");
+        banned.add("Rofellos, Llanowar Emissary");
+        banned.add("Sundering Titan");
+        banned.add("Sway of the Stars");
+        banned.add("Sylvan Primordial");
+        banned.add("Time Vault");
+        banned.add("Time Walk");
+        banned.add("Tinker");
+        banned.add("Tolarian Academy");
+        banned.add("Trade Secrets");
+        banned.add("Upheaval");
+        banned.add("Worldfire");
+        banned.add("Yawgmoth's Bargain");
     }
 
     public Commander(String name) {
@@ -110,14 +110,12 @@ public class Commander extends Constructed {
             valid = false;
         }
 
-        List<String> basicLandNames = new ArrayList<>(Arrays.asList("Forest", "Island", "Mountain", "Swamp", "Plains", "Wastes",
-                "Snow-Covered Forest", "Snow-Covered Island", "Snow-Covered Mountain", "Snow-Covered Swamp", "Snow-Covered Plains"));
         Map<String, Integer> counts = new HashMap<>();
         countCards(counts, deck.getCards());
         countCards(counts, deck.getSideboard());
         for (Map.Entry<String, Integer> entry : counts.entrySet()) {
             if (entry.getValue() > 1) {
-                if (!basicLandNames.contains(entry.getKey()) && !entry.getKey().equals("Relentless Rats") && !entry.getKey().equals("Shadowborn Apostle")) {
+                if (!basicLandNames.contains(entry.getKey()) && !anyNumberCardsAllowed.contains(entry.getKey())) {
                     invalid.put(entry.getKey(), "Too many: " + entry.getValue());
                     valid = false;
                 }
@@ -275,7 +273,7 @@ public class Commander extends Constructed {
             boolean whenYouCast = false;
 
             for (String str : card.getRules()) {
-                String s = str.toLowerCase();
+                String s = str.toLowerCase(Locale.ENGLISH);
                 annihilator |= s.contains("annihilator");
                 anyNumberOfTarget |= s.contains("any number");
                 buyback |= s.contains("buyback");
@@ -521,16 +519,16 @@ public class Commander extends Constructed {
             }
 
             if (card.isPlaneswalker()) {
-                if (card.getName().toLowerCase().equals("jace, the mind sculptor")) {
+                if (card.getName().toLowerCase(Locale.ENGLISH).equals("jace, the mind sculptor")) {
                     thisMaxPower = Math.max(thisMaxPower, 6);
                 }
-                if (card.getName().toLowerCase().equals("ugin, the spirit dragon")) {
+                if (card.getName().toLowerCase(Locale.ENGLISH).equals("ugin, the spirit dragon")) {
                     thisMaxPower = Math.max(thisMaxPower, 5);
                 }
                 thisMaxPower = Math.max(thisMaxPower, 4);
             }
 
-            String cn = card.getName().toLowerCase();
+            String cn = card.getName().toLowerCase(Locale.ENGLISH);
             if (cn.equals("ancient tomb")
                     || cn.equals("anafenza, the foremost")
                     || cn.equals("arcum dagsson")
@@ -678,7 +676,7 @@ public class Commander extends Constructed {
         ObjectColor color = null;
         for (Card commander : deck.getSideboard()) {
             int thisMaxPower = 0;
-            String cn = commander.getName().toLowerCase();
+            String cn = commander.getName().toLowerCase(Locale.ENGLISH);
             if (color == null) {
                 color = commander.getColor(null);
             } else {
