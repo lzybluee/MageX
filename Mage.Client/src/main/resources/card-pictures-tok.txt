@@ -85,6 +85,8 @@
 |Generate|EMBLEM:M14|Liliana of the Dark Realms||Emblem Liliana|LilianaOfTheDarkRealmsEmblem|
 |Generate|EMBLEM:MMA|Elspeth, Knight Errant||Emblem Elspeth|ElspethKnightErrantEmblem|
 |Generate|EMBLEM:RIX|Huatli, Radiant Champion||Emblem Huatli|HuatliRadiantChampionEmblem|
+|Generate|EMBLEM:DOM|Jaya Ballard||Emblem Jaya|JayaBallardEmblem|
+|Generate|EMBLEM:DOM|Teferi, Hero of Dominaria||Emblem Teferi|TeferiHeroOfDominariaEmblem|
 |Generate|PLANE:PCA|Plane - Academy At Tolaria West|||AcademyAtTolariaWestPlane|
 |Generate|PLANE:PCA|Plane - Agyrem|||AgyremPlane|
 |Generate|PLANE:PCA|Plane - Akoum|||AkoumPlane|
@@ -143,6 +145,20 @@
 |Generate|TOK:8ED|Rukh||
 |Generate|TOK:9ED|Bird|||RukhEggBirdToken|
 |Generate|TOK:9ED|Saproling|||SaprolingToken|
+|Generate|TOK:A25|Angel|||AngelToken|
+|Generate|TOK:A25|Elf Warrior|||ElfToken|
+|Generate|TOK:A25|Fish|||ReefWormFishToken|
+|Generate|TOK:A25|Goblin|||GoblinToken|
+|Generate|TOK:A25|Insect|||InsectToken|
+|Generate|TOK:A25|Kobolds of Kher Keep|||ProsshKoboldToken|
+|Generate|TOK:A25|Kraken|||ReefWormKrakenToken|
+|Generate|TOK:A25|Skeleton|||SkeletonToken|
+|Generate|TOK:A25|Soldier|||SoldierToken|
+|Generate|TOK:A25|Spirit|1||SpiritToken|
+|Generate|TOK:A25|Spirit|2||SpiritWhiteToken|
+|Generate|TOK:A25|Stangg Twin|||StanggTwinToken|
+|Generate|TOK:A25|Whale|||ReefWormWhaleToken|
+|Generate|TOK:A25|Wolf|||WolfToken|
 |Generate|TOK:AER|Etherium Cell|||EtheriumCellToken|
 |Generate|TOK:AER|Gremlin|||GremlinToken|
 |Generate|TOK:AER|Ragavan|||RagavanToken|
@@ -519,6 +535,20 @@
 |Generate|TOK:DKA|Vampire|||SorinLordOfInnistradVampireToken|
 |Generate|TOK:DKA|Wolf|||WolfToken|
 |Generate|TOK:DKA|Zombie|||ZombieToken|
+|Generate|TOK:DOM|Knight|1||KnightToken|
+|Generate|TOK:DOM|Knight|2||KnightToken|
+|Generate|TOK:DOM|Soldier|||SoldierToken|
+|Generate|TOK:DOM|Cleric|||BelzenlokClericToken|
+|Generate|TOK:DOM|Zombie Knight|||ZombieKnightToken|
+|Generate|TOK:DOM|Nightmare Horror|||ChainersTormentNightmareToken|
+|Generate|TOK:DOM|Demon|||BelzenlokDemonToken|
+|Generate|TOK:DOM|Elemental|||ValdukElementalToken|
+|Generate|TOK:DOM|Goblin|||GoblinToken|
+|Generate|TOK:DOM|Karox Bladewing|||KaroxBladewingDragonToken|
+|Generate|TOK:DOM|Saproling|1||SaprolingToken|
+|Generate|TOK:DOM|Saproling|2||SaprolingToken|
+|Generate|TOK:DOM|Saproling|3||SaprolingToken|
+|Generate|TOK:DOM|Construct|||KarnConstructToken|
 |Generate|TOK:DRB|Saproling|||SaprolingToken|
 |Generate|TOK:DST|Beast|||BeastToken|
 |Generate|TOK:DST|Elemental|1||WandOfTheElementsFirstToken|
@@ -649,6 +679,13 @@
 |Generate|TOK:HOU|Sunscourge Champion||||
 |Generate|TOK:HOU|Zombie|||ZombieToken|
 |Generate|TOK:ICE|Caribou|||CaribouToken|
+|Generate|TOK:IMA|Angel|||AngelToken|
+|Generate|TOK:IMA|Beast|||BeastToken|
+|Generate|TOK:IMA|Bird|||BirdToken|
+|Generate|TOK:IMA|Djinn Monk|||SkywiseTeachingsToken|
+|Generate|TOK:IMA|Dragon|1||DragonToken2|
+|Generate|TOK:IMA|Dragon|2||DragonEggDragonToken|
+|Generate|TOK:IMA|Spirit|||SpiritWhiteToken|
 |Generate|TOK:INV|Bird|||OwlToken|
 |Generate|TOK:INV|Elephant|||ElephantToken|
 |Generate|TOK:INV|Reflection|||ReflectionToken|
