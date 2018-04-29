@@ -134,10 +134,10 @@ public class Commander extends Constructed {
             valid = false;
         } else {
             for (Card commander : deck.getSideboard()) {
-                if (bannedCommander.contains(commander.getName())) {
-                    invalid.put("Commander", "Commander banned (" + commander.getName() + ')');
-                    valid = false;
-                }
+//                if (bannedCommander.contains(commander.getName())) {
+//                    invalid.put("Commander", "Commander banned (" + commander.getName() + ')');
+//                    valid = false;
+//                }
                 if ((!commander.isCreature() || !commander.isLegendary())
                         && (!commander.isPlaneswalker() || !commander.getAbilities().contains(CanBeYourCommanderAbility.getInstance()))) {
                     invalid.put("Commander", "Commander invalid (" + commander.getName() + ')');

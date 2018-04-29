@@ -89,22 +89,22 @@ public class Constructed extends DeckValidator {
                 }
             }
         }
-        for (String bannedCard : banned) {
-            if (counts.containsKey(bannedCard)) {
-                invalid.put(bannedCard, "Banned");
-                valid = false;
-            }
-        }
-
-        for (String restrictedCard : restricted) {
-            if (counts.containsKey(restrictedCard)) {
-                int count = counts.get(restrictedCard);
-                if (count > 1) {
-                    invalid.put(restrictedCard, "Restricted: " + count);
-                    valid = false;
-                }
-            }
-        }
+//        for (String bannedCard : banned) {
+//            if (counts.containsKey(bannedCard)) {
+//                invalid.put(bannedCard, "Banned");
+//                valid = false;
+//            }
+//        }
+//
+//        for (String restrictedCard : restricted) {
+//            if (counts.containsKey(restrictedCard)) {
+//                int count = counts.get(restrictedCard);
+//                if (count > 1) {
+//                    invalid.put(restrictedCard, "Restricted: " + count);
+//                    valid = false;
+//                }
+//            }
+//        }
 
         if (!rarities.isEmpty()) {
             for (Card card : deck.getCards()) {
