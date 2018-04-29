@@ -38,6 +38,7 @@ import mage.abilities.mana.SimpleManaAbility;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
+import mage.util.RandomUtil;
 
 /**
  *
@@ -69,6 +70,12 @@ public class TreasureToken extends TokenImpl {
         Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, new AddManaOfAnyColorEffect(), new TapSourceCost());
         ability.addCost(new SacrificeSourceCost());
         this.addAbility(ability);
+    }
+
+    @Override
+    public void setExpansionSetCodeForImage(String code) {
+        super.setExpansionSetCodeForImage(code);
+        this.setTokenType(RandomUtil.nextInt(4) + 1); // 4 different images
     }
 
     public TreasureToken(final TreasureToken token) {
