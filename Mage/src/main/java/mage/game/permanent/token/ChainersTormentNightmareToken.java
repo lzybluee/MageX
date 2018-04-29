@@ -38,9 +38,10 @@ import mage.MageInt;
 public class ChainersTormentNightmareToken extends TokenImpl {
 
     public ChainersTormentNightmareToken(int xValue) {
-        super("Nightmare", "X/X black Nightmare artifact creature token");
+        super("Nightmare", "X/X black Nightmare Horror creature token");
         cardType.add(CardType.CREATURE);
         subtype.add(SubType.NIGHTMARE);
+        subtype.add(SubType.HORROR);
         power = new MageInt(xValue);
         toughness = new MageInt(xValue);
     }
