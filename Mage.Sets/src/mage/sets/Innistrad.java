@@ -142,7 +142,7 @@ public class Innistrad extends ExpansionSet {
         cards.add(new SetCardInfo("Gallows Warden", 16, Rarity.UNCOMMON, mage.cards.g.GallowsWarden.class));
         cards.add(new SetCardInfo("Galvanic Juggernaut", 222, Rarity.UNCOMMON, mage.cards.g.GalvanicJuggernaut.class));
         cards.add(new SetCardInfo("Garruk Relentless", 181, Rarity.MYTHIC, mage.cards.g.GarrukRelentless.class));
-        cards.add(new SetCardInfo("Garruk, the Veil-Cursed", 1181, Rarity.MYTHIC, mage.cards.g.GarrukTheVeilCursed.class));
+        cards.add(new SetCardInfo("Garruk, the Veil-Cursed", 118, Rarity.MYTHIC, mage.cards.g.GarrukTheVeilCursed.class));
         cards.add(new SetCardInfo("Gatstaf Howler", 182, Rarity.UNCOMMON, mage.cards.g.GatstafHowler.class));
         cards.add(new SetCardInfo("Gatstaf Shepherd", 182, Rarity.UNCOMMON, mage.cards.g.GatstafShepherd.class));
         cards.add(new SetCardInfo("Gavony Township", 239, Rarity.RARE, mage.cards.g.GavonyTownship.class));
