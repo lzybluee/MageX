@@ -28,7 +28,6 @@
 package mage.sets;
 
 import mage.cards.ExpansionSet;
-import mage.cards.h.HighTide;
 import mage.constants.Rarity;
 import mage.constants.SetType;
 
@@ -44,7 +43,8 @@ public class MediaInserts extends ExpansionSet {
         super("Media Inserts", "MBP", ExpansionSet.buildDate(1990, 1, 1), SetType.PROMOTIONAL);
         this.hasBoosters = false;
         this.hasBasicLands = false;
-        cards.add(new SetCardInfo("Nalathni Dragon", 3, Rarity.SPECIAL, mage.cards.n.NalathniDragon.class));
-        cards.add(new SetCardInfo("Windseeker Centaur", 7, Rarity.SPECIAL, mage.cards.w.WindseekerCentaur.class));
+        cards.add(new SetCardInfo("Mana Crypt", 1, Rarity.SPECIAL, mage.cards.m.ManaCrypt.class));
+        cards.add(new SetCardInfo("Nalathni Dragon", 2, Rarity.SPECIAL, mage.cards.n.NalathniDragon.class));
+        cards.add(new SetCardInfo("Windseeker Centaur", 3, Rarity.SPECIAL, mage.cards.w.WindseekerCentaur.class));
     }
 }
