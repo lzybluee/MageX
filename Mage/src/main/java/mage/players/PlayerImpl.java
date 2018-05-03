@@ -2226,7 +2226,7 @@ public abstract class PlayerImpl implements Player, Serializable {
                     Player opponent = game.getPlayer(opponentId);
                     if (opponent != null && !opponent.hasLost()) {
                         logger.debug("player won -> calling opponent lost: " + this.getName() + "  opponent: " + opponent.getName());
-                        opponent.lost(game);
+                        opponent.lostForced(game);
                     }
                 }
                 // if no more opponents alive, you win and the game ends
@@ -2499,7 +2499,7 @@ public abstract class PlayerImpl implements Player, Serializable {
 
     @Override
     public PlanarDieRoll rollPlanarDie(Game game, ArrayList<UUID> appliedEffects) {
-        return rollPlanarDie(game, appliedEffects, 1, 1);
+        return rollPlanarDie(game, appliedEffects, 2, 2);
     }
 
     /**
@@ -2514,15 +2514,15 @@ public abstract class PlayerImpl implements Player, Serializable {
      */
     @Override
     public PlanarDieRoll rollPlanarDie(Game game, ArrayList<UUID> appliedEffects, int numberChaosSides, int numberPlanarSides) {
-        int result = RandomUtil.nextInt(6) + 1;
+        int result = RandomUtil.nextInt(9) + 1;
         PlanarDieRoll roll = PlanarDieRoll.NIL_ROLL;
-        if (numberChaosSides + numberPlanarSides > 6) {
-            numberChaosSides = 1;
-            numberPlanarSides = 1;
+        if (numberChaosSides + numberPlanarSides > 9) {
+            numberChaosSides = 2;
+            numberPlanarSides = 2;
         }
         if (result <= numberChaosSides) {
             roll = PlanarDieRoll.CHAOS_ROLL;
-        } else if (result > 6 - numberPlanarSides) {
+        } else if (result > 9 - numberPlanarSides) {
             roll = PlanarDieRoll.PLANAR_ROLL;
         }
         if (!game.isSimulation()) {
@@ -3687,7 +3687,7 @@ public abstract class PlayerImpl implements Player, Serializable {
                     final Spell spell = (Spell) card;
                     if (spell.isCopiedSpell()) {
                         // Copied spell, only remove from stack
-                        game.getStack().remove(spell);
+                        game.getStack().remove(spell, game);
                     }
                 }
                 game.informPlayers(this.getLogName() + " moves " + (withName ? card.getLogName() + (card.isCopy() ? " (Copy)" : "") : "a card face down") + ' '
