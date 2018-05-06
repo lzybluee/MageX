@@ -1,0 +1,39 @@
+[@show opponent library]
+
+[@show opponent hand]
+
+[add x10 colored lands]
+battlefield:Human:Forest:10
+battlefield:Human:Plains:10
+battlefield:Human:Mountain:10
+battlefield:Human:Swamp:10
+battlefield:Human:Island:10
+
+[test choice black lotus]
+graveyard:Human:Plains:1
+graveyard:Human:Lightning Bolt:1
+graveyard:Human:Bearer of the Heavens:1
+battlefield:Human:Black Lotus:5
+battlefield:Human:Island:10
+hand:Human:Amass the Components:5
+
+[Forerunner of the Legion]
+battlefield:Human:Plains:10
+battlefield:Human:Swamp:10
+hand:Human:Forerunner of the Legion:2
+battlefield:Human:Forerunner of the Legion:1
+hand:Human:Adanto Vanguard:1
+library:Human:Anointed Deacon:3
+library:Human:Lightning Bolt:1
+library:Human:Bearer of the Heavens:1
+
+[Forerunner of the Empire]
+battlefield:Human:Forest:10
+battlefield:Human:Plains:10
+battlefield:Human:Mountain:10
+hand:Human:Forerunner of the Empire:2
+battlefield:Human:Forerunner of the Empire:1
+hand:Human:Bonded Horncrest:1
+library:Human:Burning Sun's Avatar:3
+library:Human:Lightning Bolt:1
+library:Human:Bearer of the Heavens:1
