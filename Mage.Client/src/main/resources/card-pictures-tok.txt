@@ -376,7 +376,7 @@
 |Generate|TOK:C17|Eldrazi Spawn|2||EldraziSpawnToken|
 |Generate|TOK:C17|Eldrazi Spawn|3||EldraziSpawnToken|
 |Generate|TOK:C17|Gold||
-|Generate|TOK:C17|Rat|||RatToken|
+|Generate|TOK:C17|Rat|||DeathtouchRatToken|
 |Generate|TOK:C17|Vampire|||EdgarMarkovToken|
 |Generate|TOK:C17|Zombie|||ZombieToken|
 |Generate|TOK:CHK|Dragon Spirit|||TatsumaDragonToken|
@@ -535,20 +535,20 @@
 |Generate|TOK:DKA|Vampire|||SorinLordOfInnistradVampireToken|
 |Generate|TOK:DKA|Wolf|||WolfToken|
 |Generate|TOK:DKA|Zombie|||ZombieToken|
-|Generate|TOK:DOM|Knight|1||KnightToken|
-|Generate|TOK:DOM|Knight|2||KnightToken|
-|Generate|TOK:DOM|Soldier|||SoldierToken|
 |Generate|TOK:DOM|Cleric|||BelzenlokClericToken|
-|Generate|TOK:DOM|Zombie Knight|||ZombieKnightToken|
-|Generate|TOK:DOM|Nightmare Horror|||ChainersTormentNightmareToken|
+|Generate|TOK:DOM|Construct|||KarnConstructToken|
 |Generate|TOK:DOM|Demon|||BelzenlokDemonToken|
 |Generate|TOK:DOM|Elemental|||ValdukElementalToken|
 |Generate|TOK:DOM|Goblin|||GoblinToken|
 |Generate|TOK:DOM|Karox Bladewing|||KaroxBladewingDragonToken|
+|Generate|TOK:DOM|Knight|1||KnightToken|
+|Generate|TOK:DOM|Knight|2||KnightToken|
+|Generate|TOK:DOM|Nightmare Horror|||ChainersTormentNightmareToken|
 |Generate|TOK:DOM|Saproling|1||SaprolingToken|
 |Generate|TOK:DOM|Saproling|2||SaprolingToken|
 |Generate|TOK:DOM|Saproling|3||SaprolingToken|
-|Generate|TOK:DOM|Construct|||KarnConstructToken|
+|Generate|TOK:DOM|Soldier|||SoldierToken|
+|Generate|TOK:DOM|Zombie Knight|||ZombieKnightToken|
 |Generate|TOK:DRB|Saproling|||SaprolingToken|
 |Generate|TOK:DST|Beast|||BeastToken|
 |Generate|TOK:DST|Elemental|1||WandOfTheElementsFirstToken|

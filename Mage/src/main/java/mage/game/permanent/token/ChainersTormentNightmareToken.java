@@ -27,6 +27,9 @@
  */
 package mage.game.permanent.token;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.MageInt;
@@ -36,17 +39,24 @@ import mage.MageInt;
  * @author spjspj
  */
 public class ChainersTormentNightmareToken extends TokenImpl {
-    
-    public ChainersTormentNightmareToken() {
-        this(0);
+
+    final static private List<String> tokenImageSets = new ArrayList<>();
+    static {
+        tokenImageSets.addAll(Arrays.asList("DOM"));
     }
+
+    public ChainersTormentNightmareToken() { this(0); };
 
     public ChainersTormentNightmareToken(int xValue) {
         super("Nightmare Horror", "X/X black Nightmare Horror creature token");
-        this.setOriginalExpansionSetCode("DOM");
+        
+        availableImageSetCodes = tokenImageSets;
+        setOriginalExpansionSetCode("DOM");
+        
         cardType.add(CardType.CREATURE);
         subtype.add(SubType.NIGHTMARE);
         subtype.add(SubType.HORROR);
+        color.setBlack(true);
         power = new MageInt(xValue);
         toughness = new MageInt(xValue);
     }

@@ -84,6 +84,7 @@ import mage.game.events.ZoneChangeEvent;
 import mage.game.match.MatchPlayer;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.PermanentCard;
+import mage.game.permanent.PermanentToken;
 import mage.game.permanent.token.SquirrelToken;
 import mage.game.stack.Spell;
 import mage.game.stack.StackAbility;
@@ -894,6 +895,26 @@ public abstract class PlayerImpl implements Player, Serializable {
         return true;
     }
 
+    @Override
+    public boolean putCardOnTopXOfLibrary(Card card, Game game, Ability source, int xFromTheTop) {
+        if (card.getOwnerId().equals(getId())) {
+            if (library.size() + 1 < xFromTheTop) {
+                putCardsOnBottomOfLibrary(new CardsImpl(card), game, source, true);
+            } else {
+                if (card.moveToZone(Zone.LIBRARY, source.getSourceId(), game, true) && !(card instanceof PermanentToken) && !card.isCopy()) {
+                    card = getLibrary().removeFromTop(game);
+                    getLibrary().putCardToTopXPos(card, xFromTheTop, game);
+                    game.informPlayers(card.getLogName() + " is put into " + getLogName() + "'s library " + CardUtil.numberToOrdinalText(xFromTheTop) + " from the top");
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            return game.getPlayer(card.getOwnerId()).putCardOnTopXOfLibrary(card, game, source, xFromTheTop);
+        }
+        return true;
+    }
+
     /**
      * Can be cards or permanents that go to library
      *
@@ -1474,16 +1495,34 @@ public abstract class PlayerImpl implements Player, Serializable {
     }
 
     @Override
-    public void revealCards(String name, Cards cards, Game game) {
-        revealCards(name, cards, game, true);
+    public void revealCards(Ability source, Cards cards, Game game) {
+        revealCards(source, null, cards, game, true);
     }
 
     @Override
-    public void revealCards(String name, Cards cards, Game game, boolean postToLog) {
+    public void revealCards(String titleSuffix, Cards cards, Game game) {
+        revealCards(titleSuffix, cards, game, true);
+    }
+
+    @Override
+    public void revealCards(String titleSuffix, Cards cards, Game game, boolean postToLog) {
+        revealCards(null, titleSuffix, cards, game, postToLog);
+    }
+
+    @Override
+    public void revealCards(Ability source, String titleSuffix, Cards cards, Game game) {
+        revealCards(source, titleSuffix, cards, game, true);
+    }
+
+    @Override
+    public void revealCards(Ability source, String titleSuffix, Cards cards, Game game, boolean postToLog) {
+        if (cards == null || cards.isEmpty()) {
+            return;
+        }
         if (postToLog) {
-            game.getState().getRevealed().add(name, cards);
+            game.getState().getRevealed().add(CardUtil.createObjectRealtedWindowTitle(source, game, titleSuffix), cards);
         } else {
-            game.getState().getRevealed().update(name, cards);
+            game.getState().getRevealed().update(CardUtil.createObjectRealtedWindowTitle(source, game, titleSuffix), cards);
         }
         if (postToLog && !game.isSimulation()) {
             StringBuilder sb = new StringBuilder(getLogName()).append(" reveals ");
@@ -1500,14 +1539,19 @@ public abstract class PlayerImpl implements Player, Serializable {
     }
 
     @Override
-    public void lookAtCards(String name, Card card, Game game) {
-        game.getState().getLookedAt(this.playerId).add(name, card);
+    public void lookAtCards(String titleSuffix, Card card, Game game) {
+        game.getState().getLookedAt(this.playerId).add(titleSuffix, card);
         game.fireUpdatePlayersEvent();
     }
 
     @Override
-    public void lookAtCards(String name, Cards cards, Game game) {
-        game.getState().getLookedAt(this.playerId).add(name, cards);
+    public void lookAtCards(String titleSuffix, Cards cards, Game game) {
+        this.lookAtCards(null, titleSuffix, cards, game);
+    }
+
+    @Override
+    public void lookAtCards(Ability source, String titleSuffix, Cards cards, Game game) {
+        game.getState().getLookedAt(this.playerId).add(CardUtil.createObjectRealtedWindowTitle(source, game, titleSuffix), cards);
         game.fireUpdatePlayersEvent();
     }
 
@@ -1817,6 +1861,7 @@ public abstract class PlayerImpl implements Player, Serializable {
         return gainLife(amount, game, source.getSourceId());
     }
 
+    @Override
     public int gainLife(int amount, Game game, UUID sourceId) {
         if (!canGainLife || amount == 0) {
             return 0;
