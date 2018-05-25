@@ -25,51 +25,44 @@
  *  authors and should not be interpreted as representing official policies, either expressed
  *  or implied, of BetaSteward_at_googlemail.com.
  */
-package mage.cards.a;
+package mage.abilities.effects.common;
 
-import java.util.UUID;
-import mage.MageInt;
-import mage.abilities.common.DiesTriggeredAbility;
-import mage.abilities.costs.common.ExileSourceFromGraveCost;
-import mage.abilities.effects.common.DoIfCostPaid;
-import mage.abilities.effects.common.search.SearchLibraryPutInPlayEffect;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.filter.common.FilterEnchantmentCard;
-import mage.target.common.TargetCardInLibrary;
+import mage.abilities.Ability;
+import mage.abilities.effects.OneShotEffect;
+import mage.constants.Outcome;
+import mage.game.Game;
+import mage.players.Player;
 
 /**
  *
- * @author LevelX2
+ * @author TheElk801
  */
-public class AcademyRector extends CardImpl {
+public class FlipUntilLoseEffect extends OneShotEffect {
 
-    public AcademyRector(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{W}");
-        this.subtype.add(SubType.HUMAN);
-        this.subtype.add(SubType.CLERIC);
-
-        this.power = new MageInt(1);
-        this.toughness = new MageInt(2);
-
-        // When Academy Rector dies, you may exile it. If you do, search your library for an enchantment card, put that card onto the battlefield, then shuffle your library.
-        this.addAbility(new DiesTriggeredAbility(
-                new DoIfCostPaid(
-                        new SearchLibraryPutInPlayEffect(new TargetCardInLibrary(new FilterEnchantmentCard())),
-                        new ExileSourceFromGraveCost(),
-                        "Exile to search for an enchantment?"
-                ), false
-        ));
+    public FlipUntilLoseEffect() {
+        super(Outcome.Benefit);
+        this.staticText = "flip a coin until you lose a flip";
     }
 
-    public AcademyRector(final AcademyRector card) {
-        super(card);
+    public FlipUntilLoseEffect(final FlipUntilLoseEffect effect) {
+        super(effect);
     }
 
     @Override
-    public AcademyRector copy() {
-        return new AcademyRector(this);
+    public FlipUntilLoseEffect copy() {
+        return new FlipUntilLoseEffect(this);
+    }
+
+    @Override
+    public boolean apply(Game game, Ability source) {
+        Player player = game.getPlayer(source.getControllerId());
+        if (player == null) {
+            return false;
+        }
+        while (true) {
+            if (!player.flipCoin(game)) {
+                return true;
+            }
+        }
     }
 }

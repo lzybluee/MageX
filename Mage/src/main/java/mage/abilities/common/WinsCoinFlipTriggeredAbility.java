@@ -25,51 +25,46 @@
  *  authors and should not be interpreted as representing official policies, either expressed
  *  or implied, of BetaSteward_at_googlemail.com.
  */
-package mage.cards.a;
 
-import java.util.UUID;
-import mage.MageInt;
-import mage.abilities.common.DiesTriggeredAbility;
-import mage.abilities.costs.common.ExileSourceFromGraveCost;
-import mage.abilities.effects.common.DoIfCostPaid;
-import mage.abilities.effects.common.search.SearchLibraryPutInPlayEffect;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.filter.common.FilterEnchantmentCard;
-import mage.target.common.TargetCardInLibrary;
+package mage.abilities.common;
+
+import mage.abilities.TriggeredAbilityImpl;
+import mage.abilities.effects.Effect;
+import mage.constants.Zone;
+import mage.game.Game;
+import mage.game.events.GameEvent;
 
 /**
  *
- * @author LevelX2
+ * @author TheElk801
  */
-public class AcademyRector extends CardImpl {
+public class WinsCoinFlipTriggeredAbility extends TriggeredAbilityImpl {
 
-    public AcademyRector(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{W}");
-        this.subtype.add(SubType.HUMAN);
-        this.subtype.add(SubType.CLERIC);
-
-        this.power = new MageInt(1);
-        this.toughness = new MageInt(2);
-
-        // When Academy Rector dies, you may exile it. If you do, search your library for an enchantment card, put that card onto the battlefield, then shuffle your library.
-        this.addAbility(new DiesTriggeredAbility(
-                new DoIfCostPaid(
-                        new SearchLibraryPutInPlayEffect(new TargetCardInLibrary(new FilterEnchantmentCard())),
-                        new ExileSourceFromGraveCost(),
-                        "Exile to search for an enchantment?"
-                ), false
-        ));
+    public WinsCoinFlipTriggeredAbility(Effect effect) {
+        super(Zone.BATTLEFIELD, effect, false);
     }
 
-    public AcademyRector(final AcademyRector card) {
-        super(card);
+    public WinsCoinFlipTriggeredAbility(final WinsCoinFlipTriggeredAbility ability) {
+        super(ability);
     }
 
     @Override
-    public AcademyRector copy() {
-        return new AcademyRector(this);
+    public WinsCoinFlipTriggeredAbility copy() {
+        return new WinsCoinFlipTriggeredAbility(this);
+    }
+
+    @Override
+    public boolean checkEventType(GameEvent event, Game game) {
+        return event.getType() == GameEvent.EventType.COIN_FLIPPED;
+    }
+
+    @Override
+    public boolean checkTrigger(GameEvent event, Game game) {
+        return event.getFlag();
+    }
+
+    @Override
+    public String getRule() {
+        return "Whenever a player wins a coin flip," + super.getRule();
     }
 }

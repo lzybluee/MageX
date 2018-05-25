@@ -11,7 +11,7 @@
  *        of conditions and the following disclaimer in the documentation and/or other materials
  *        provided with the distribution.
  *
- *  THIS SOFTWARE IS PROVIDED BY BetaSteward_at_googlemail.com ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ *  THIS SOFTWARE IS PROVIDED BY BetaSteward_at_googlemail.com ..AS IS.. AND ANY EXPRESS OR IMPLIED
  *  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  *  FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BetaSteward_at_googlemail.com OR
  *  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
@@ -25,42 +25,30 @@
  *  authors and should not be interpreted as representing official policies, either expressed
  *  or implied, of BetaSteward_at_googlemail.com.
  */
-package mage.cards.d;
+package mage.game.command.emblems;
 
-import java.util.UUID;
-import mage.abilities.condition.common.MyTurnCondition;
-import mage.abilities.decorator.ConditionalOneShotEffect;
-import mage.abilities.effects.Effect;
-import mage.abilities.effects.common.DrawCardAllEffect;
-import mage.abilities.effects.common.EndTurnEffect;
-import mage.abilities.effects.common.ShuffleHandGraveyardAllEffect;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.constants.CardType;
+import mage.abilities.common.SpellCastControllerTriggeredAbility;
+import mage.abilities.effects.common.CopyTargetSpellEffect;
+import mage.constants.Zone;
+import mage.filter.StaticFilters;
+import mage.game.command.Emblem;
 
 /**
  *
- * @author fireshoes
+ * @author TheElk801
  */
-public class DaysUndoing extends CardImpl {
+public class WillKenrithEmblem extends Emblem {
+    // Target player gets an emblem with "Whenever you cast an instant or sorcery spell, copy it. You may choose new targets for the copy."
 
-    public DaysUndoing(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{2}{U}");
-
-        // Each player shuffles their hand and graveyard into their library, then draws seven cards. If it's your turn, end the turn.
-        this.getSpellAbility().addEffect(new ShuffleHandGraveyardAllEffect());
-        Effect effect = new DrawCardAllEffect(7);
-        effect.setText(", then draws seven cards");
-        this.getSpellAbility().addEffect(effect);
-        this.getSpellAbility().addEffect(new ConditionalOneShotEffect(new EndTurnEffect(), MyTurnCondition.instance, "If it's your turn, end the turn"));
-    }
-
-    public DaysUndoing(final DaysUndoing card) {
-        super(card);
-    }
-
-    @Override
-    public DaysUndoing copy() {
-        return new DaysUndoing(this);
+    public WillKenrithEmblem() {
+        this.setName("Emblem Will Kenrith");
+        this.getAbilities().add(new SpellCastControllerTriggeredAbility(
+                Zone.COMMAND,
+                new CopyTargetSpellEffect(true)
+                        .setText("copy that spell. You may choose new targets for the copy"),
+                StaticFilters.FILTER_INSTANT_OR_SORCERY_SPELL,
+                false,
+                true
+        ));
     }
 }

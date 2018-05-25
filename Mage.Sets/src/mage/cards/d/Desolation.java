@@ -148,7 +148,10 @@ class DesolationWatcher extends Watcher {
         if (event.getType() == GameEvent.EventType.TAPPED_FOR_MANA) {
             UUID playerId = event.getPlayerId();
             if (playerId != null) {
-                tappedForManaThisTurnPlayers.add(playerId);
+                Permanent permanent = game.getPermanentOrLKIBattlefield(event.getSourceId());
+                if (permanent != null && permanent.isLand()) {
+                    tappedForManaThisTurnPlayers.add(playerId);
+                }
             }
         }
     }
