@@ -193,7 +193,6 @@
 |Generate|TOK:AKH|Zombie|||ZombieToken|
 |Generate|TOK:ALA|Beast|||GodSireBeastToken|
 |Generate|TOK:ALA|Dragon|||DragonToken|
-|Generate|TOK:ALA|Goblin|||GoblinTokenWithHaste|
 |Generate|TOK:ALA|Goblin|||GoblinToken|
 |Generate|TOK:ALA|Homunculus|||HomunculusToken|
 |Generate|TOK:ALA|Ooze|||MysticGenesisOozeToken|
@@ -729,7 +728,6 @@
 |Generate|TOK:KLD|Thopter|3||ThopterColorlessToken|
 |Generate|TOK:KTK|Bear|||BearsCompanionBearToken|
 |Generate|TOK:KTK|Bird|||WingmateRocToken|
-|Generate|TOK:KTK|Goblin|||GoblinTokenWithHaste|
 |Generate|TOK:KTK|Goblin|||GoblinToken|
 |Generate|TOK:KTK|Morph|||
 |Generate|TOK:KTK|Snake|||SnakeToken|
@@ -805,8 +803,7 @@
 |Generate|TOK:M15|Beast|1||BeastToken|
 |Generate|TOK:M15|Beast|2||GarrukApexPredatorBeastToken|
 |Generate|TOK:M15|Dragon|||BroodKeeperDragonToken|
-|Generate|TOK:M15|Goblin|1||GoblinTokenWithHaste|
-|Generate|TOK:M15|Goblin|2||GoblinToken|
+|Generate|TOK:M15|Goblin|||GoblinToken|
 |Generate|TOK:M15|Insect|||InsectToken|
 |Generate|TOK:M15|Land Mine|||LandMineToken|
 |Generate|TOK:M15|Sliver|||SliverToken|
@@ -932,7 +929,6 @@
 |Generate|TOK:NEM|Saproling|||SaprolingToken|
 |Generate|TOK:NPH|Beast|||BeastToken|
 |Generate|TOK:NPH|Germ|||GermToken|
-|Generate|TOK:NPH|Goblin|||GoblinTokenWithHaste|
 |Generate|TOK:NPH|Goblin|||GoblinToken|
 |Generate|TOK:NPH|Golem|||GolemToken|
 |Generate|TOK:NPH|Insect|||InsectInfectToken|

@@ -46,7 +46,7 @@ import mage.cards.CardsImpl;
  *
  * @author spjspj
  */
-public class NewFrontiers extends CardImpl {
+public final class NewFrontiers extends CardImpl {
 
     public NewFrontiers(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{X}{G}");
@@ -89,7 +89,7 @@ class NewFrontiersEffect extends OneShotEffect {
             for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
                 Player player = game.getPlayer(playerId);
                 if (player != null && player.chooseUse(outcome, "Search your library for up to " + amount + " basic lands?", source, game)) {
-                    TargetCardInLibrary target = new TargetCardInLibrary(0, amount, StaticFilters.FILTER_BASIC_LAND_CARD);
+                    TargetCardInLibrary target = new TargetCardInLibrary(0, amount, StaticFilters.FILTER_CARD_BASIC_LAND);
                     if (player.searchLibrary(target, game)) {
                         player.moveCards(new CardsImpl(target.getTargets()).getCards(game), Zone.BATTLEFIELD, source, game, true, false, false, null);
                         player.shuffleLibrary(source, game);

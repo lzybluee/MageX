@@ -44,7 +44,7 @@ import mage.util.RandomUtil;
  *
  * @author TheElk801
  */
-public class TreasureToken extends TokenImpl {
+public final class TreasureToken extends TokenImpl {
 
     final static private List<String> tokenImageSets = new ArrayList<>();
 

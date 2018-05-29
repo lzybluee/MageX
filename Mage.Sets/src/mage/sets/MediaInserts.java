@@ -31,7 +31,7 @@ import mage.cards.ExpansionSet;
 import mage.constants.Rarity;
 import mage.constants.SetType;
 
-public class MediaInserts extends ExpansionSet {
+public final class MediaInserts extends ExpansionSet {
 
     private static final MediaInserts instance = new MediaInserts();
 
