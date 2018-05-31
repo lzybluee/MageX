@@ -25,60 +25,66 @@
  *  authors and should not be interpreted as representing official policies, either expressed
  *  or implied, of BetaSteward_at_googlemail.com.
  */
-package mage.abilities.costs.common;
+package mage.cards.c;
 
 import java.util.UUID;
 import mage.abilities.Ability;
-import mage.abilities.costs.Cost;
-import mage.abilities.costs.CostImpl;
-import mage.counters.Counter;
+import mage.abilities.effects.PreventionEffectImpl;
+import mage.cards.CardImpl;
+import mage.cards.CardSetInfo;
+import mage.constants.CardType;
+import mage.constants.Duration;
 import mage.game.Game;
+import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
-import mage.util.CardUtil;
 
 /**
  *
- * @author jeffwadsworth
+ * @author TheElk801
  */
-public class PutCountersSourceCost extends CostImpl {
+public final class ChameleonBlur extends CardImpl {
 
-    private final int amount;
-    private final String name;
-    private final Counter counter;
+    public ChameleonBlur(UUID ownerId, CardSetInfo setInfo) {
+        super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{3}{G}");
 
-    public PutCountersSourceCost(Counter counter) {
-        this.counter = counter.copy();
-        this.amount = counter.getCount();
-        this.name = counter.getName();
-        this.text = new StringBuilder("Put ").append((amount == 1 ? "a" : CardUtil.numberToText(amount)))
-                .append(' ').append(name).append(" counter").append((amount != 1 ? "s" : ""))
-                .append(" on {this}").toString();
-
+        // Prevent all damage that creatures would deal to players this turn.
+        this.getSpellAbility().addEffect(new ChameleonBlurEffect());
     }
 
-    public PutCountersSourceCost(PutCountersSourceCost cost) {
-        super(cost);
-        this.counter = cost.counter;
-        this.amount = cost.amount;
-        this.name = cost.name;
+    public ChameleonBlur(final ChameleonBlur card) {
+        super(card);
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return true;
+    public ChameleonBlur copy() {
+        return new ChameleonBlur(this);
+    }
+}
+
+class ChameleonBlurEffect extends PreventionEffectImpl {
+
+    public ChameleonBlurEffect() {
+        super(Duration.EndOfTurn, Integer.MAX_VALUE, false);
+        staticText = "prevent all damage that creatures would deal to players this turn";
+    }
+
+    public ChameleonBlurEffect(final ChameleonBlurEffect effect) {
+        super(effect);
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
-        Permanent permanent = game.getPermanent(sourceId);
-        if (permanent != null) {
-            this.paid = permanent.addCounters(counter, ability, game, false);
+    public ChameleonBlurEffect copy() {
+        return new ChameleonBlurEffect(this);
+    }
+
+    @Override
+    public boolean applies(GameEvent event, Ability source, Game game) {
+        if (super.applies(event, source, game)
+                && event.getType() == GameEvent.EventType.DAMAGE_PLAYER
+                && event.getAmount() > 0) {
+            Permanent permanent = game.getPermanent(event.getSourceId());
+            return permanent != null && permanent.isCreature();
         }
-        return paid;
-    }
-
-    @Override
-    public PutCountersSourceCost copy() {
-        return new PutCountersSourceCost(this);
+        return false;
     }
 }

@@ -37,7 +37,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
-import mage.filter.common.FilterControlledCreaturePermanent;
+import mage.filter.StaticFilters;
 
 /**
  *
@@ -46,7 +46,7 @@ import mage.filter.common.FilterControlledCreaturePermanent;
 public final class AngelOfRenewal extends CardImpl {
 
     public AngelOfRenewal(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{5}{W}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{5}{W}");
         this.subtype.add(SubType.ANGEL);
         this.subtype.add(SubType.ALLY);
         this.power = new MageInt(4);
@@ -56,8 +56,8 @@ public final class AngelOfRenewal extends CardImpl {
         this.addAbility(FlyingAbility.getInstance());
         // When Angel of Renewal enters the battlefield, you gain 1 life for each creature you control.
         this.addAbility(new EntersBattlefieldTriggeredAbility(new GainLifeEffect(
-                new PermanentsOnBattlefieldCount(new FilterControlledCreaturePermanent()))));
-
+                new PermanentsOnBattlefieldCount(StaticFilters.FILTER_CONTROLLED_CREATURE)
+        )));
     }
 
     public AngelOfRenewal(final AngelOfRenewal card) {
