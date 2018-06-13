@@ -1,45 +1,18 @@
-/*
- *  Copyright 2010 BetaSteward_at_googlemail.com. All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without modification, are
- *  permitted provided that the following conditions are met:
- *
- *     1. Redistributions of source code must retain the above copyright notice, this list of
- *        conditions and the following disclaimer.
- *
- *     2. Redistributions in binary form must reproduce the above copyright notice, this list
- *        of conditions and the following disclaimer in the documentation and/or other materials
- *        provided with the distribution.
- *
- *  THIS SOFTWARE IS PROVIDED BY BetaSteward_at_googlemail.com ..AS IS.. AND ANY EXPRESS OR IMPLIED
- *  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- *  FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BetaSteward_at_googlemail.com OR
- *  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- *  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- *  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- *  The views and conclusions contained in the software and documentation are those of the
- *  authors and should not be interpreted as representing official policies, either expressed
- *  or implied, of BetaSteward_at_googlemail.com.
- */
 package mage.game.command.emblems;
 
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
+import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.mana.ManaAbility;
+import mage.abilities.mana.ActivatedManaAbilityImpl;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.command.Emblem;
 import mage.game.events.GameEvent;
+import mage.game.permanent.Permanent;
 import mage.game.stack.StackAbility;
-import mage.game.stack.StackObject;
 import mage.players.Player;
-import mage.target.targetpointer.FixedTarget;
 
 /**
  *
@@ -56,12 +29,17 @@ public class RowanKenrithEmblem extends Emblem {
 
 class RowanKenrithEmblemTriggeredAbility extends TriggeredAbilityImpl {
 
-    public RowanKenrithEmblemTriggeredAbility() {
-        super(Zone.COMMAND, new RowanKenrithEmblemCopyEffect(), false);
+    RowanKenrithEmblemTriggeredAbility() {
+        super(Zone.BATTLEFIELD, new RowanKenrithEmblemEffect(), false);
     }
 
-    public RowanKenrithEmblemTriggeredAbility(final RowanKenrithEmblemTriggeredAbility ability) {
+    RowanKenrithEmblemTriggeredAbility(final RowanKenrithEmblemTriggeredAbility ability) {
         super(ability);
+    }
+
+    @Override
+    public RowanKenrithEmblemTriggeredAbility copy() {
+        return new RowanKenrithEmblemTriggeredAbility(this);
     }
 
     @Override
@@ -71,10 +49,11 @@ class RowanKenrithEmblemTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (event.getPlayerId().equals(this.getControllerId())) {
-            StackObject ability = game.getStack().getStackObject(event.getTargetId());
-            if (ability != null && !(ability instanceof ManaAbility)) {
-                this.getEffects().get(0).setTargetPointer(new FixedTarget(ability.getId()));
+        if (event.getPlayerId().equals(getControllerId())) {
+            StackAbility stackAbility = (StackAbility) game.getStack().getStackObject(event.getSourceId());
+            if (stackAbility != null && !(stackAbility.getStackAbility() instanceof ActivatedManaAbilityImpl)) {
+                Effect effect = this.getEffects().get(0);
+                effect.setValue("stackAbility", stackAbility);
                 return true;
             }
         }
@@ -85,40 +64,38 @@ class RowanKenrithEmblemTriggeredAbility extends TriggeredAbilityImpl {
     public String getRule() {
         return "Whenever you activate an ability that isn't a mana ability, copy it. You may choose new targets for the copy.";
     }
-
-    @Override
-    public RowanKenrithEmblemTriggeredAbility copy() {
-        return new RowanKenrithEmblemTriggeredAbility(this);
-    }
 }
 
-class RowanKenrithEmblemCopyEffect extends OneShotEffect {
+class RowanKenrithEmblemEffect extends OneShotEffect {
 
-    public RowanKenrithEmblemCopyEffect() {
-        super(Outcome.Copy);
-        this.staticText = "copy it. You may choose new targets for the copy.";
+    RowanKenrithEmblemEffect() {
+        super(Outcome.Benefit);
+        this.staticText = ", copy it. You may choose new targets for the copy.";
     }
 
-    public RowanKenrithEmblemCopyEffect(final RowanKenrithEmblemCopyEffect effect) {
+    RowanKenrithEmblemEffect(final RowanKenrithEmblemEffect effect) {
         super(effect);
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        StackAbility stackAbility = (StackAbility) game.getStack().getStackObject(targetPointer.getFirst(game, source));
-        if (stackAbility != null) {
-            Player controller = game.getPlayer(source.getControllerId());
-            if (controller != null) {
-                stackAbility.createCopyOnStack(game, source, source.getControllerId(), true);
-                return true;
-            }
-        }
-        return false;
-
+    public RowanKenrithEmblemEffect copy() {
+        return new RowanKenrithEmblemEffect(this);
     }
 
     @Override
-    public RowanKenrithEmblemCopyEffect copy() {
-        return new RowanKenrithEmblemCopyEffect(this);
+    public boolean apply(Game game, Ability source) {
+        Player player = game.getPlayer(source.getControllerId());
+        if (player == null) {
+            return false;
+        }
+        StackAbility ability = (StackAbility) getValue("stackAbility");
+        Player controller = game.getPlayer(source.getControllerId());
+        Permanent sourcePermanent = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        if (ability != null && controller != null && sourcePermanent != null) {
+            ability.createCopyOnStack(game, source, source.getControllerId(), true);
+            game.informPlayers(sourcePermanent.getIdName() + ": " + controller.getLogName() + " copied activated ability");
+            return true;
+        }
+        return false;
     }
 }

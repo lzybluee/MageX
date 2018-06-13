@@ -4,6 +4,7 @@ syntax: glob
 Mage.Client/*.dck
 Mage.Client/db
 Mage.Client/gamelogs
+Mage.Client/gamelogsJson
 Mage.Client/*.log
 Mage.Client/plugins/images
 Mage.Client/plugins/plugin.data
@@ -39,6 +40,8 @@ Mage.Server.Console/target/
 Mage.Server.Console/mageadmin.log
 Mage.Server.Plugins/Mage.Deck.Constructed/target
 Mage.Server.Plugins/Mage.Deck.Limited/target
+Mage.Server.Plugins/Mage.Game.BrawlDuel/target/
+Mage.Server.Plugins/Mage.Game.BrawlFreeForAll/target/
 Mage.Server.Plugins/Mage.Game.CanadianHighlanderDuel/target
 Mage.Server.Plugins/Mage.Game.CommanderDuel/target
 Mage.Server.Plugins/Mage.Game.CommanderFreeForAll/target/
@@ -46,6 +49,7 @@ Mage.Server.Plugins/Mage.Game.FreeForAll/target
 Mage.Server.Plugins/Mage.Game.MomirDuel/target
 Mage.Server.Plugins/Mage.Game.MomirGame/target/
 Mage.Server.Plugins/Mage.Game.PennyDreadfulCommanderFreeForAll/target
+Mage.Server.Plugins/Mage.Game.FreeformCommanderFreeForAll/target/
 Mage.Server.Plugins/Mage.Game.TinyLeadersDuel/target
 Mage.Server.Plugins/Mage.Game.TwoPlayerDuel/target
 Mage.Server.Plugins/Mage.Player.AI.DraftBot/target
@@ -82,11 +86,16 @@ mage.updater.client/target
 
 # Mage.Verify
 Mage.Verify/target
+Mage.Verify/mageclient.log
 Mage.Verify/AllCards.json.zip
 Mage.Verify/AllSets.json.zip
+Mage.Verify/AllCards.json
+Mage.Verify/AllSets.json
 
 releases
 Utils/author.txt
+Utils/*_tracker.txt
+Utils/*implemented.txt
 .DS_Store
 .metadata
 .project
@@ -124,7 +133,6 @@ hs_err*.log
 /Mage.Stats/target/
 /Utils/*_unimplemented.txt
 *.netbeans_automatic_build
-*.txt
 Mage.Client/serverlist.txt
 /bin/
 /out/
@@ -134,6 +142,8 @@ client_secrets.json
 
 dependency-reduced-pom.xml
 mage-bundle
-/Mage.Server.Plugins/Mage.Game.FreeformCommanderFreeForAll/target/
-/Mage.Server.Plugins/Mage.Game.BrawlDuel/target/
-/Mage.Server.Plugins/Mage.Game.BrawlFreeForAll/target/
+/Mage.Client/game-*.json
+
+# build-tools config and log files when building client/server with Atom
+.build-tools.cson
+build-output.log

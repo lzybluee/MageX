@@ -1,30 +1,3 @@
-/*
-* Copyright 2010 BetaSteward_at_googlemail.com. All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without modification, are
-* permitted provided that the following conditions are met:
-*
-*    1. Redistributions of source code must retain the above copyright notice, this list of
-*       conditions and the following disclaimer.
-*
-*    2. Redistributions in binary form must reproduce the above copyright notice, this list
-*       of conditions and the following disclaimer in the documentation and/or other materials
-*       provided with the distribution.
-*
-* THIS SOFTWARE IS PROVIDED BY BetaSteward_at_googlemail.com ``AS IS'' AND ANY EXPRESS OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-* FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BetaSteward_at_googlemail.com OR
-* CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-* ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-* ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*
-* The views and conclusions contained in the software and documentation are those of the
-* authors and should not be interpreted as representing official policies, either expressed
-* or implied, of BetaSteward_at_googlemail.com.
- */
 package mage.sets;
 
 import mage.cards.ExpansionSet;
@@ -71,6 +44,7 @@ public final class Weatherlight extends ExpansionSet {
         cards.add(new SetCardInfo("Argivian Restoration", 34, Rarity.UNCOMMON, mage.cards.a.ArgivianRestoration.class));
         cards.add(new SetCardInfo("Aura of Silence", 7, Rarity.UNCOMMON, mage.cards.a.AuraOfSilence.class));
         cards.add(new SetCardInfo("Avizoa", 35, Rarity.RARE, mage.cards.a.Avizoa.class));
+        cards.add(new SetCardInfo("Barishi", 119, Rarity.UNCOMMON, mage.cards.b.Barishi.class));
         cards.add(new SetCardInfo("Barrow Ghoul", 61, Rarity.COMMON, mage.cards.b.BarrowGhoul.class));
         cards.add(new SetCardInfo("Benalish Infantry", 8, Rarity.COMMON, mage.cards.b.BenalishInfantry.class));
         cards.add(new SetCardInfo("Benalish Knight", 9, Rarity.COMMON, mage.cards.b.BenalishKnight.class));
@@ -112,6 +86,7 @@ public final class Weatherlight extends ExpansionSet {
         cards.add(new SetCardInfo("Flux", 39, Rarity.COMMON, mage.cards.f.Flux.class));
         cards.add(new SetCardInfo("Fog Elemental", 40, Rarity.COMMON, mage.cards.f.FogElemental.class));
         cards.add(new SetCardInfo("Foriysian Brigade", 14, Rarity.UNCOMMON, mage.cards.f.ForiysianBrigade.class));
+        cards.add(new SetCardInfo("Fungus Elemental", 128, Rarity.RARE, mage.cards.f.FungusElemental.class));
         cards.add(new SetCardInfo("Gaea's Blessing", 129, Rarity.UNCOMMON, mage.cards.g.GaeasBlessing.class));
         cards.add(new SetCardInfo("Gallowbraid", 70, Rarity.RARE, mage.cards.g.Gallowbraid.class));
         cards.add(new SetCardInfo("Gemstone Mine", 164, Rarity.UNCOMMON, mage.cards.g.GemstoneMine.class));

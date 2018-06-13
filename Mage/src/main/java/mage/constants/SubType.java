@@ -247,6 +247,7 @@ public enum SubType {
     OX("Ox", SubTypeSet.CreatureType),
     OYSTER("Oyster", SubTypeSet.CreatureType),
     // P
+    PANGOLIN("Pangolin", SubTypeSet.CreatureType),
     PEGASUS("Pegasus", SubTypeSet.CreatureType),
     PENTAVITE("Pentavite", SubTypeSet.CreatureType),
     PEST("Pest", SubTypeSet.CreatureType),
@@ -402,6 +403,7 @@ public enum SubType {
     TIBALT("Tibalt", SubTypeSet.PlaneswalkerType),
     UGIN("Ugin", SubTypeSet.PlaneswalkerType),
     VENSER("Venser", SubTypeSet.PlaneswalkerType),
+    VIVIEN("Vivien", SubTypeSet.PlaneswalkerType),
     VRASKA("Vraska", SubTypeSet.PlaneswalkerType),
     WILL("Will", SubTypeSet.PlaneswalkerType),
     XENAGOS("Xenagos", SubTypeSet.PlaneswalkerType),

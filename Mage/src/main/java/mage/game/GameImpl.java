@@ -1,30 +1,3 @@
-/*
- * Copyright 2010 BetaSteward_at_googlemail.com. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are
- * permitted provided that the following conditions are met:
- *
- *    1. Redistributions of source code must retain the above copyright notice, this list of
- *       conditions and the following disclaimer.
- *
- *    2. Redistributions in binary form must reproduce the above copyright notice, this list
- *       of conditions and the following disclaimer in the documentation and/or other materials
- *       provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY BetaSteward_at_googlemail.com ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BetaSteward_at_googlemail.com OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * The views and conclusions contained in the software and documentation are those of the
- * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of BetaSteward_at_googlemail.com.
- */
 package mage.game;
 
 import java.io.IOException;
@@ -2033,7 +2006,7 @@ public abstract class GameImpl implements Game, Serializable {
                 }
             }
             // 704.5s If the number of lore counters on a Saga permanent is greater than or equal to its final chapter number
-            // and it isn’t the source of a chapter ability that has triggered but not yet left the stack, that Saga’s controller sacrifices it.
+            // and it isn't the source of a chapter ability that has triggered but not yet left the stack, that Saga's controller sacrifices it.
             if (perm.hasSubtype(SubType.SAGA, this)) {
                 for (Ability sagaAbility : perm.getAbilities()) {
                     if (sagaAbility instanceof SagaAbility) {
@@ -2578,11 +2551,11 @@ public abstract class GameImpl implements Game, Serializable {
             }
         }
 
-        //Remove all emblems/plane the player controls
+        //Remove all commander/emblems/plane the player controls
         boolean addPlaneAgain = false;
         for (Iterator<CommandObject> it = this.getState().getCommand().iterator(); it.hasNext();) {
             CommandObject obj = it.next();
-            if ((obj instanceof Emblem || obj instanceof Plane) && obj.getControllerId().equals(playerId)) {
+            if (obj.getControllerId().equals(playerId)) {
                 if (obj instanceof Emblem) {
                     ((Emblem) obj).discardEffects();// This may not be the best fix but it works
                 }
@@ -2616,6 +2589,8 @@ public abstract class GameImpl implements Game, Serializable {
                 it.remove();
             }
         }
+        // Make sure effects of no longer existing objects are removed
+        getContinuousEffects().removeInactiveEffects(this);
         // If the current monarch leaves the game. When that happens, the player whose turn it is becomes the monarch.
         // If the monarch leaves the game on their turn, the next player in turn order becomes the monarch.
         if (playerId.equals(getMonarchId())) {
