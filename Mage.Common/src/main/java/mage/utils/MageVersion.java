@@ -1,4 +1,3 @@
-
 package mage.utils;
 
 import java.io.Serializable;

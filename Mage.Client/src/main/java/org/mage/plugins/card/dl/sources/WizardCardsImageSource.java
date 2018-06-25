@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
+
 import mage.cards.Sets;
 import mage.cards.repository.CardCriteria;
 import mage.cards.repository.CardInfo;
@@ -233,6 +234,7 @@ public enum WizardCardsImageSource implements CardImageSource {
         supportedSets.add("AKH");
         supportedSets.add("MPS");
         supportedSets.add("CMA");
+//        supportedSets.add("CM2"); // Commander Anthology, Vol. II
         supportedSets.add("E01");
         supportedSets.add("HOU");
         supportedSets.add("C17");
@@ -283,6 +285,7 @@ public enum WizardCardsImageSource implements CardImageSource {
         setsAliases.put("C16", "Commander 2016");
         setsAliases.put("C17", "Commander 2017");
         setsAliases.put("CMA", "Commander Anthology");
+//        setsAliases.put("CM2", "Commander Anthology, Vol. II");
         setsAliases.put("CHK", "Champions of Kamigawa");
         setsAliases.put("CHR", "Chronicles");
         setsAliases.put("CMD", "Magic: The Gathering-Commander");
@@ -460,7 +463,7 @@ public enum WizardCardsImageSource implements CardImageSource {
     }
 
     @Override
-    public String generateURL(CardDownloadData card) throws Exception {
+    public CardImageUrls generateURL(CardDownloadData card) throws Exception {
         String collectorId = card.getCollectorId();
         String cardSet = card.getSet();
         if (collectorId == null || cardSet == null) {
@@ -493,7 +496,7 @@ public enum WizardCardsImageSource implements CardImageSource {
                         List<String> l = new ArrayList<>(setLinks.values());
                         if (l.size() >= number) {
                             link = l.get(number - 1);
-                        } else {;
+                        } else {
                             link = l.get(number - 21);
                             if (link != null) {
                                 link = link.replace(Integer.toString(number - 20), (Integer.toString(number - 20) + 'a'));
@@ -506,8 +509,12 @@ public enum WizardCardsImageSource implements CardImageSource {
         if (link != null && !link.startsWith("http://")) {
             link = "http://gatherer.wizards.com" + link;
         }
-        return link;
 
+        if (link != null) {
+            return new CardImageUrls(link);
+        } else {
+            return null;
+        }
     }
 
     private Map<String, String> getSetLinks(String cardSet) {
@@ -701,7 +708,7 @@ public enum WizardCardsImageSource implements CardImageSource {
     }
 
     @Override
-    public String generateTokenUrl(CardDownloadData card) {
+    public CardImageUrls generateTokenUrl(CardDownloadData card) {
         return null;
     }
 
@@ -710,7 +717,7 @@ public enum WizardCardsImageSource implements CardImageSource {
         return 60.0f;
     }
 
-//    private final class GetImageLinkTask implements Runnable {
+    //    private final class GetImageLinkTask implements Runnable {
 //
 //        private int multiverseId;
 //        private String cardName;
