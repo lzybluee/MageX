@@ -1,19 +1,13 @@
-
 package mage.abilities.effects.common.continuous;
 
 import mage.abilities.Ability;
 import mage.abilities.effects.ContinuousEffectImpl;
 import mage.abilities.effects.RestrictionEffect;
-import mage.constants.Duration;
-import mage.constants.Layer;
-import mage.constants.Outcome;
-import mage.constants.PhaseStep;
-import mage.constants.SubLayer;
+import mage.constants.*;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 
 /**
- *
  * @author fireshoes
  */
 public class UntapSourceDuringEachOtherPlayersUntapStepEffect extends ContinuousEffectImpl {
@@ -34,20 +28,17 @@ public class UntapSourceDuringEachOtherPlayersUntapStepEffect extends Continuous
 
     @Override
     public boolean apply(Layer layer, SubLayer sublayer, Ability source, Game game) {
-        Boolean applied = (Boolean) game.getState().getValue(source.getSourceId() + "applied");
-        if (applied == null) {
-            applied = Boolean.FALSE;
-        }
+        boolean applied = Boolean.TRUE.equals(game.getState().getValue(source.getSourceId() + "applied"));
         if (!applied && layer == Layer.RulesEffects) {
-            if (!source.getControllerId().equals(game.getActivePlayerId())
+            if (!source.isControlledBy(game.getActivePlayerId())
                     && game.getStep() != null
                     && game.getStep().getType() == PhaseStep.UNTAP) {
                 game.getState().setValue(source.getSourceId() + "applied", true);
-                Permanent permanent = (Permanent) game.getPermanent(source.getSourceId());
+                Permanent permanent = game.getPermanent(source.getSourceId());
                 if (permanent != null) {
                     boolean untap = true;
                     for (RestrictionEffect effect : game.getContinuousEffects().getApplicableRestrictionEffects(permanent, game).keySet()) {
-                        untap &= effect.canBeUntapped(permanent, source, game);
+                        untap &= effect.canBeUntapped(permanent, source, game, true);
                     }
                     if (untap) {
                         permanent.untap(game);

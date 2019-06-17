@@ -1,8 +1,5 @@
-
 package mage.cards.s;
 
-import java.util.List;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -20,6 +17,9 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.TargetCard;
 import mage.util.CardUtil;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author nantuko
@@ -62,7 +62,7 @@ class SemblanceAnvilEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
-        if (!player.getHand().isEmpty()) {
+        if (player != null && !player.getHand().isEmpty()) {
             TargetCard target = new TargetCard(Zone.HAND, filter);
             player.choose(Outcome.Benefit, player.getHand(), target, game);
             Card card = player.getHand().get(target.getFirstTarget(), game);
@@ -109,15 +109,13 @@ class SemblanceAnvilCostReductionEffect extends CostModificationEffectImpl {
     public boolean applies(Ability abilityToModify, Ability source, Game game) {
         if (abilityToModify instanceof SpellAbility) {
             Card sourceCard = game.getCard(abilityToModify.getSourceId());
-            if (sourceCard != null && sourceCard.getOwnerId().equals(source.getControllerId())) {
+            if (sourceCard != null && sourceCard.isOwnedBy(source.getControllerId())) {
                 Permanent permanent = game.getPermanent(source.getSourceId());
                 if (permanent != null) {
                     List<UUID> imprinted = permanent.getImprinted();
-                    if (!imprinted.isEmpty()) {
+                    if (imprinted != null && !imprinted.isEmpty()) {
                         Card imprintedCard = game.getCard(imprinted.get(0));
-                        if (imprintedCard != null && imprintedCard.shareTypes(sourceCard)) {
-                            return true;
-                        }
+                        return imprintedCard != null && imprintedCard.shareTypes(sourceCard);
                     }
                 }
             }

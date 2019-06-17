@@ -57,7 +57,7 @@ class MavrenFeinDuskApostleTriggeredAbility extends TriggeredAbilityImpl {
 
     static {
         filter.add(new SubtypePredicate(SubType.VAMPIRE));
-        filter.add(Predicates.not(new TokenPredicate()));
+        filter.add(Predicates.not(TokenPredicate.instance));
         filter.add(new ControllerPredicate(TargetController.YOU));
     }
 
@@ -83,7 +83,7 @@ class MavrenFeinDuskApostleTriggeredAbility extends TriggeredAbilityImpl {
     public boolean checkTrigger(GameEvent event, Game game) {
         for (UUID creatureId : game.getCombat().getAttackers()) {
             Permanent creature = game.getPermanent(creatureId);
-            if (creature != null && filter.match(creature, game) && creature.getControllerId().equals(controllerId)) {
+            if (creature != null && filter.match(creature, game) && creature.isControlledBy(controllerId)) {
                 return true;
             }
         }

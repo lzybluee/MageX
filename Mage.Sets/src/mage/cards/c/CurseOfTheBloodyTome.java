@@ -1,4 +1,3 @@
-
 package mage.cards.c;
 
 import mage.abilities.Ability;
@@ -29,9 +28,8 @@ import java.util.UUID;
 public final class CurseOfTheBloodyTome extends CardImpl {
 
     public CurseOfTheBloodyTome(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{2}{U}");
+        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{2}{U}");
         this.subtype.add(SubType.AURA, SubType.CURSE);
-
 
         // Enchant player
         TargetPlayer target = new TargetPlayer();
@@ -39,6 +37,7 @@ public final class CurseOfTheBloodyTome extends CardImpl {
         this.getSpellAbility().addEffect(new AttachEffect(Outcome.AddAbility));
         Ability ability = new EnchantAbility(target.getTargetName());
         this.addAbility(ability);
+
         // At the beginning of enchanted player's upkeep, that player puts the top two cards of their library into their graveyard.
         this.addAbility(new CurseOfTheBloodyTomeAbility());
 
@@ -79,7 +78,7 @@ class CurseOfTheBloodyTomeAbility extends TriggeredAbilityImpl {
         Permanent enchantment = game.getPermanent(this.sourceId);
         if (enchantment != null && enchantment.getAttachedTo() != null) {
             Player player = game.getPlayer(enchantment.getAttachedTo());
-            if (player != null && game.getActivePlayerId().equals(player.getId())) {
+            if (player != null && game.isActivePlayer(player.getId())) {
                 this.getEffects().get(0).setTargetPointer(new FixedTarget(player.getId()));
                 return true;
             }

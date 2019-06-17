@@ -48,8 +48,8 @@ public class RecoverAbility extends TriggeredAbilityImpl {
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         ZoneChangeEvent zEvent = (ZoneChangeEvent) event;
-        if (zEvent.getFromZone() == Zone.BATTLEFIELD && zEvent.getToZone() == Zone.GRAVEYARD) {
-            if (zEvent.getTarget().getOwnerId().equals(getControllerId())
+        if (zEvent.isDiesEvent()) {
+            if (zEvent.getTarget().isOwnedBy(getControllerId())
                     && zEvent.getTarget().isCreature()
                     && !zEvent.getTarget().getId().equals(getSourceId())) {
                 return true;

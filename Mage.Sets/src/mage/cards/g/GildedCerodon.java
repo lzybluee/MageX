@@ -1,4 +1,3 @@
-
 package mage.cards.g;
 
 import java.util.UUID;
@@ -6,7 +5,7 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
 import mage.abilities.condition.Condition;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.combat.CantBlockTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -37,7 +36,7 @@ public final class GildedCerodon extends CardImpl {
         this.toughness = new MageInt(4);
 
         // Whenever Gilded Cerodon attacks, if you control a Desert or there is a Desert card in your graveyard, target creature can't block this turn.
-        Ability ability = new ConditionalTriggeredAbility(new AttacksTriggeredAbility(new CantBlockTargetEffect(Duration.EndOfTurn), false), new GildedCerodonCondition(), rule);
+        Ability ability = new ConditionalInterveningIfTriggeredAbility(new AttacksTriggeredAbility(new CantBlockTargetEffect(Duration.EndOfTurn), false), new GildedCerodonCondition(), rule);
         ability.addTarget(new TargetCreaturePermanent());
         this.addAbility(ability);
 
@@ -66,12 +65,8 @@ class GildedCerodonCondition implements Condition {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null
-                && (!game.getBattlefield().getAllActivePermanents(filter, source.getControllerId(), game).isEmpty()
-                || controller.getGraveyard().count(filter2, game) > 0)) {
-            return true;
-        }
-        return false;
+        return (!game.getBattlefield().getAllActivePermanents(filter, source.getControllerId(), game).isEmpty()
+                || !controller.getGraveyard().getCards(filter2, game).isEmpty());
     }
 
     @Override

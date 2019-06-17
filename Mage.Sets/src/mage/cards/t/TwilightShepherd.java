@@ -81,7 +81,7 @@ class TwilightShepherdEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        CardsPutIntoGraveyardWatcher watcher = (CardsPutIntoGraveyardWatcher) game.getState().getWatchers().get(CardsPutIntoGraveyardWatcher.class.getSimpleName());
+        CardsPutIntoGraveyardWatcher watcher = game.getState().getWatcher(CardsPutIntoGraveyardWatcher.class);
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null && watcher != null) {
             Set<MageObjectReference> cardsInGraveyard = watcher.getCardsPutToGraveyardFromBattlefield();
@@ -90,7 +90,7 @@ class TwilightShepherdEffect extends OneShotEffect {
                 if (game.getState().getZoneChangeCounter(mor.getSourceId()) == mor.getZoneChangeCounter()) {
                     Card card = game.getCard(mor.getSourceId());
                     if (card != null
-                            && card.getOwnerId().equals(source.getControllerId())) {
+                            && card.isOwnedBy(source.getControllerId())) {
                         cardsToHand.add(card);
                     }
                 }

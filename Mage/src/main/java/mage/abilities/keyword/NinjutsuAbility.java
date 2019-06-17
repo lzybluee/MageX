@@ -1,7 +1,5 @@
-
 package mage.abilities.keyword;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.ActivatedAbilityImpl;
 import mage.abilities.costs.Cost;
@@ -16,51 +14,59 @@ import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.permanent.UnblockedPredicate;
 import mage.game.Game;
+import mage.game.command.CommandObject;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetControlledPermanent;
 
+import java.util.UUID;
+
 /**
  * 702.47. Ninjutsu
- *
+ * <p>
  * 702.47a Ninjutsu is an activated ability that functions only while the card
  * with ninjutsu is in a player's hand. "Ninjutsu [cost]" means "[Cost], Reveal
  * this card from your hand, Return an unblocked attacking creature you control
  * to its owner's hand: Put this card onto the battlefield from your hand tapped
  * and attacking."
- *
+ * <p>
  * 702.47b The card with ninjutsu remains revealed from the time the ability is
  * announced until the ability leaves the stack.
- *
+ * <p>
  * 702.47c A ninjutsu ability may be activated only while a creature on the
  * battlefield is unblocked (see rule 509.1h). The creature with ninjutsu is put
  * onto the battlefield unblocked. It will be attacking the same player or
  * planeswalker as the creature that was returned to its owner's hand.
  *
- *
  * @author LevelX2
  */
 public class NinjutsuAbility extends ActivatedAbilityImpl {
 
+    private final boolean commander;
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("unblocked attacker you control");
 
     static {
-        filter.add(new UnblockedPredicate());
+        filter.add(UnblockedPredicate.instance);
     }
 
     /**
-     *
      * @param manaCost ninjutsu mana cost
      */
     public NinjutsuAbility(ManaCost manaCost) {
-        super(Zone.HAND, new NinjutsuEffect(), manaCost);
-        this.addCost(new RevealNinjutsuCardCost());
+        this(manaCost, false);
+    }
+
+    public NinjutsuAbility(ManaCost manaCost, boolean commander) {
+        super(commander ? Zone.ALL : Zone.HAND, new NinjutsuEffect(), manaCost);
+        this.addCost(new RevealNinjutsuCardCost(commander));
         this.addCost(new ReturnAttackerToHandTargetCost(new TargetControlledCreaturePermanent(1, 1, filter, true)));
+        this.commander = commander;
     }
 
     public NinjutsuAbility(NinjutsuAbility ability) {
         super(ability);
+        this.commander = ability.commander;
     }
 
     @Override
@@ -70,9 +76,13 @@ public class NinjutsuAbility extends ActivatedAbilityImpl {
 
     @Override
     public String getRule() {
-        return new StringBuilder("Ninjutsu ").append(getManaCostsToPay().getText()).append(" <i>(")
-                .append(getManaCostsToPay().getText())
-                .append(" Return an unblocked attacker you control to hand: Put this card onto the battlefield from your hand tapped and attacking.)</i>").toString();
+        return (commander ? "Commander n" : "N") + "injutsu "
+                + getManaCostsToPay().getText() + " <i>("
+                + getManaCostsToPay().getText()
+                + " Return an unblocked attacker you control to hand: "
+                + "Put this card onto the battlefield from your hand"
+                + (commander ? " or the command zone " : " ")
+                + "tapped and attacking.)</i>";
     }
 }
 
@@ -80,7 +90,8 @@ class NinjutsuEffect extends OneShotEffect {
 
     public NinjutsuEffect() {
         super(Outcome.PutCreatureInPlay);
-        this.staticText = "Put this card onto the battlefield from your hand tapped and attacking";
+        this.staticText = "Put this card onto the battlefield "
+                + "from your hand tapped and attacking";
     }
 
     public NinjutsuEffect(final NinjutsuEffect effect) {
@@ -165,12 +176,16 @@ class ReturnAttackerToHandTargetCost extends CostImpl {
 
 class RevealNinjutsuCardCost extends CostImpl {
 
-    public RevealNinjutsuCardCost() {
+    private final boolean commander;
+
+    public RevealNinjutsuCardCost(boolean commander) {
         this.text = "reveal ninjutsu card";
+        this.commander = commander;
     }
 
     public RevealNinjutsuCardCost(RevealNinjutsuCardCost cost) {
         super(cost);
+        this.commander = cost.commander;
     }
 
     @Override
@@ -178,6 +193,15 @@ class RevealNinjutsuCardCost extends CostImpl {
         Player player = game.getPlayer(controllerId);
 
         Card card = player.getHand().get(ability.getSourceId(), game);
+        if (card == null && commander
+                && game.getCommandersIds(player).contains(ability.getSourceId())) {
+            for (CommandObject coj : game.getState().getCommand()) {
+                if (coj != null && coj.getId().equals(ability.getSourceId())) {
+                    card = game.getCard(ability.getSourceId());
+                    break;
+                }
+            }
+        }
         if (card != null) {
             Cards cards = new CardsImpl(card);
             player.revealCards("Ninjutsu", cards, game);

@@ -85,8 +85,8 @@ class BecomesMonarchTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkInterveningIfClause(Game game) {
-        MonarchAtTurnStartWatcher watcher = (MonarchAtTurnStartWatcher) game.getState().getWatchers().get(MonarchAtTurnStartWatcher.class.getSimpleName());
-        return watcher != null && getControllerId().equals(watcher.getMonarchIdAtTurnStart());
+        MonarchAtTurnStartWatcher watcher = game.getState().getWatcher(MonarchAtTurnStartWatcher.class);
+        return watcher != null && isControlledBy(watcher.getMonarchIdAtTurnStart());
     }
 
     @Override
@@ -105,7 +105,7 @@ class MonarchAtTurnStartWatcher extends Watcher {
     private UUID monarchIdAtTurnStart;
 
     public MonarchAtTurnStartWatcher() {
-        super(MonarchAtTurnStartWatcher.class.getSimpleName(), WatcherScope.GAME);
+        super(WatcherScope.GAME);
     }
 
     public MonarchAtTurnStartWatcher(final MonarchAtTurnStartWatcher watcher) {

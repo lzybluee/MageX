@@ -3,7 +3,7 @@ package mage.cards.a;
 
 import java.util.UUID;
 import mage.abilities.LoyaltyAbility;
-import mage.abilities.common.PlanswalkerEntersWithLoyalityCountersAbility;
+import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.effects.common.ExileAndGainLifeEqualPowerTargetEffect;
 import mage.abilities.effects.common.RevealLibraryPutIntoHandEffect;
 import mage.abilities.effects.common.counter.AddCountersAllEffect;
@@ -35,7 +35,7 @@ public final class AjaniUnyielding extends CardImpl {
     static {
         nonlandPermanentFilter.add(Predicates.not(new CardTypePredicate(CardType.LAND)));
         planeswalkerFilter.add(new ControllerPredicate(TargetController.YOU));
-        planeswalkerFilter.add(new AnotherPredicate());
+        planeswalkerFilter.add(AnotherPredicate.instance);
     }
 
     public AjaniUnyielding(UUID ownerId, CardSetInfo setInfo) {
@@ -43,7 +43,7 @@ public final class AjaniUnyielding extends CardImpl {
         this.addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.AJANI);
 
-        this.addAbility(new PlanswalkerEntersWithLoyalityCountersAbility(4));
+        this.addAbility(new PlaneswalkerEntersWithLoyaltyCountersAbility(4));
 
         // +2: Reveal the top three cards of your library. Put all nonland permanent cards revealed this way into your hand and the rest on the bottom of your library in any order.
         this.addAbility(new LoyaltyAbility(new RevealLibraryPutIntoHandEffect(3, nonlandPermanentFilter, Zone.LIBRARY), 2));

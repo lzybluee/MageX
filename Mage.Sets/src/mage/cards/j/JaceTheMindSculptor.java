@@ -4,7 +4,7 @@ package mage.cards.j;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.LoyaltyAbility;
-import mage.abilities.common.PlanswalkerEntersWithLoyalityCountersAbility;
+import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.BrainstormEffect;
 import mage.abilities.effects.common.ReturnToHandTargetEffect;
@@ -33,7 +33,7 @@ public final class JaceTheMindSculptor extends CardImpl {
         this.addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.JACE);
 
-        this.addAbility(new PlanswalkerEntersWithLoyalityCountersAbility(3));
+        this.addAbility(new PlaneswalkerEntersWithLoyaltyCountersAbility(3));
 
         // +2: Look at the top card of target player's library. You may put that card on the bottom of that player's library.
         LoyaltyAbility ability1 = new LoyaltyAbility(new JaceTheMindSculptorEffect1(), 2);
@@ -90,8 +90,7 @@ class JaceTheMindSculptorEffect1 extends OneShotEffect {
         if (controller != null && player != null) {
             Card card = player.getLibrary().getFromTop(game);
             if (card != null) {
-                Cards cards = new CardsImpl();
-                cards.add(card);
+                Cards cards = new CardsImpl(card);
                 controller.lookAtCards("Jace, the Mind Sculptor", cards, game);
                 if (controller.chooseUse(outcome, "Do you wish to put card on the bottom of player's library?", source, game)) {
                     controller.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.LIBRARY, false, false);

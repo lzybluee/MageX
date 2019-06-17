@@ -1,9 +1,5 @@
-
 package mage.cards.t;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.LeavesBattlefieldTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -33,8 +29,11 @@ import mage.target.Target;
 import mage.target.common.TargetCreaturePermanent;
 import mage.util.CardUtil;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author MarcoMarin
  */
 public final class TawnossCoffin extends CardImpl {
@@ -171,7 +170,7 @@ class TawnossCoffinReturnEffect extends OneShotEffect {
         if (controller == null) {
             return false;
         }
-        UUID exileZoneId = CardUtil.getCardExileZoneId(game, source);
+        UUID exileZoneId = CardUtil.getCardExileZoneId(game, source.getSourceId(), source.getSourcePermanentIfItStillExists(game) == null);
         ExileZone exileZone = game.getExile().getExileZone(exileZoneId);
         if (exileZone == null) {
             return true;
@@ -195,7 +194,7 @@ class TawnossCoffinReturnEffect extends OneShotEffect {
             if (notedCounters != null) {
                 for (Counter c : notedCounters.values()) { //would be nice if could just use that copy function to set the whole field
                     if (c != null) {
-                        newPermanent.getCounters(game).addCounter(c);
+                        newPermanent.getCounters(game).addCounter(c); // it's restore counters, not add (e.g. without add events)
                     }
                 }
             }

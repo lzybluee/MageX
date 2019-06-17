@@ -1,7 +1,7 @@
-
 package mage.client.cards;
 
 import mage.cards.MageCard;
+import mage.client.dialog.PreferencesDialog;
 import mage.client.plugins.impl.Plugins;
 import mage.client.util.ClientEventType;
 import mage.client.util.Event;
@@ -30,6 +30,9 @@ public class CardArea extends JPanel implements MouseListener {
     private int yCardCaptionOffsetPercent = 0; // card caption offset (use for moving card caption view center, below mana icons -- for more good UI)
     private Dimension cardDimension;
     private int verticalCardOffset;
+
+    private int customRenderMode = -1; // custom render mode tests
+    private Dimension customCardSize = null; // custom size for tests
 
     /**
      * Create the panel.
@@ -63,12 +66,24 @@ public class CardArea extends JPanel implements MouseListener {
     }
 
     private void setGUISize() {
-        setCardDimension(GUISizeHelper.otherZonesCardDimension, GUISizeHelper.otherZonesCardVerticalOffset);
+        if (customCardSize != null) {
+            setCardDimension(customCardSize, GUISizeHelper.otherZonesCardVerticalOffset);
+        } else {
+            setCardDimension(GUISizeHelper.otherZonesCardDimension, GUISizeHelper.otherZonesCardVerticalOffset);
+        }
     }
 
     public void setCardDimension(Dimension dimension, int verticalCardOffset) {
         this.cardDimension = dimension;
         this.verticalCardOffset = verticalCardOffset;
+    }
+
+    private void fixDialogSize() {
+        // fix panel size (must include scrolls)
+        Dimension newSize = new Dimension(cardArea.getPreferredSize());
+        newSize.width += 20;
+        newSize.height += 20;
+        this.setPreferredSize(newSize);
     }
 
     public void loadCards(CardsView showCards, BigCard bigCard, UUID gameId) {
@@ -85,6 +100,8 @@ public class CardArea extends JPanel implements MouseListener {
 
         this.revalidate();
         this.repaint();
+
+        fixDialogSize();
     }
 
     public void loadCardsNarrow(CardsView showCards, BigCard bigCard, UUID gameId) {
@@ -98,6 +115,8 @@ public class CardArea extends JPanel implements MouseListener {
 
         this.revalidate();
         this.repaint();
+
+        fixDialogSize();
     }
 
     private void loadCardsFew(CardsView showCards, BigCard bigCard, UUID gameId) {
@@ -106,7 +125,7 @@ public class CardArea extends JPanel implements MouseListener {
             addCard(card, bigCard, gameId, rectangle);
             rectangle.translate(cardDimension.width, 0);
         }
-        cardArea.setPreferredSize(new Dimension(cardDimension.width * showCards.size(), cardDimension.height));
+        cardArea.setPreferredSize(new Dimension(cardDimension.width * showCards.size(), cardDimension.height + verticalCardOffset));
     }
 
     private void addCard(CardView card, BigCard bigCard, UUID gameId, Rectangle rectangle) {
@@ -118,7 +137,8 @@ public class CardArea extends JPanel implements MouseListener {
             tmp.setAbility(card); // cross-reference, required for ability picker
             card = tmp;
         }
-        MageCard cardPanel = Plugins.instance.getMageCard(card, bigCard, cardDimension, gameId, true, true);
+        MageCard cardPanel = Plugins.instance.getMageCard(card, bigCard, cardDimension, gameId, true, true,
+                customRenderMode != -1 ? customRenderMode : PreferencesDialog.getRenderMode());
 
         cardPanel.setBounds(rectangle);
         cardPanel.addMouseListener(this);
@@ -221,7 +241,7 @@ public class CardArea extends JPanel implements MouseListener {
                     if (e.isAltDown()) {
                         cardEventSource.fireEvent(((MageCard) obj).getOriginal(), ClientEventType.ALT_DOUBLE_CLICK);
                     } else {
-                        cardEventSource.fireEvent(((MageCard) obj).getOriginal(),ClientEventType.DOUBLE_CLICK);
+                        cardEventSource.fireEvent(((MageCard) obj).getOriginal(), ClientEventType.DOUBLE_CLICK);
                     }
                 }
             }
@@ -252,6 +272,14 @@ public class CardArea extends JPanel implements MouseListener {
             Me.consume();
             cardEventSource.fireEvent(card, Me.getComponent(), Me.getX(), Me.getY(), ClientEventType.SHOW_POP_UP_MENU);
         }
+    }
+
+    public void setCustomRenderMode(int customRenderMode) {
+        this.customRenderMode = customRenderMode;
+    }
+
+    public void setCustomCardSize(Dimension customCardSize) {
+        this.customCardSize = customCardSize;
     }
 
     @Override

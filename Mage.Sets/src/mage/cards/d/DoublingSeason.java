@@ -1,7 +1,5 @@
-
 package mage.cards.d;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.effects.ReplacementEffectImpl;
@@ -16,8 +14,9 @@ import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class DoublingSeason extends CardImpl {
@@ -58,7 +57,7 @@ class DoublingSeasonCounterEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(event.getAmount() * 2);
+        event.setAmountForCounters(event.getAmount() * 2, true);
         return false;
     }
 
@@ -79,7 +78,8 @@ class DoublingSeasonCounterEffect extends ReplacementEffectImpl {
                     && permanent.isLand());  // a played land is not an effect
         }
         return permanent != null
-                && permanent.getControllerId().equals(source.getControllerId())
+                && permanent.isControlledBy(source.getControllerId())
+                && event.getAmount() > 0
                 && !landPlayed;  // example: gemstone mine being played as a land drop
     }
 

@@ -43,6 +43,7 @@ public final class Tempest extends ExpansionSet {
         cards.add(new SetCardInfo("Blood Frenzy", 164, Rarity.COMMON, mage.cards.b.BloodFrenzy.class));
         cards.add(new SetCardInfo("Blood Pet", 109, Rarity.COMMON, mage.cards.b.BloodPet.class));
         cards.add(new SetCardInfo("Boil", 165, Rarity.UNCOMMON, mage.cards.b.Boil.class));
+        cards.add(new SetCardInfo("Booby Trap", 277, Rarity.RARE, mage.cards.b.BoobyTrap.class));
         cards.add(new SetCardInfo("Bottle Gnomes", 278, Rarity.UNCOMMON, mage.cards.b.BottleGnomes.class));
         cards.add(new SetCardInfo("Bounty Hunter", 110, Rarity.RARE, mage.cards.b.BountyHunter.class));
         cards.add(new SetCardInfo("Broken Fall", 216, Rarity.COMMON, mage.cards.b.BrokenFall.class));
@@ -97,13 +98,14 @@ public final class Tempest extends ExpansionSet {
         cards.add(new SetCardInfo("Dread of Night", 130, Rarity.UNCOMMON, mage.cards.d.DreadOfNight.class));
         cards.add(new SetCardInfo("Dream Cache", 59, Rarity.COMMON, mage.cards.d.DreamCache.class));
         cards.add(new SetCardInfo("Dregs of Sorrow", 131, Rarity.RARE, mage.cards.d.DregsOfSorrow.class));
+        cards.add(new SetCardInfo("Duplicity", 60, Rarity.RARE, mage.cards.d.Duplicity.class));
         cards.add(new SetCardInfo("Earthcraft", 222, Rarity.RARE, mage.cards.e.Earthcraft.class));
         cards.add(new SetCardInfo("Echo Chamber", 282, Rarity.RARE, mage.cards.e.EchoChamber.class));
         cards.add(new SetCardInfo("Eladamri's Vineyard", 223, Rarity.RARE, mage.cards.e.EladamrisVineyard.class));
         cards.add(new SetCardInfo("Eladamri, Lord of Leaves", 224, Rarity.RARE, mage.cards.e.EladamriLordOfLeaves.class));
         cards.add(new SetCardInfo("Elite Javelineer", 17, Rarity.COMMON, mage.cards.e.EliteJavelineer.class));
         cards.add(new SetCardInfo("Elven Warhounds", 225, Rarity.RARE, mage.cards.e.ElvenWarhounds.class));
-        cards.add(new SetCardInfo("Elvish Fury", 226, Rarity.UNCOMMON, mage.cards.e.ElvishFury.class));
+        cards.add(new SetCardInfo("Elvish Fury", 226, Rarity.COMMON, mage.cards.e.ElvishFury.class));
         cards.add(new SetCardInfo("Emerald Medallion", 283, Rarity.RARE, mage.cards.e.EmeraldMedallion.class));
         cards.add(new SetCardInfo("Emmessi Tome", 284, Rarity.RARE, mage.cards.e.EmmessiTome.class));
         cards.add(new SetCardInfo("Endless Scream", 132, Rarity.COMMON, mage.cards.e.EndlessScream.class));
@@ -204,7 +206,7 @@ public final class Tempest extends ExpansionSet {
         cards.add(new SetCardInfo("Mogg Fanatic", 190, Rarity.COMMON, mage.cards.m.MoggFanatic.class));
         cards.add(new SetCardInfo("Mogg Hollows", 320, Rarity.UNCOMMON, mage.cards.m.MoggHollows.class));
         cards.add(new SetCardInfo("Mogg Raider", 191, Rarity.COMMON, mage.cards.m.MoggRaider.class));
-        cards.add(new SetCardInfo("Mogg Squad", 192, Rarity.COMMON, mage.cards.m.MoggSquad.class));
+        cards.add(new SetCardInfo("Mogg Squad", 192, Rarity.UNCOMMON, mage.cards.m.MoggSquad.class));
         cards.add(new SetCardInfo("Mongrel Pack", 237, Rarity.RARE, mage.cards.m.MongrelPack.class));
         cards.add(new SetCardInfo("Mountain", 343, Rarity.LAND, mage.cards.basiclands.Mountain.class, NON_FULL_USE_VARIOUS));
         cards.add(new SetCardInfo("Mountain", 344, Rarity.LAND, mage.cards.basiclands.Mountain.class, NON_FULL_USE_VARIOUS));

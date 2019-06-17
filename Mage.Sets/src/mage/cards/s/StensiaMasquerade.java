@@ -35,7 +35,7 @@ public final class StensiaMasquerade extends CardImpl {
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent();
 
     static {
-        filter.add(new AttackingPredicate());
+        filter.add(AttackingPredicate.instance);
     }
 
     public StensiaMasquerade(UUID ownerId, CardSetInfo setInfo) {
@@ -88,7 +88,7 @@ class StensiaMasqueradeTriggeredAbility extends TriggeredAbilityImpl {
         DamagedPlayerEvent damageEvent = (DamagedPlayerEvent) event;
         Permanent permanent = game.getPermanent(event.getSourceId());
         if (damageEvent.isCombatDamage() && permanent != null
-                && permanent.hasSubtype(SubType.VAMPIRE, game) && permanent.getControllerId().equals(controllerId)) {
+                && permanent.hasSubtype(SubType.VAMPIRE, game) && permanent.isControlledBy(controllerId)) {
             this.getEffects().clear();
             AddCountersTargetEffect effect = new AddCountersTargetEffect(CounterType.P1P1.createInstance());
             effect.setTargetPointer(new FixedTarget(permanent.getId()));

@@ -62,7 +62,7 @@ class HardenedBerserkerSpellsCostReductionEffect extends CostModificationEffectI
     @Override
     public void init(Ability source, Game game) {
         super.init(source, game);
-        CastSpellLastTurnWatcher watcher = (CastSpellLastTurnWatcher) game.getState().getWatchers().get(CastSpellLastTurnWatcher.class.getSimpleName());
+        CastSpellLastTurnWatcher watcher = game.getState().getWatcher(CastSpellLastTurnWatcher.class);
         if (watcher != null) {
             spellsCast =  watcher.getAmountOfSpellsPlayerCastOnCurrentTurn(source.getControllerId());
         }
@@ -76,7 +76,7 @@ class HardenedBerserkerSpellsCostReductionEffect extends CostModificationEffectI
 
     @Override
     public boolean applies(Ability abilityToModify, Ability source, Game game) {
-        CastSpellLastTurnWatcher watcher = (CastSpellLastTurnWatcher) game.getState().getWatchers().get(CastSpellLastTurnWatcher.class.getSimpleName());
+        CastSpellLastTurnWatcher watcher = game.getState().getWatcher(CastSpellLastTurnWatcher.class);
         if (watcher != null) {
             if (watcher.getAmountOfSpellsPlayerCastOnCurrentTurn(source.getControllerId()) > spellsCast) {
                 discard(); // only one use 
@@ -84,7 +84,7 @@ class HardenedBerserkerSpellsCostReductionEffect extends CostModificationEffectI
             }
         }        
         if (abilityToModify instanceof SpellAbility) {
-            return abilityToModify.getControllerId().equals(source.getControllerId());
+            return abilityToModify.isControlledBy(source.getControllerId());
         }
         return false;
     }

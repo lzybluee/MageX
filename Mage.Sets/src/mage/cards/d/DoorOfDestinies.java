@@ -71,11 +71,11 @@ class AddCounterAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        SubType subType = ChooseCreatureTypeEffect.getChoosenCreatureType(getSourceId(), game);
+        SubType subType = ChooseCreatureTypeEffect.getChosenCreatureType(getSourceId(), game);
         if (subType != null) {
             Spell spell = game.getStack().getSpell(event.getTargetId());
             if (spell != null
-                    && spell.getControllerId().equals(getControllerId())
+                    && spell.isControlledBy(getControllerId())
                     && spell.hasSubtype(subType, game)) {
                 return true;
             }

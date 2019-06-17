@@ -11,7 +11,6 @@ import mage.abilities.effects.common.ExileUntilSourceLeavesEffect;
 import mage.abilities.keyword.FlashAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.cards.c.CastOut;
 import mage.constants.CardType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
@@ -21,15 +20,15 @@ import mage.target.TargetPermanent;
 
 /**
  * @author JRHerlehy
- *         Created on 4/4/18.
+ * Created on 4/4/18.
  */
 public final class SealAway extends CardImpl {
 
-    private final static FilterCreaturePermanent filter = new FilterCreaturePermanent("tapped creature");
+    private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("tapped creature");
 
     static {
         filter.add(new ControllerPredicate(TargetController.OPPONENT));
-        filter.add(new TappedPredicate());
+        filter.add(TappedPredicate.instance);
     }
 
     public SealAway(UUID ownerId, CardSetInfo setInfo) {

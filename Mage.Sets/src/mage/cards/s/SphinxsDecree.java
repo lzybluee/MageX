@@ -103,7 +103,7 @@ class SphinxsDecreeCantCastEffect extends ContinuousRuleModifyingEffectImpl {
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
         UUID opponentId = getTargetPointer().getFirst(game, source);
-        if (game.getActivePlayerId().equals(opponentId)) {
+        if (game.isActivePlayer(opponentId)) {
             if (playersNextTurn == 0) {
                 playersNextTurn = game.getTurnNum();
             }
@@ -111,7 +111,7 @@ class SphinxsDecreeCantCastEffect extends ContinuousRuleModifyingEffectImpl {
                 if (opponentId.equals(event.getPlayerId())) {
                     MageObject object = game.getObject(event.getSourceId());
                     if (event.getType() == GameEvent.EventType.CAST_SPELL) {
-                        if (object.isInstant() || object.isSorcery()) {
+                        if (object != null && (object.isInstant() || object.isSorcery())) {
                             return true;
                         }
                     }

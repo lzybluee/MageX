@@ -62,8 +62,8 @@ class PyromancersGauntletReplacementEffect extends ReplacementEffectImpl {
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
         MageObject object = game.getObject(event.getSourceId());
-        if (object != null && object instanceof Spell) {
-            if (((Spell) object).getControllerId().equals(source.getControllerId())
+        if (object instanceof Spell) {
+            if (((Spell) object).isControlledBy(source.getControllerId())
                     && (object.isInstant()
                      || object.isSorcery())){
                 return true;

@@ -6,7 +6,7 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.condition.common.KickedCondition;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.FightTargetSourceEffect;
 import mage.abilities.keyword.KickerAbility;
 import mage.cards.CardImpl;
@@ -36,10 +36,10 @@ public final class TerritorialAllosaurus extends CardImpl {
         // When Territorial Allosaurus enters the battlefield, if it was kicked, it fights another target creature.
         EntersBattlefieldTriggeredAbility ability
                 = new EntersBattlefieldTriggeredAbility(new FightTargetSourceEffect());
-        Ability conditionalAbility = new ConditionalTriggeredAbility(ability, KickedCondition.instance,
+        Ability conditionalAbility = new ConditionalInterveningIfTriggeredAbility(ability, KickedCondition.instance,
                 "When {this} enters the battlefield, if it was kicked, it fights another target creature.");
         FilterCreaturePermanent filter = new FilterCreaturePermanent();
-        filter.add(new AnotherPredicate());
+        filter.add(AnotherPredicate.instance);
         conditionalAbility.addTarget(new TargetCreaturePermanent(filter));
         this.addAbility(conditionalAbility);
     }

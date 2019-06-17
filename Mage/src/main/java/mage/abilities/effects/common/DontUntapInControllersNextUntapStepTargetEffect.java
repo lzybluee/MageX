@@ -32,7 +32,6 @@ public class DontUntapInControllersNextUntapStepTargetEffect extends ContinuousR
      * Attention: This effect won't work with targets controlled by different
      * controllers If this is needed, the validForTurnNum has to be saved per
      * controller.
-     *
      */
     public DontUntapInControllersNextUntapStepTargetEffect() {
         this("");
@@ -43,10 +42,9 @@ public class DontUntapInControllersNextUntapStepTargetEffect extends ContinuousR
     }
 
     /**
-     *
-     * @param targetName used as target text for the generated rule text
+     * @param targetName               used as target text for the generated rule text
      * @param onlyIfControlledByPlayer the effect only works if the permanent is
-     * controlled by that controller, null = it works for all players
+     *                                 controlled by that controller, null = it works for all players
      */
     public DontUntapInControllersNextUntapStepTargetEffect(String targetName, UUID onlyIfControlledByPlayer) {
         this(targetName, false, onlyIfControlledByPlayer);
@@ -101,8 +99,8 @@ public class DontUntapInControllersNextUntapStepTargetEffect extends ContinuousR
             for (UUID targetId : getTargetPointer().getTargets(game, source)) {
                 Permanent permanent = game.getPermanent(targetId);
                 if (permanent != null) {
-                    if (game.getActivePlayerId().equals(permanent.getControllerId())
-                            && ((onlyIfControlledByPlayer == null) || (game.getActivePlayerId().equals(onlyIfControlledByPlayer)))) { // if effect works only for specific player, all permanents have to be set to handled in that players untap step
+                    if (game.isActivePlayer(permanent.getControllerId())
+                            && ((onlyIfControlledByPlayer == null) || (game.isActivePlayer(onlyIfControlledByPlayer)))) { // if effect works only for specific player, all permanents have to be set to handled in that players untap step
                         if (!handledTargetsDuringTurn.containsKey(targetId)) {
                             // it's the untep step of the current controller and the effect was not handled for this target yet, so do it now
                             handledTargetsDuringTurn.put(targetId, false);
@@ -116,7 +114,7 @@ public class DontUntapInControllersNextUntapStepTargetEffect extends ContinuousR
                     }
                 }
             }
-            
+
             if (allHandled) {
                 discard();
             }
@@ -127,8 +125,8 @@ public class DontUntapInControllersNextUntapStepTargetEffect extends ContinuousR
                     && !handledTargetsDuringTurn.get(event.getTargetId())
                     && getTargetPointer().getTargets(game, source).contains(event.getTargetId())) {
                 Permanent permanent = game.getPermanent(event.getTargetId());
-                if (permanent != null && game.getActivePlayerId().equals(permanent.getControllerId())) {
-                    if ((onlyIfControlledByPlayer == null) || game.getActivePlayerId().equals(onlyIfControlledByPlayer)) { // If onlyIfControlledByPlayer is set, then don't apply unless we're currently controlled by the specified player.
+                if (permanent != null && game.isActivePlayer(permanent.getControllerId())) {
+                    if ((onlyIfControlledByPlayer == null) || game.isActivePlayer(onlyIfControlledByPlayer)) { // If onlyIfControlledByPlayer is set, then don't apply unless we're currently controlled by the specified player.
                         handledTargetsDuringTurn.put(event.getTargetId(), !twoSteps);
                         return true;
                     }
@@ -149,8 +147,7 @@ public class DontUntapInControllersNextUntapStepTargetEffect extends ContinuousR
             } else
                 return targetName + " doesn't untap during its controller's next " + (twoSteps ? "two " : "") + "untap step" + (twoSteps ? "s" : "");
         } else {
-            return "target " + (mode == null ? "creature" : mode.getTargets().get(0).getTargetName()) + " doesn't untap during its controller's next " + (twoSteps ? "two " : "") + "untap step" + (twoSteps ? "s" : "");
+            return "target " + (mode == null || mode.getTargets().isEmpty() ? "creature" : mode.getTargets().get(0).getTargetName()) + " doesn't untap during its controller's next " + (twoSteps ? "two " : "") + "untap step" + (twoSteps ? "s" : "");
         }
     }
-
 }

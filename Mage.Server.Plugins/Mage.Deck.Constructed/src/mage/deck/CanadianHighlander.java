@@ -1,37 +1,34 @@
 package mage.deck;
 
-import java.util.HashMap;
-import java.util.Map;
 import mage.cards.ExpansionSet;
 import mage.cards.Sets;
 import mage.cards.decks.Constructed;
 import mage.cards.decks.Deck;
-import mage.constants.SetType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- *
  * @author spjspj
  */
 public class CanadianHighlander extends Constructed {
 
-    public static final Map<String, Integer> pointMap = new HashMap();
+    private static final Map<String, Integer> pointMap = new HashMap<>();
 
     static {
         pointMap.put("Ancestral Recall", 7);
         pointMap.put("Balance", 1);
-        pointMap.put("Birthing Pod", 3);
+        pointMap.put("Birthing Pod", 2);
         pointMap.put("Black Lotus", 7);
-        pointMap.put("Demonic Tutor", 4);
+        pointMap.put("Demonic Tutor", 3);
         pointMap.put("Dig Through Time", 1);
         pointMap.put("Enlightened Tutor", 1);
-        pointMap.put("Fastbond", 1);
-        pointMap.put("Flash", 7);
+        pointMap.put("Flash", 6);
         pointMap.put("Gifts Ungiven", 2);
-        pointMap.put("Hermit Druid", 1);
         pointMap.put("Imperial Seal", 1);
         pointMap.put("Intuition", 1);
         pointMap.put("Library of Alexandria", 1);
-        pointMap.put("Mana Crypt", 2);
+        pointMap.put("Mana Crypt", 3);
         pointMap.put("Mana Drain", 1);
         pointMap.put("Mana Vault", 1);
         pointMap.put("Merchant Scroll", 1);
@@ -43,9 +40,9 @@ public class CanadianHighlander extends Constructed {
         pointMap.put("Mox Sapphire", 3);
         pointMap.put("Mystical Tutor", 2);
         pointMap.put("Natural Order", 4);
-        pointMap.put("Personal Tutor", 1);
         pointMap.put("Protean Hulk", 3);
         pointMap.put("Sol Ring", 3);
+        pointMap.put("Spellseeker", 1);
         pointMap.put("Stoneforge Mystic", 1);
         pointMap.put("Strip Mine", 2);
         pointMap.put("Summoner's Pact", 2);
@@ -58,13 +55,13 @@ public class CanadianHighlander extends Constructed {
         pointMap.put("Treasure Cruise", 1);
         pointMap.put("True-Name Nemesis", 1);
         pointMap.put("Umezawa's Jitte", 2);
-        pointMap.put("Vampiric Tutor", 3);
+        pointMap.put("Vampiric Tutor", 2);
     }
 
     public CanadianHighlander() {
         this("Canadian Highlander");
         for (ExpansionSet set : Sets.getInstance().values()) {
-            if (set.getSetType() != SetType.CUSTOM_SET) {
+            if (set.getSetType().isEternalLegal()) {
                 setCodes.add(set.getCode());
             }
         }

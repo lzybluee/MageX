@@ -6,7 +6,7 @@ import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.condition.common.SourceHasCounterCondition;
 import mage.abilities.costs.mana.ManaCostsImpl;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.dynamicvalue.common.ManacostVariableValue;
 import mage.abilities.effects.common.WinGameSourceControllerEffect;
 import mage.abilities.effects.common.counter.AddCountersSourceEffect;
@@ -34,11 +34,11 @@ public final class HelixPinnacle extends CardImpl {
 
         // {X}: Put X tower counters on Helix Pinnacle.
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD,
-                new AddCountersSourceEffect(CounterType.TOWER.createInstance(), new ManacostVariableValue(), true),
+                new AddCountersSourceEffect(CounterType.TOWER.createInstance(), ManacostVariableValue.instance, true),
                 new ManaCostsImpl("{X}")));
 
         // At the beginning of your upkeep, if there are 100 or more tower counters on Helix Pinnacle, you win the game.
-        this.addAbility(new ConditionalTriggeredAbility(
+        this.addAbility(new ConditionalInterveningIfTriggeredAbility(
                 new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new WinGameSourceControllerEffect(), TargetController.YOU, false),
                 new SourceHasCounterCondition(CounterType.TOWER, 100, Integer.MAX_VALUE),
                 rule));

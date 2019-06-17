@@ -6,7 +6,7 @@ import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldAllTriggeredAbility;
 import mage.abilities.condition.Condition;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -29,7 +29,7 @@ import mage.watchers.common.CastFromHandWatcher;
  */
 public final class WildPair extends CardImpl {
 
-    private final static FilterCreaturePermanent filter = new FilterCreaturePermanent("a creature");
+    private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("a creature");
 
     static {
         filter.add(new OwnerPredicate(TargetController.YOU));
@@ -39,7 +39,7 @@ public final class WildPair extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{4}{G}{G}");
 
         // Whenever a creature enters the battlefield, if you cast it from your hand, you may search your library for a creature card with the same total power and toughness and put it onto the battlefield. If you do, shuffle your library.
-        this.addAbility(new ConditionalTriggeredAbility(
+        this.addAbility(new ConditionalInterveningIfTriggeredAbility(
                 new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD, new WildPairEffect(), filter, true, SetTargetPointer.PERMANENT, ""),
                 new CastFromHandTargetCondition(),
                 "Whenever a creature enters the battlefield, if you cast it from your hand, you may search your library for a creature card with the same total power and toughness and put it onto the battlefield. If you do, shuffle your library."
@@ -82,7 +82,7 @@ class WildPairEffect extends OneShotEffect {
                 FilterCreatureCard filter = new FilterCreatureCard("creature card with total power and toughness " + totalPT);
                 filter.add(new TotalPowerAndToughnessPredicate(ComparisonType.EQUAL_TO, totalPT));
                 TargetCardInLibrary target = new TargetCardInLibrary(1, filter);
-                if (controller.searchLibrary(target, game)) {
+                if (controller.searchLibrary(target, source, game)) {
                     if (!target.getTargets().isEmpty()) {
                         controller.moveCards(new CardsImpl(target.getTargets()), Zone.BATTLEFIELD, source, game);
                     }
@@ -135,7 +135,7 @@ class CastFromHandTargetCondition implements Condition {
                     return false;
                 }
             }
-            CastFromHandWatcher watcher = (CastFromHandWatcher) game.getState().getWatchers().get(CastFromHandWatcher.class.getSimpleName());
+            CastFromHandWatcher watcher = game.getState().getWatcher(CastFromHandWatcher.class);
             if (watcher != null && watcher.spellWasCastFromHand(targetId)) {
                 return true;
             }

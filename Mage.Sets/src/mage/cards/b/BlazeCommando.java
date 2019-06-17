@@ -89,7 +89,7 @@ class BlazeCommandoTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (getControllerId().equals(game.getControllerId(event.getSourceId()))) {
+        if (isControlledBy(game.getControllerId(event.getSourceId()))) {
             MageObject damageSource = game.getObject(event.getSourceId());
             if (damageSource != null) {
                 if (damageSource.isInstant()|| damageSource.isSorcery()) {
@@ -105,6 +105,6 @@ class BlazeCommandoTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return new StringBuilder("Whenever an instant or sorcery spell you control deals damage, ").append(super.getRule()).toString();
+        return "Whenever an instant or sorcery spell you control deals damage, " + super.getRule();
     }
 }

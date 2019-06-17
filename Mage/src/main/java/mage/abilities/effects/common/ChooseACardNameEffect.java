@@ -13,12 +13,11 @@ import mage.players.Player;
 import mage.util.CardUtil;
 
 /**
- *
  * @author LevelX2
  */
 public class ChooseACardNameEffect extends OneShotEffect {
 
-    public static String INFO_KEY = "NAMED_CARD";
+    public static final String INFO_KEY = "NAMED_CARD";
 
     public enum TypeOfName {
 
@@ -92,11 +91,11 @@ public class ChooseACardNameEffect extends OneShotEffect {
             if (controller.choose(Outcome.Detriment, cardChoice, game)) {
                 String cardName = cardChoice.getChoice();
                 if (!game.isSimulation()) {
-                    game.informPlayers(sourceObject.getLogName() + ", named card: [" + cardName + ']');
+                    game.informPlayers(sourceObject.getLogName() + ", chosen name: [" + cardName + ']');
                 }
                 game.getState().setValue(source.getSourceId().toString() + INFO_KEY, cardName);
                 if (sourceObject instanceof Permanent) {
-                    ((Permanent) sourceObject).addInfo(INFO_KEY, CardUtil.addToolTipMarkTags("Named card: " + cardName), game);
+                    ((Permanent) sourceObject).addInfo(INFO_KEY, CardUtil.addToolTipMarkTags("Chosen name: " + cardName), game);
                 }
                 return true;
             }

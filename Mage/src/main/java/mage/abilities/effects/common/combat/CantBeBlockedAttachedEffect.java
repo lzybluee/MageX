@@ -1,4 +1,3 @@
-
 package mage.abilities.effects.common.combat;
 
 import mage.abilities.Ability;
@@ -9,7 +8,6 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 
 /**
- *
  * @author North
  */
 public class CantBeBlockedAttachedEffect extends RestrictionEffect {
@@ -29,14 +27,14 @@ public class CantBeBlockedAttachedEffect extends RestrictionEffect {
     }
 
     @Override
-    public boolean canBeBlocked(Permanent attacker, Permanent blocker, Ability source, Game game) {
+    public boolean canBeBlocked(Permanent attacker, Permanent blocker, Ability source, Game game, boolean canUseChooseDialogs) {
         return false;
     }
 
     @Override
     public boolean applies(Permanent permanent, Ability source, Game game) {
         Permanent attachment = game.getPermanent(source.getSourceId());
-        return attachment != null && attachment.getAttachedTo() != null
-                && attachment.getAttachedTo().equals(permanent.getId());
+        return attachment != null
+                && attachment.isAttachedTo(permanent.getId());
     }
 }

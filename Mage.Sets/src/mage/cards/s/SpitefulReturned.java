@@ -86,7 +86,7 @@ class SpitefulReturnedTriggeredAbility extends TriggeredAbilityImpl {
                     return true;
                 }
             } else {
-                if (sourcePermanent.getAttachedTo() != null && sourcePermanent.getAttachedTo().equals(event.getSourceId())) {
+                if (sourcePermanent.isAttachedTo(event.getSourceId())) {
                     UUID defender = game.getCombat().getDefendingPlayerId(sourcePermanent.getAttachedTo(), game);
                     this.getEffects().get(0).setTargetPointer(new FixedTarget(defender));
                     return true;
@@ -98,6 +98,6 @@ class SpitefulReturnedTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return new StringBuilder("Whenever {this} or enchanted creature attacks, ").append(super.getRule()).toString();
+        return "Whenever {this} or enchanted creature attacks, " + super.getRule();
     }
 }

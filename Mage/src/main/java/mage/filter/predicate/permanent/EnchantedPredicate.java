@@ -1,30 +1,30 @@
 
 package mage.filter.predicate.permanent;
 
-import java.util.UUID;
+import mage.MageObject;
 import mage.filter.predicate.Predicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 
+import java.util.Objects;
+
 /**
- *
  * @author LevelX2
  */
-public class EnchantedPredicate implements Predicate<Permanent> {
+public enum EnchantedPredicate implements Predicate<Permanent> {
+    instance;
 
     @Override
     public boolean apply(Permanent input, Game game) {
-        for (UUID attachmentId : input.getAttachments()) {
-            Permanent attachment = game.getPermanent(attachmentId);
-            if (attachment != null && attachment.isEnchantment()) {
-                return true;
-            }
-        }
-        return false;
+        return input.getAttachments()
+                .stream()
+                .map(game::getPermanent)
+                .filter(Objects::nonNull)
+                .anyMatch(MageObject::isEnchantment);
     }
 
     @Override
     public String toString() {
-        return "Enchanted" ;
+        return "Enchanted";
     }
 }

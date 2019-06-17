@@ -15,6 +15,7 @@ import mage.constants.Outcome;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetOpponent;
+import mage.target.common.TargetOpponentOrPlaneswalker;
 import mage.target.targetpointer.FixedTarget;
 
 /**
@@ -26,10 +27,10 @@ public final class RakdossReturn extends CardImpl {
     public RakdossReturn(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{X}{B}{R}");
 
-        // Rakdos's Return deals X damage to target opponent. That player discards X cards.
-        this.getSpellAbility().addEffect(new DamageTargetEffect(new ManacostVariableValue()));
+        // Rakdos's Return deals X damage to target opponent or planeswalker. That player or that planeswalker’s controller discards X cards.
+        this.getSpellAbility().addEffect(new DamageTargetEffect(ManacostVariableValue.instance));
         this.getSpellAbility().addEffect(new RakdossReturnEffect());
-        this.getSpellAbility().addTarget(new TargetOpponent());
+        this.getSpellAbility().addTarget(new TargetOpponentOrPlaneswalker());
     }
 
     public RakdossReturn(final RakdossReturn card) {
@@ -64,7 +65,7 @@ class RakdossReturnEffect extends OneShotEffect {
         if (player == null) {
             return false;
         }
-        Effect effect = new DiscardTargetEffect(new ManacostVariableValue());
+        Effect effect = new DiscardTargetEffect(ManacostVariableValue.instance);
         effect.setTargetPointer(new FixedTarget(player.getId(), game));
         return effect.apply(game, source);
     }

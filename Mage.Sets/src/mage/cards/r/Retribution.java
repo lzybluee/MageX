@@ -68,7 +68,7 @@ class RetributionEffect extends OneShotEffect {
                 Permanent creature = game.getPermanent(targetId);
                 if (creature != null) {
                     Player controllerOfCreature = game.getPlayer(creature.getControllerId());
-                    if ((count == 0
+                    if ((count == 0 && controllerOfCreature != null
                             && controllerOfCreature.chooseUse(Outcome.Sacrifice, "Sacrifice " + creature.getLogName() + '?', source, game))
                             || (count == 1
                             && !sacrificeDone)) {
@@ -107,7 +107,7 @@ class TargetCreaturePermanentOpponentSameController extends TargetCreaturePerman
                     Permanent targetPermanent = game.getPermanent(targetId);
                     if (targetPermanent != null) {
                         if (!firstTargetPermanent.getId().equals(targetPermanent.getId())) {
-                            if (!firstTargetPermanent.getControllerId().equals(targetPermanent.getOwnerId())) {
+                            if (!firstTargetPermanent.isControlledBy(targetPermanent.getOwnerId())) {
                                 return false;
                             }
                         }

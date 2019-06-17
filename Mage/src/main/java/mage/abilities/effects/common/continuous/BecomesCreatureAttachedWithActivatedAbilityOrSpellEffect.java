@@ -1,4 +1,3 @@
-
 package mage.abilities.effects.common.continuous;
 
 import mage.MageObjectReference;
@@ -7,7 +6,6 @@ import mage.abilities.effects.ContinuousEffectImpl;
 import mage.constants.*;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 
 /**
@@ -16,7 +14,6 @@ import mage.game.permanent.token.Token;
 public class BecomesCreatureAttachedWithActivatedAbilityOrSpellEffect extends ContinuousEffectImpl {
 
     public enum LoseType {
-
         NONE, ALL, ALL_BUT_COLOR, ABILITIES, ABILITIES_SUBTYPE_AND_PT
     }
 
@@ -72,7 +69,7 @@ public class BecomesCreatureAttachedWithActivatedAbilityOrSpellEffect extends Co
                         case TypeChangingEffects_4:
                             if (sublayer == SubLayer.NA) {
                                 for (SuperType superType : token.getSuperType()) {
-                                        permanentAttachedTo.addSuperType(superType);
+                                    permanentAttachedTo.addSuperType(superType);
 
                                 }
                                 // card type
@@ -91,7 +88,7 @@ public class BecomesCreatureAttachedWithActivatedAbilityOrSpellEffect extends Co
                                     case ALL:
                                     case ALL_BUT_COLOR:
                                     case ABILITIES_SUBTYPE_AND_PT:
-                                        permanentAttachedTo.getSubtype(game).retainAll(SubType.getLandTypes(false));
+                                        permanentAttachedTo.getSubtype(game).retainAll(SubType.getLandTypes());
                                         break;
                                 }
                                 for (SubType subType : token.getSubtype(game)) {
@@ -102,6 +99,7 @@ public class BecomesCreatureAttachedWithActivatedAbilityOrSpellEffect extends Co
 
                             }
                             break;
+
                         case ColorChangingEffects_5:
                             if (sublayer == SubLayer.NA) {
                                 if (loseType == LoseType.ALL) {
@@ -116,6 +114,7 @@ public class BecomesCreatureAttachedWithActivatedAbilityOrSpellEffect extends Co
                                 }
                             }
                             break;
+
                         case AbilityAddingRemovingEffects_6:
                             if (sublayer == SubLayer.NA) {
                                 switch (loseType) {
@@ -132,12 +131,13 @@ public class BecomesCreatureAttachedWithActivatedAbilityOrSpellEffect extends Co
 
                             }
                             break;
+
                         case PTChangingEffects_7:
                             if (sublayer == SubLayer.SetPT_7b) {
                                 permanentAttachedTo.getPower().setValue(token.getPower().getValue());
                                 permanentAttachedTo.getToughness().setValue(token.getToughness().getValue());
-                                break;
                             }
+                            break;
                     }
                 }
                 if (!attachedExists) {

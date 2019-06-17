@@ -15,7 +15,7 @@ import mage.game.permanent.Permanent;
  *
  * @author spjspj
  */
-public class AjaniSteadfastEmblem extends Emblem {
+public final class AjaniSteadfastEmblem extends Emblem {
 
     public AjaniSteadfastEmblem() {
         setName("Emblem Ajani");
@@ -60,7 +60,7 @@ class AjaniSteadfastPreventEffect extends PreventionEffectImpl {
 
         if (event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER) {
             Permanent permanent = game.getPermanent(event.getTargetId());
-            if (permanent != null && permanent.getControllerId().equals(source.getControllerId())) {
+            if (permanent != null && permanent.isControlledBy(source.getControllerId())) {
                 return super.applies(event, source, game);
             }
         }

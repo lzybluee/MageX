@@ -72,7 +72,7 @@ class ThadaAdelAcquisitorEffect extends OneShotEffect {
             return false;
         }
         TargetCardInLibrary target = new TargetCardInLibrary(new FilterArtifactCard());
-        if (controller.searchLibrary(target, game, damagedPlayer.getId())) {
+        if (controller.searchLibrary(target, source, game, damagedPlayer.getId())) {
             if (!target.getTargets().isEmpty()) {
                 Card card = damagedPlayer.getLibrary().remove(target.getFirstTarget(), game);
                 if (card != null) {
@@ -116,7 +116,7 @@ class ThadaAdelPlayFromExileEffect extends AsThoughEffectImpl {
 
     @Override
     public boolean applies(UUID sourceId, Ability source, UUID affectedControllerId, Game game) {
-        return source.getControllerId().equals(affectedControllerId)
+        return source.isControlledBy(affectedControllerId)
                 && sourceId.equals(getTargetPointer().getFirst(game, source));
     }
 }

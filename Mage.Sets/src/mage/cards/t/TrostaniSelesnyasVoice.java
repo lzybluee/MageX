@@ -77,8 +77,9 @@ class TrostaniSelesnyasVoiceTriggeredAbility extends TriggeredAbilityImpl {
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         Permanent permanent = game.getPermanent(event.getTargetId());
-        if (permanent.isCreature()
-                && permanent.getControllerId().equals(this.controllerId)
+        if (permanent != null
+                && permanent.isCreature()
+                && permanent.isControlledBy(this.controllerId)
                 && !Objects.equals(event.getTargetId(), this.getSourceId())) {
             Effect effect = this.getEffects().get(0);
             // life is determined during resolution so it has to be retrieved there (e.g. Giant Growth before resolution)

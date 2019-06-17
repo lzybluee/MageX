@@ -79,8 +79,8 @@ class ParadoxHazeTriggeredAbility extends TriggeredAbilityImpl {
         Permanent permanent = game.getPermanent(getSourceId());
         if (permanent != null) {
             Player player = game.getPlayer(permanent.getAttachedTo());
-            if (player != null && game.getActivePlayerId().equals(player.getId())) {
-                FirstTimeStepWatcher watcher = (FirstTimeStepWatcher) game.getState().getWatchers().get(EventType.UPKEEP_STEP_POST.toString() + FirstTimeStepWatcher.class.getSimpleName());
+            if (player != null && game.isActivePlayer(player.getId())) {
+                FirstTimeStepWatcher watcher = game.getState().getWatcher(FirstTimeStepWatcher.class, EventType.UPKEEP_STEP_POST.toString());
                 if (watcher != null && !watcher.conditionMet()) {
                     this.getEffects().get(0).setTargetPointer(new FixedTarget(player.getId()));
                     return true;

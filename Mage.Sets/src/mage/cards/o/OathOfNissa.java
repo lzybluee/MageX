@@ -48,7 +48,7 @@ public final class OathOfNissa extends CardImpl {
 
 class OathOfNissaEffect extends OneShotEffect {
 
-    private final static FilterCard filter = new FilterCard("a creature, land, or planeswalker card");
+    private static final FilterCard filter = new FilterCard("a creature, land, or planeswalker card");
 
     static {
         filter.add(Predicates.or(new CardTypePredicate(CardType.CREATURE),
@@ -128,7 +128,7 @@ class OathOfNissaSpendAnyManaEffect extends AsThoughEffectImpl implements AsThou
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        if (source.getControllerId().equals(affectedControllerId)) {
+        if (source.isControlledBy(affectedControllerId)) {
             MageObject mageObject = game.getObject(objectId);
             if (mageObject != null) {
                 if (mageObject.isPlaneswalker()) {

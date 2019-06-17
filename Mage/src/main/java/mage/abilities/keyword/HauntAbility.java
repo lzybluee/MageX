@@ -83,7 +83,7 @@ public class HauntAbility extends TriggeredAbilityImpl {
                         if (card != null) {
                             String key = new StringBuilder("Haunting_").append(getSourceId().toString()).append('_').append(card.getZoneChangeCounter(game)).toString();
                             Object object = game.getState().getValue(key);
-                            if (object != null && object instanceof FixedTarget) {
+                            if (object instanceof FixedTarget) {
                                 FixedTarget target = (FixedTarget) object;
                                 if (target.getTarget() != null &&  target.getTarget().equals(event.getTargetId())) {
                                     usedFromExile = true;
@@ -110,8 +110,8 @@ public class HauntAbility extends TriggeredAbilityImpl {
 
 class HauntExileAbility extends ZoneChangeTriggeredAbility {
 
-    private final static String RULE_TEXT_CREATURE = "Haunt <i>(When this creature dies, exile it haunting target creature.)</i>";
-    private final static String RULE_TEXT_SPELL = "Haunt <i>(When this spell card is put into a graveyard after resolving, exile it haunting target creature.)</i>";
+    private static final String RULE_TEXT_CREATURE = "Haunt <i>(When this creature dies, exile it haunting target creature.)</i>";
+    private static final String RULE_TEXT_SPELL = "Haunt <i>(When this spell card is put into a graveyard after resolving, exile it haunting target creature.)</i>";
     
     private boolean creatureHaunt;
     

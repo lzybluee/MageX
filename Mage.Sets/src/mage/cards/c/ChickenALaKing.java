@@ -33,7 +33,7 @@ public final class ChickenALaKing extends CardImpl {
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("untapped Chicken you control");
 
     static {
-        filter.add(Predicates.not(new TappedPredicate()));
+        filter.add(Predicates.not(TappedPredicate.instance));
         filter.add(new SubtypePredicate(SubType.CHICKEN));
     }
 
@@ -89,7 +89,7 @@ class ChickenALaKingTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (this.getControllerId().equals(event.getPlayerId()) && event.getFlag()) {
+        if (this.isControlledBy(event.getPlayerId()) && event.getFlag()) {
             // event.getData holds the num of sides of the die to roll
             String data = event.getData();
             if (data != null) {

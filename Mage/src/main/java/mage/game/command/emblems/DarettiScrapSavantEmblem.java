@@ -22,7 +22,7 @@ import mage.target.targetpointer.FixedTarget;
  *
  * @author spjspj
  */
-public class DarettiScrapSavantEmblem extends Emblem {
+public final class DarettiScrapSavantEmblem extends Emblem {
     // You get an emblem with "Whenever an artifact is put into your graveyard from the battlefield, return that card to the battlefield at the beginning of the next end step."
 
     public DarettiScrapSavantEmblem() {
@@ -59,7 +59,7 @@ class DarettiScrapSavantTriggeredAbility extends TriggeredAbilityImpl {
         if (zEvent.getToZone() == Zone.GRAVEYARD
                 && zEvent.getFromZone() == Zone.BATTLEFIELD
                 && zEvent.getTarget().isArtifact()
-                && zEvent.getTarget().getOwnerId().equals(this.controllerId)) {
+                && zEvent.getTarget().isOwnedBy(this.controllerId)) {
             this.getEffects().setTargetPointer(new FixedTarget(zEvent.getTargetId()));
             return true;
         }

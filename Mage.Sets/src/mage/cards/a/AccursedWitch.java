@@ -1,7 +1,6 @@
 
 package mage.cards.a;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.Mode;
@@ -14,16 +13,17 @@ import mage.abilities.keyword.TransformAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.cards.i.InfectiousCurse;
 import mage.constants.*;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.Target;
+import mage.target.common.TargetOpponent;
 import mage.util.CardUtil;
 
+import java.util.UUID;
+
 /**
- *
  * @author halljared
  */
 public final class AccursedWitch extends CardImpl {
@@ -36,16 +36,18 @@ public final class AccursedWitch extends CardImpl {
         this.toughness = new MageInt(2);
 
         this.transformable = true;
-        this.secondSideCardClazz = InfectiousCurse.class;
+        this.secondSideCardClazz = mage.cards.i.InfectiousCurse.class;
 
         // Spells your opponents cast that target Accursed Witch cost {1} less to cast.
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new AccursedWitchSpellsCostReductionEffect()));
         // When Accursed Witch dies, return it to the battlefield transformed under your control attached to target opponent.
         this.addAbility(new TransformAbility());
-        this.addAbility(new DiesTriggeredAbility(new AccursedWitchReturnTransformedEffect()));
+        Ability ability = new DiesTriggeredAbility(new AccursedWitchReturnTransformedEffect());
+        ability.addTarget(new TargetOpponent());
+        this.addAbility(ability);
     }
 
-    public AccursedWitch(final AccursedWitch card) {
+    private AccursedWitch(final AccursedWitch card) {
         super(card);
     }
 
@@ -57,12 +59,12 @@ public final class AccursedWitch extends CardImpl {
 
 class AccursedWitchReturnTransformedEffect extends OneShotEffect {
 
-    public AccursedWitchReturnTransformedEffect() {
+    AccursedWitchReturnTransformedEffect() {
         super(Outcome.PutCardInPlay);
-        this.staticText = "Put {this} from your graveyard onto the battlefield transformed";
+        this.staticText = "Put {this} from your graveyard onto the battlefield transformed under your control attached to target opponent";
     }
 
-    public AccursedWitchReturnTransformedEffect(final AccursedWitchReturnTransformedEffect effect) {
+    private AccursedWitchReturnTransformedEffect(final AccursedWitchReturnTransformedEffect effect) {
         super(effect);
     }
 
@@ -74,29 +76,32 @@ class AccursedWitchReturnTransformedEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            if (game.getState().getZone(source.getSourceId()) == Zone.GRAVEYARD) {
-                game.getState().setValue(TransformAbility.VALUE_KEY_ENTER_TRANSFORMED + source.getSourceId(), Boolean.TRUE);
-                //note: should check for null after game.getCard
-                Card card = game.getCard(source.getSourceId());
-                if (card != null) {
-                    controller.moveCards(card, Zone.BATTLEFIELD, source, game);
-                }
-            }
-            return true;
+        Player attachTo = game.getPlayer(targetPointer.getFirst(game, source));
+        if (controller == null || !(game.getState().getZone(source.getSourceId()) == Zone.GRAVEYARD) || attachTo == null) {
+            return false;
         }
-        return false;
+        game.getState().setValue(TransformAbility.VALUE_KEY_ENTER_TRANSFORMED + source.getSourceId(), Boolean.TRUE);
+        UUID secondFaceId = game.getCard(source.getSourceId()).getSecondCardFace().getId();
+        game.getState().setValue("attachTo:" + secondFaceId, attachTo.getId());
+        //note: should check for null after game.getCard
+        Card card = game.getCard(source.getSourceId());
+        if (card != null) {
+            if (controller.moveCards(card, Zone.BATTLEFIELD, source, game)) {
+                attachTo.addAttachment(card.getId(), game);
+            }
+        }
+        return true;
     }
 }
 
 class AccursedWitchSpellsCostReductionEffect extends CostModificationEffectImpl {
 
-    public AccursedWitchSpellsCostReductionEffect() {
+    AccursedWitchSpellsCostReductionEffect() {
         super(Duration.WhileOnBattlefield, Outcome.Detriment, CostModificationType.REDUCE_COST);
         this.staticText = "Spells your opponents cast that target {this} cost {1} less to cast.";
     }
 
-    protected AccursedWitchSpellsCostReductionEffect(AccursedWitchSpellsCostReductionEffect effect) {
+    private AccursedWitchSpellsCostReductionEffect(AccursedWitchSpellsCostReductionEffect effect) {
         super(effect);
     }
 
@@ -108,17 +113,16 @@ class AccursedWitchSpellsCostReductionEffect extends CostModificationEffectImpl 
 
     @Override
     public boolean applies(Ability abilityToModify, Ability source, Game game) {
-        if (abilityToModify instanceof SpellAbility) {
-            if (game.getOpponents(source.getControllerId()).contains(abilityToModify.getControllerId())) {
-                for (UUID modeId : abilityToModify.getModes().getSelectedModes()) {
-                    Mode mode = abilityToModify.getModes().get(modeId);
-                    for (Target target : mode.getTargets()) {
-                        for (UUID targetUUID : target.getTargets()) {
-                            Permanent permanent = game.getPermanent(targetUUID);
-                            if (permanent != null && permanent.getId().equals(source.getSourceId())) {
-                                return true;
-                            }
-                        }
+        if (!(abilityToModify instanceof SpellAbility) || !game.getOpponents(source.getControllerId()).contains(abilityToModify.getControllerId())) {
+            return false;
+        }
+        for (UUID modeId : abilityToModify.getModes().getSelectedModes()) {
+            Mode mode = abilityToModify.getModes().get(modeId);
+            for (Target target : mode.getTargets()) {
+                for (UUID targetUUID : target.getTargets()) {
+                    Permanent permanent = game.getPermanent(targetUUID);
+                    if (permanent != null && permanent.getId().equals(source.getSourceId())) {
+                        return true;
                     }
                 }
             }

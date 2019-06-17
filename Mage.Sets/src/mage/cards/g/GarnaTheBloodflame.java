@@ -80,12 +80,12 @@ class GarnaTheBloodflameEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            GarnaTheBloodflameWatcher watcher = (GarnaTheBloodflameWatcher) game.getState().getWatchers().get(GarnaTheBloodflameWatcher.class.getSimpleName());
+            GarnaTheBloodflameWatcher watcher = game.getState().getWatcher(GarnaTheBloodflameWatcher.class);
             if (watcher != null) {
                 Set<Card> toHand = new HashSet<>();
                 for (UUID cardId : watcher.getCardsPutToGraveyardThisTurn()) {
                     Card card = game.getCard(cardId);
-                    if (card != null && card.getOwnerId().equals(source.getControllerId()) && game.getState().getZone(cardId) == Zone.GRAVEYARD) {
+                    if (card != null && card.isOwnedBy(source.getControllerId()) && game.getState().getZone(cardId) == Zone.GRAVEYARD) {
                         toHand.add(card);
                     }
                 }
@@ -109,7 +109,7 @@ class GarnaTheBloodflameWatcher extends Watcher {
     private final Set<UUID> cards = new HashSet<>();
 
     public GarnaTheBloodflameWatcher() {
-        super(GarnaTheBloodflameWatcher.class.getSimpleName(), WatcherScope.GAME);
+        super(WatcherScope.GAME);
     }
 
     public GarnaTheBloodflameWatcher(final GarnaTheBloodflameWatcher watcher) {
@@ -119,7 +119,7 @@ class GarnaTheBloodflameWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == GameEvent.EventType.ZONE_CHANGE && ((ZoneChangeEvent) event).getToZone().equals(Zone.GRAVEYARD)) {
+        if (event.getType() == GameEvent.EventType.ZONE_CHANGE && ((ZoneChangeEvent) event).getToZone() == Zone.GRAVEYARD) {
             Card card = game.getCard(event.getTargetId());
             if (card != null && card.isCreature()) {
                 cards.add(event.getTargetId());

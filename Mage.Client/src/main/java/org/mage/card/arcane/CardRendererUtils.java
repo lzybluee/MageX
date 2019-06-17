@@ -1,9 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.mage.card.arcane;
+
+import mage.MageInt;
+import mage.view.CardView;
+import mage.view.PermanentView;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,11 +14,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author stravant@gmail.com
+ * @author stravant@gmail.com, JayDi85
  * <p>
  * Various static utilities for use in the card renderer
  */
 public final class CardRendererUtils {
+
+    // text colors for PT (mtgo and image render modes)
+    private static final Color CARD_TEXT_COLOR_GOOD_LIGHT = new Color(182, 235, 168);
+    private static final Color CARD_TEXT_COLOR_GOOD_DARK = new Color(52, 135, 88);
+    private static final Color CARD_TEXT_COLOR_BAD_LIGHT = new Color(234, 153, 153);
+    private static final Color CARD_TEXT_COLOR_BAD_DARK = new Color(200, 33, 33);
 
     /**
      * Convert an abstract image, whose underlying implementation may or may not
@@ -58,31 +63,31 @@ public final class CardRendererUtils {
         int b = c.getBlue();
         int alpha = c.getAlpha();
 
-        int plus_r = (int) ((255 - r) / 2);
-        int plus_g = (int) ((255 - g) / 2);
-        int plus_b = (int) ((255 - b) / 2);
+        int plus_r = (255 - r) / 2;
+        int plus_g = (255 - g) / 2;
+        int plus_b = (255 - b) / 2;
 
         return new Color(r + plus_r,
-                         g + plus_g,
-                         b + plus_b,
-                         alpha);
+                g + plus_g,
+                b + plus_b,
+                alpha);
     }
-    
+
     public static Color abitdarker(Color c) {
         int r = c.getRed();
         int g = c.getGreen();
         int b = c.getBlue();
         int alpha = c.getAlpha();
 
-        int plus_r = (int) (Math.min (255 - r, r) / 2);
-        int plus_g = (int) (Math.min (255 - g, g) / 2);
-        int plus_b = (int) (Math.min (255 - b, b) / 2);
+        int plus_r = Math.min(255 - r, r) / 2;
+        int plus_g = Math.min(255 - g, g) / 2;
+        int plus_b = Math.min(255 - b, b) / 2;
 
         return new Color(r - plus_r,
-                         g - plus_g,
-                         b - plus_b,
-                         alpha);
-    }    
+                g - plus_g,
+                b - plus_b,
+                alpha);
+    }
 
     // Draw a rounded box with a 2-pixel border
     // Used on various card parts.
@@ -192,4 +197,60 @@ public final class CardRendererUtils {
                 .replaceAll("<i>", "")
                 .replaceAll("</i>", "");
     }
+
+    public static Color copyColor(Color color) {
+        if (color != null) {
+            return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        } else {
+            return null;
+        }
+    }
+
+    public static String getCardLifeWithDamage(CardView cardView) {
+        // life with damage
+        String originLife = cardView.getToughness();
+        if (cardView instanceof PermanentView) {
+            int damage = ((PermanentView) cardView).getDamage();
+            int life;
+            try {
+                life = Integer.parseInt(originLife);
+                originLife = String.valueOf(Math.max(0, life - damage));
+            } catch (NumberFormatException e) {
+                //
+            }
+        }
+        return originLife;
+    }
+
+    public static boolean isCardWithDamage(CardView cardView) {
+        boolean haveDamage = false;
+        if (cardView instanceof PermanentView) {
+            haveDamage = ((PermanentView) cardView).getDamage() > 0;
+        }
+        return haveDamage;
+    }
+
+    public static Color getCardTextColor(MageInt value, boolean drawAsDamaged, Color defaultColor, boolean textLight) {
+        if (drawAsDamaged) {
+            return textLight ? CARD_TEXT_COLOR_BAD_LIGHT : CARD_TEXT_COLOR_BAD_DARK;
+        }
+
+        // boost colorizing
+        if (value != null) {
+            int current = value.getValue();
+            int origin = value.getBaseValue();
+            if (origin != 0) {
+                if (current < origin) {
+                    return textLight ? CARD_TEXT_COLOR_BAD_LIGHT : CARD_TEXT_COLOR_BAD_DARK;
+                } else if (current > origin) {
+                    return textLight ? CARD_TEXT_COLOR_GOOD_LIGHT : CARD_TEXT_COLOR_GOOD_DARK;
+                } else {
+                    return defaultColor;
+                }
+            }
+        }
+
+        return defaultColor;
+    }
+
 }

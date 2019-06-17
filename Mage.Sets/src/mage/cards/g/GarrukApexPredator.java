@@ -1,10 +1,8 @@
-
 package mage.cards.g;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.LoyaltyAbility;
-import mage.abilities.common.PlanswalkerEntersWithLoyalityCountersAbility;
+import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.CreateTokenEffect;
@@ -12,7 +10,10 @@ import mage.abilities.effects.common.DestroyTargetEffect;
 import mage.abilities.effects.common.GetEmblemTargetPlayerEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.*;
+import mage.constants.CardType;
+import mage.constants.Outcome;
+import mage.constants.SubType;
+import mage.constants.SuperType;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.permanent.AnotherPredicate;
@@ -25,8 +26,9 @@ import mage.target.TargetPermanent;
 import mage.target.common.TargetCreaturePermanent;
 import mage.target.common.TargetOpponent;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class GarrukApexPredator extends CardImpl {
@@ -35,7 +37,7 @@ public final class GarrukApexPredator extends CardImpl {
 
     static {
         filter.add(new CardTypePredicate(CardType.PLANESWALKER));
-        filter.add(new AnotherPredicate());
+        filter.add(AnotherPredicate.instance);
     }
 
     public GarrukApexPredator(UUID ownerId, CardSetInfo setInfo) {
@@ -43,7 +45,7 @@ public final class GarrukApexPredator extends CardImpl {
         this.addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.GARRUK);
 
-        this.addAbility(new PlanswalkerEntersWithLoyalityCountersAbility(5));
+        this.addAbility(new PlaneswalkerEntersWithLoyaltyCountersAbility(5));
 
         // +1: Destroy another target planeswalker.
         LoyaltyAbility ability = new LoyaltyAbility(new DestroyTargetEffect(), 1);
@@ -62,7 +64,6 @@ public final class GarrukApexPredator extends CardImpl {
 
         // -8: Target opponent gets an emblem with "Whenever a creature attacks you, it gets +5/+5 and gains trample until end of turn."
         Effect effect = new GetEmblemTargetPlayerEffect(new GarrukApexPredatorEmblem());
-        effect.setText("Target opponent gets an emblem with \"Whenever a creature attacks you, it gets +5/+5 and gains trample until end of turn.\"");
         ability = new LoyaltyAbility(effect, -8);
         ability.addTarget(new TargetOpponent());
         this.addAbility(ability);

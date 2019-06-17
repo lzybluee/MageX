@@ -7,6 +7,7 @@ package mage.constants;
  */
 public enum AbilityWord {
 
+    ADDENDUM("Addendum"),
     BATTALION("Battalion"),
     BLOODRUSH("Bloodrush"),
     CHANNEL("Channel"),
@@ -43,6 +44,7 @@ public enum AbilityWord {
     SWEEP("Sweep"),
     TEMPTING_OFFER("Tempting offer"),
     THRESHOLD("Threshold"),
+    UNDERGROWTH("Undergrowth"),
     WILL_OF_THE_COUNCIL("Will of the council");
 
     private final String text;

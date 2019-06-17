@@ -2,11 +2,13 @@ package mage.cards;
 
 import mage.ObjectColor;
 
-public final class CardGraphicInfo {
+import java.io.Serializable;
+
+public final class CardGraphicInfo implements Serializable {
 
     private final ObjectColor frameColor;
     private final FrameStyle frameStyle;
-    private final boolean useVariousArt;
+    private final boolean useVariousArt; // card in set have multiple images (use to store images files)
 
     public CardGraphicInfo(FrameStyle frameStyle, boolean useVariousArt) {
         this(null, frameStyle, useVariousArt);
@@ -28,5 +30,15 @@ public final class CardGraphicInfo {
 
     public boolean getUsesVariousArt() {
         return this.useVariousArt;
+    }
+
+    private CardGraphicInfo(final CardGraphicInfo info) {
+        this.frameColor = info.frameColor != null ? info.frameColor.copy() : null;
+        this.frameStyle = info.frameStyle;
+        this.useVariousArt = info.useVariousArt;
+    }
+
+    public CardGraphicInfo copy() {
+        return new CardGraphicInfo(this);
     }
 }

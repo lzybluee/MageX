@@ -37,9 +37,9 @@ public final class Gigantoplasm extends CardImpl {
         this.power = new MageInt(0);
         this.toughness = new MageInt(0);
 
-        // You may have Gigantoplasm enter the battlefield as a copy of any creature on the battlefield except it gains "{X}: This creature has base power and toughness X/X."
+        // You may have Gigantoplasm enter the battlefield as a copy of any creature on the battlefield, except it has "{X}: This creature has base power and toughness X/X."
         Effect effect = new CopyPermanentEffect(StaticFilters.FILTER_PERMANENT_CREATURE, new GigantoplasmApplyToPermanent());
-        effect.setText("a copy of any creature on the battlefield except it gains \"{X}: This creature has base power and toughness X/X.\"");
+        effect.setText("a copy of any creature on the battlefield, except it has \"{X}: This creature has base power and toughness X/X.\"");
         this.addAbility(new EntersBattlefieldAbility(effect, true));
     }
 
@@ -57,7 +57,7 @@ class GigantoplasmApplyToPermanent extends ApplyToPermanent {
 
     @Override
     public boolean apply(Game game, Permanent permanent, Ability source, UUID copyToObjectId) {
-        DynamicValue variableMana = new ManacostVariableValue();
+        DynamicValue variableMana = ManacostVariableValue.instance;
         Effect effect = new SetPowerToughnessSourceEffect(variableMana, Duration.WhileOnBattlefield, SubLayer.SetPT_7b);
         effect.setText("This creature has base power and toughness X/X");
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, effect, new ManaCostsImpl("{X}"));
@@ -67,7 +67,7 @@ class GigantoplasmApplyToPermanent extends ApplyToPermanent {
 
     @Override
     public boolean apply(Game game, MageObject mageObject, Ability source, UUID copyToObjectId) {
-        DynamicValue variableMana = new ManacostVariableValue();
+        DynamicValue variableMana = ManacostVariableValue.instance;
         Effect effect = new SetPowerToughnessSourceEffect(variableMana, Duration.WhileOnBattlefield, SubLayer.SetPT_7b);
         effect.setText("This creature has base power and toughness X/X");
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, effect, new ManaCostsImpl("{X}"));

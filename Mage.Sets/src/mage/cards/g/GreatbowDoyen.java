@@ -86,7 +86,7 @@ class GreatbowDoyenTriggeredAbility extends TriggeredAbilityImpl {
         if (creature != null && damagedCreature != null 
                 && creature.isCreature()
                 && creature.hasSubtype(SubType.ARCHER, game)
-                && creature.getControllerId().equals(controllerId)) {
+                && creature.isControlledBy(controllerId)) {
             this.getEffects().get(0).setValue("damageAmount", event.getAmount());
             this.getEffects().get(0).setValue("controller", damagedCreature.getControllerId());
             this.getEffects().get(0).setValue("source", event.getSourceId());
@@ -131,7 +131,7 @@ class GreatbowDoyenEffect extends OneShotEffect {
                 Player player = game.getPlayer(controllerId);
                 if (player != null) {
                     player.damage(damageAmount, sourceOfDamage, game, false, true);
-                    game.informPlayers(new StringBuilder(permanent.getName()).append(" deals ").append(damageAmount).append(" damage to ").append(player.getLogName()).toString());
+                    game.informPlayers(permanent.getName() + " deals " + damageAmount + " damage to " + player.getLogName());
                     return true;
                 }
             }

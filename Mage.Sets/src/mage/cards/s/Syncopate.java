@@ -61,7 +61,7 @@ class SyncopateCounterUnlessPaysEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         StackObject spell = game.getStack().getStackObject(targetPointer.getFirst(game, source));
         MageObject sourceObject = source.getSourceObject(game);
-        if (spell != null && (spell instanceof Spell) && sourceObject != null) {
+        if ((spell instanceof Spell) && sourceObject != null) {
             Player controller = game.getPlayer(source.getControllerId());
             if (controller != null) {
                 int amount = source.getManaCostsToPay().getX();
@@ -71,7 +71,7 @@ class SyncopateCounterUnlessPaysEffect extends OneShotEffect {
                         StackObject stackObject = game.getStack().getStackObject(source.getFirstTarget());
                         if (stackObject != null && !game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.COUNTER, source.getFirstTarget(), source.getSourceId(), stackObject.getControllerId()))) {
                             game.informPlayers(sourceObject.getIdName() + ": cost wasn't payed - countering " + stackObject.getName());
-                            game.rememberLKI(source.getFirstTarget(), Zone.STACK, (Spell) stackObject);
+                            game.rememberLKI(source.getFirstTarget(), Zone.STACK, stackObject);
                             controller.moveCards((Spell) spell, Zone.EXILED, source, game);
                             game.fireEvent(GameEvent.getEvent(GameEvent.EventType.COUNTERED, source.getFirstTarget(), source.getSourceId(), stackObject.getControllerId()));
                             return true;

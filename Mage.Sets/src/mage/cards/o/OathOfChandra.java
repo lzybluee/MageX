@@ -8,7 +8,7 @@ import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfEndStepTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.condition.Condition;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.dynamicvalue.common.StaticValue;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.DamagePlayersEffect;
@@ -30,7 +30,7 @@ import mage.watchers.Watcher;
  */
 public final class OathOfChandra extends CardImpl {
 
-    private final static FilterCreaturePermanent filter = new FilterCreaturePermanent("creature an opponent controls");
+    private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature an opponent controls");
 
     static {
         filter.add(new ControllerPredicate(TargetController.OPPONENT));
@@ -47,7 +47,7 @@ public final class OathOfChandra extends CardImpl {
         ability.addTarget(new TargetCreaturePermanent(filter));
         this.addAbility(ability);
         // At the beginning of each end step, if a planeswalker entered the battlefield under your control this turn, Oath of Chandra deals 2 damage to each opponent.
-        this.addAbility(new ConditionalTriggeredAbility(new BeginningOfEndStepTriggeredAbility(
+        this.addAbility(new ConditionalInterveningIfTriggeredAbility(new BeginningOfEndStepTriggeredAbility(
                 new DamagePlayersEffect(Outcome.Damage, new StaticValue(2), TargetController.OPPONENT),
                 TargetController.ANY, false), OathOfChandraCondition.instance,
                 "At the beginning of each end step, if a planeswalker entered the battlefield under your control this turn, {this} deals 2 damage to each opponent."), new OathOfChandraWatcher());
@@ -69,7 +69,7 @@ enum OathOfChandraCondition implements Condition {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        OathOfChandraWatcher watcher = (OathOfChandraWatcher) game.getState().getWatchers().get(OathOfChandraWatcher.class.getSimpleName());
+        OathOfChandraWatcher watcher = game.getState().getWatcher(OathOfChandraWatcher.class);
         return watcher != null && watcher.enteredPlaneswalkerForPlayer(source.getControllerId());
     }
 
@@ -85,7 +85,7 @@ class OathOfChandraWatcher extends Watcher {
     private final Set<UUID> players = new HashSet<>();
 
     public OathOfChandraWatcher() {
-        super(OathOfChandraWatcher.class.getSimpleName(), WatcherScope.GAME);
+        super(WatcherScope.GAME);
     }
 
     public OathOfChandraWatcher(final OathOfChandraWatcher watcher) {

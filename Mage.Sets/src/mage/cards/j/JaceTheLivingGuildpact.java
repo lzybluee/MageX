@@ -1,9 +1,8 @@
-
 package mage.cards.j;
 
 import java.util.UUID;
 import mage.abilities.LoyaltyAbility;
-import mage.abilities.common.PlanswalkerEntersWithLoyalityCountersAbility;
+import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.dynamicvalue.common.StaticValue;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
@@ -31,7 +30,7 @@ public final class JaceTheLivingGuildpact extends CardImpl {
     private static final FilterPermanent filter = new FilterNonlandPermanent("another target nonland permanent");
 
     static {
-        filter.add(new AnotherPredicate());
+        filter.add(AnotherPredicate.instance);
     }
 
     public JaceTheLivingGuildpact(UUID ownerId, CardSetInfo setInfo) {
@@ -39,7 +38,7 @@ public final class JaceTheLivingGuildpact extends CardImpl {
         this.addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.JACE);
 
-        this.addAbility(new PlanswalkerEntersWithLoyalityCountersAbility(5));
+        this.addAbility(new PlaneswalkerEntersWithLoyaltyCountersAbility(5));
 
         // +1: Look at the top two cards of your library. Put one of them into your graveyard.
         Effect effect = new LookLibraryAndPickControllerEffect(
@@ -55,6 +54,7 @@ public final class JaceTheLivingGuildpact extends CardImpl {
         // -8: Each player shuffles their hand and graveyard into their library. You draw seven cards.
         ability = new LoyaltyAbility(new ShuffleHandGraveyardAllEffect(), -8);
         ability.addEffect(new DrawCardSourceControllerEffect(7).setText("You draw seven cards"));
+        this.addAbility(ability);
 
     }
 

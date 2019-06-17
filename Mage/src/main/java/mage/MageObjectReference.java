@@ -1,7 +1,5 @@
 package mage;
 
-import java.io.Serializable;
-import java.util.UUID;
 import mage.cards.Card;
 import mage.constants.Zone;
 import mage.game.Game;
@@ -9,6 +7,9 @@ import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.game.stack.StackObject;
 import org.apache.log4j.Logger;
+
+import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * A object reference that takes zone changes into account.
@@ -52,6 +53,10 @@ public class MageObjectReference implements Comparable<MageObjectReference>, Ser
 
     public MageObjectReference(UUID sourceId, Game game) {
         this.sourceId = sourceId;
+        if (sourceId == null) {
+            throw new IllegalArgumentException("MageObjectReference contains nullable sourceId");
+        }
+
         MageObject mageObject = game.getObject(sourceId);
         if (mageObject != null) {
             this.zoneChangeCounter = mageObject.getZoneChangeCounter(game);
@@ -144,5 +149,9 @@ public class MageObjectReference implements Comparable<MageObjectReference>, Ser
             return card;
         }
         return null;
+    }
+
+    public boolean zoneCounterIsCurrent(Game game) {
+        return game.getState().getZoneChangeCounter(sourceId) == zoneChangeCounter;
     }
 }

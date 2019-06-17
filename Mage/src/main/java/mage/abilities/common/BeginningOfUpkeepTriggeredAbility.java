@@ -70,6 +70,16 @@ public class BeginningOfUpkeepTriggeredAbility extends TriggeredAbilityImpl {
                     }
                 }
                 return yours;
+            case NOT_YOU:
+                boolean notYours = !event.getPlayerId().equals(this.controllerId);
+                if (notYours && setTargetPointer) {
+                    if (getTargets().isEmpty()) {
+                        for (Effect effect : this.getEffects()) {
+                            effect.setTargetPointer(new FixedTarget(event.getPlayerId()));
+                        }
+                    }
+                }
+                return notYours;
             case OPPONENT:
                 if (game.getPlayer(this.controllerId).hasOpponent(event.getPlayerId(), game)) {
                     if (setTargetPointer && getTargets().isEmpty()) {
@@ -91,7 +101,7 @@ public class BeginningOfUpkeepTriggeredAbility extends TriggeredAbilityImpl {
                 Permanent attachment = game.getPermanent(sourceId);
                 if (attachment != null && attachment.getAttachedTo() != null) {
                     Permanent attachedTo = game.getPermanent(attachment.getAttachedTo());
-                    if (attachedTo != null && attachedTo.getControllerId().equals(event.getPlayerId())) {
+                    if (attachedTo != null && attachedTo.isControlledBy(event.getPlayerId())) {
                         if (setTargetPointer && getTargets().isEmpty()) {
                             for (Effect effect : this.getEffects()) {
                                 effect.setTargetPointer(new FixedTarget(event.getPlayerId()));

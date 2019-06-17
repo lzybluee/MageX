@@ -56,7 +56,7 @@ class AsmiraHolyAvengerWatcher extends Watcher {
     private int creaturesCount = 0;
 
     public AsmiraHolyAvengerWatcher() {
-        super(AsmiraHolyAvengerWatcher.class.getSimpleName(), WatcherScope.PLAYER);
+        super(WatcherScope.PLAYER);
         condition = true;
     }
 
@@ -78,7 +78,7 @@ class AsmiraHolyAvengerWatcher extends Watcher {
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.ZONE_CHANGE && ((ZoneChangeEvent) event).isDiesEvent()) {
             MageObject card = game.getLastKnownInformation(event.getTargetId(), Zone.BATTLEFIELD);
-            if (card != null && ((Card) card).getOwnerId().equals(this.controllerId) && card.isCreature()) {
+            if (card != null && ((Card) card).isOwnedBy(this.controllerId) && card.isCreature()) {
                 creaturesCount++;
             }
         }
@@ -95,7 +95,7 @@ class AsmiraHolyAvengerDynamicValue implements DynamicValue {
 
     @Override
     public int calculate(Game game, Ability sourceAbility, Effect effect) {
-        AsmiraHolyAvengerWatcher watcher = (AsmiraHolyAvengerWatcher) game.getState().getWatchers().get(AsmiraHolyAvengerWatcher.class.getSimpleName(), sourceAbility.getControllerId());
+        AsmiraHolyAvengerWatcher watcher = game.getState().getWatcher(AsmiraHolyAvengerWatcher.class, sourceAbility.getControllerId());
         if (watcher != null) {
             return watcher.getCreaturesCount();
         }

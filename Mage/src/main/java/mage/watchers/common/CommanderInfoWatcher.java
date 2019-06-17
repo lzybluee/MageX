@@ -1,9 +1,5 @@
-
 package mage.watchers.common;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import mage.MageObject;
 import mage.cards.Card;
 import mage.constants.WatcherScope;
@@ -15,6 +11,10 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.watchers.Watcher;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /* 20130711
  *903.14a A player that's been dealt 21 or more combat damage by the same commander
  * over the course of the game loses the game. (This is a state-based action. See rule 704.)
@@ -24,19 +24,22 @@ import mage.watchers.Watcher;
  */
 public class CommanderInfoWatcher extends Watcher {
 
-    public final Map<UUID, Integer> damageToPlayer = new HashMap<>();
-    public final boolean checkCommanderDamage;
+    private final Map<UUID, Integer> damageToPlayer = new HashMap<>();
+    private final boolean checkCommanderDamage;
+    private final String commanderTypeName;
 
-    public CommanderInfoWatcher(UUID commander, boolean checkCommanderDamage) {
-        super(CommanderInfoWatcher.class.getSimpleName(), WatcherScope.CARD);
+    public CommanderInfoWatcher(String commanderTypeName, UUID commander, boolean checkCommanderDamage) {
+        super(WatcherScope.CARD);
         this.sourceId = commander;
         this.checkCommanderDamage = checkCommanderDamage;
+        this.commanderTypeName = commanderTypeName;
     }
 
     public CommanderInfoWatcher(final CommanderInfoWatcher watcher) {
         super(watcher);
         this.damageToPlayer.putAll(watcher.damageToPlayer);
         this.checkCommanderDamage = watcher.checkCommanderDamage;
+        this.commanderTypeName = watcher.commanderTypeName;
     }
 
     @Override
@@ -78,18 +81,20 @@ public class CommanderInfoWatcher extends Watcher {
         }
         if (object != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("<b>Commander</b>");
-            Integer castCount = (Integer) game.getState().getValue(sourceId + "_castCount");
-            if (castCount != null) {
-                sb.append(' ').append(castCount).append(castCount == 1 ? " time" : " times").append(" casted from the command zone.");
+            sb.append("<b>" + commanderTypeName + "</b>");
+            CommanderPlaysCountWatcher watcher = game.getState().getWatcher(CommanderPlaysCountWatcher.class);
+            int playsCount = watcher.getPlaysCount(sourceId);
+            if (playsCount > 0) {
+                sb.append(' ').append(playsCount).append(playsCount == 1 ? " time" : " times").append(" played from the command zone.");
             }
             this.addInfo(object, "Commander", sb.toString(), game);
+
             if (checkCommanderDamage) {
                 for (Map.Entry<UUID, Integer> entry : damageToPlayer.entrySet()) {
                     Player damagedPlayer = game.getPlayer(entry.getKey());
-                    sb.append("<b>Commander</b> did ").append(entry.getValue()).append(" combat damage to player ").append(damagedPlayer.getLogName()).append('.');
+                    sb.append("<b>" + commanderTypeName + "</b> did ").append(entry.getValue()).append(" combat damage to player ").append(damagedPlayer.getLogName()).append('.');
                     this.addInfo(object, "Commander" + entry.getKey(),
-                            "<b>Commander</b> did " + entry.getValue() + " combat damage to player " + damagedPlayer.getLogName() + '.', game);
+                            "<b>" + commanderTypeName + "</b> did " + entry.getValue() + " combat damage to player " + damagedPlayer.getLogName() + '.', game);
                 }
             }
         }

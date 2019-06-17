@@ -61,7 +61,7 @@ class MemoryCrystalSpellsCostReductionEffect extends CostModificationEffectImpl 
         if (card != null) {
             for (Ability ability : card.getAbilities()) {
                 if (ability instanceof BuybackAbility) {
-                    if (((BuybackAbility) ability).isActivated()) {
+                    if (ability.isActivated()) {
                         int amountToReduce = ((BuybackAbility) ability).reduceCost(2);
                         CardUtil.reduceCost(abilityToModify, amountToReduce);
                     }
@@ -74,7 +74,7 @@ class MemoryCrystalSpellsCostReductionEffect extends CostModificationEffectImpl 
     @Override
     public boolean applies(Ability abilityToModify, Ability source, Game game) {
         if (abilityToModify instanceof SpellAbility) {
-            if (abilityToModify.getControllerId().equals(source.getControllerId())) {
+            if (abilityToModify.isControlledBy(source.getControllerId())) {
                 Spell spell = (Spell) game.getStack().getStackObject(abilityToModify.getId());
                 if (spell != null) {
                     if (BuybackCondition.instance.apply(game, abilityToModify)) {

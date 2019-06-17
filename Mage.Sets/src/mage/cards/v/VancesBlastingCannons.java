@@ -2,6 +2,7 @@
 package mage.cards.v;
 
 import java.util.UUID;
+
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
@@ -13,7 +14,6 @@ import mage.abilities.keyword.TransformAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.cards.s.SpitfireBastion;
 import mage.constants.AsThoughEffectType;
 import mage.constants.CardType;
 import mage.constants.Duration;
@@ -29,7 +29,6 @@ import mage.target.targetpointer.FixedTarget;
 import mage.watchers.common.CastSpellLastTurnWatcher;
 
 /**
- *
  * @author TheElk801
  */
 public final class VancesBlastingCannons extends CardImpl {
@@ -39,7 +38,7 @@ public final class VancesBlastingCannons extends CardImpl {
 
         this.addSuperType(SuperType.LEGENDARY);
         this.transformable = true;
-        this.secondSideCardClazz = SpitfireBastion.class;
+        this.secondSideCardClazz = mage.cards.s.SpitfireBastion.class;
 
         // At the beginning of your upkeep, exile the top card of your library.  If it's a nonland card, you may cast that card this turn.
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new VancesBlastingCannonsExileEffect(), TargetController.YOU, false));
@@ -120,7 +119,7 @@ class CastFromNonHandZoneTargetEffect extends AsThoughEffectImpl {
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
         if (getTargetPointer().getTargets(game, source).contains(objectId)
-                && source.getControllerId().equals(affectedControllerId)) {
+                && source.isControlledBy(affectedControllerId)) {
             Card card = game.getCard(objectId);
             if (card != null) {
                 return true;
@@ -153,7 +152,7 @@ class VancesBlastingCannonsFlipTrigger extends TriggeredAbilityImpl {
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         if (event.getPlayerId().equals(controllerId)) {
-            CastSpellLastTurnWatcher watcher = (CastSpellLastTurnWatcher) game.getState().getWatchers().get(CastSpellLastTurnWatcher.class.getSimpleName());
+            CastSpellLastTurnWatcher watcher = game.getState().getWatcher(CastSpellLastTurnWatcher.class);
             if (watcher != null && watcher.getAmountOfSpellsPlayerCastOnCurrentTurn(event.getPlayerId()) == 3) {
                 return true;
             }

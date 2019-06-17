@@ -50,12 +50,12 @@ class BroodingSaurianControlEffect extends ContinuousEffectImpl {
     private static final FilterPermanent filter = new FilterPermanent();
 
     static {
-        filter.add(Predicates.not(new TokenPredicate()));
+        filter.add(Predicates.not(TokenPredicate.instance));
     }
 
     public BroodingSaurianControlEffect() {
         super(Duration.EndOfGame, Layer.ControlChangingEffects_2, SubLayer.NA, Outcome.GainControl);
-        this.staticText = "each player gains control of all nontoken permanents he or she owns";
+        this.staticText = "each player gains control of all nontoken permanents they own";
     }
 
     public BroodingSaurianControlEffect(final BroodingSaurianControlEffect effect) {
@@ -88,7 +88,7 @@ class BroodingSaurianControlEffect extends ContinuousEffectImpl {
         for (Iterator<MageObjectReference> it = affectedObjectList.iterator(); it.hasNext();) {
             Permanent creature = it.next().getPermanent(game);
             if (creature != null) {
-                if (!creature.getControllerId().equals(creature.getOwnerId())) {
+                if (!creature.isControlledBy(creature.getOwnerId())) {
                     creature.changeControllerId(creature.getOwnerId(), game);
                 }
             } else {

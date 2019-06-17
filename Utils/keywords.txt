@@ -1,0 +1,102 @@
+Afflict|number|
+Afterlife|number|
+Annihilator|number|
+Ascend|new|
+Assist|new|
+Basic landcycling|cost|
+Battle cry|new|
+Bestow|card, manaString|
+Bloodthirst|number|
+Bushido|number|
+Buyback|manaString|
+Cascade|new|
+Changeling|instance|
+Convoke|new|
+Crew|number|
+Cumulative upkeep|cost|
+Cycling|cost|
+Dash|card, manaString|
+Deathtouch|instance|
+Delve|new|
+Dethrone|new|
+Devoid|color|
+Defender|instance|
+Dredge|number|
+Double Strike|instance|
+Dredge|number|
+Echo|manaString|
+Embalm|cost, card|
+Enchant|type|
+Entwine|manaString|
+Eternalize|cost, card|
+Evoke|card, manaString|
+Evolve|new|
+Exalted|new|
+Exploit|new|
+Extort|new|
+Fabricate|number|
+Fear|instance|
+First strike|instance|
+Flanking|new|
+Flash|instance|
+Flashback|cost|
+Flying|instance|
+Forestcycling|cost|
+Forestwalk|new|
+Haste|instance|
+Hexproof|instance|
+Improvise|new|
+Indestructible|instance|
+Infect|instance|
+Intimidate|instance|
+Ingest|new|
+Islandcycling|cost|
+Islandwalk|new|
+Jump-start|card|
+Level up|cost|
+Lifelink|instance|
+Living weapon|new|
+Madness|card, cost|
+Melee|new|
+Menace|new|
+Mentor|new|
+Miracle|cost|
+Mountaincycling|cost|
+Mountainwalk|new|
+Morph|card, cost|
+Myriad|new|
+Ninjutsu|cost|
+Outlast|cost|
+Persist|new|
+Phasing|instance|
+Plainscycling|cost|
+Plainswalk|new|
+Poisonous|number|
+Provoke|new|
+Prowess|new|
+Reach|instance|
+Rebound|new|
+Renown|number|
+Replicate|card, manaString|
+Riot|new|
+Scavenge|cost|
+Shadow|instance|
+Shroud|instance|
+Soulbond|instance|
+Soulshift|number|
+Skulk|new|
+Spectacle|card, cost|
+Storm|new|
+Sunburst|new|
+Swampcycling|cost|
+Swampwalk|new|
+Totem armor|new|
+Trample|instance|
+Tribute|number|
+Unblockable|new|
+Undaunted|new|
+Undying|new|
+Unearth|cost|
+Unleash|new|
+Vigilance|instance|
+Wither|instance|

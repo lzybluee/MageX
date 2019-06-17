@@ -60,7 +60,7 @@ class CallerOfTheClawWatcher extends Watcher {
     private int creaturesCount = 0;
 
     public CallerOfTheClawWatcher() {
-        super(CallerOfTheClawWatcher.class.getSimpleName(), WatcherScope.PLAYER);
+        super(WatcherScope.PLAYER);
         condition = true;
     }
 
@@ -82,7 +82,7 @@ class CallerOfTheClawWatcher extends Watcher {
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.ZONE_CHANGE && ((ZoneChangeEvent) event).isDiesEvent()) {
             Permanent card = (Permanent) game.getLastKnownInformation(event.getTargetId(), Zone.BATTLEFIELD);
-            if (card != null && card.getOwnerId().equals(this.controllerId) && card.isCreature() && !(card instanceof PermanentToken)) {
+            if (card != null && card.isOwnedBy(this.controllerId) && card.isCreature() && !(card instanceof PermanentToken)) {
                 creaturesCount++;
             }
         }
@@ -114,7 +114,7 @@ class CallerOfTheClawDynamicValue implements DynamicValue {
 
     @Override
     public int calculate(Game game, Ability sourceAbility, Effect effect) {
-        CallerOfTheClawWatcher watcher = (CallerOfTheClawWatcher) game.getState().getWatchers().get(CallerOfTheClawWatcher.class.getSimpleName(), sourceAbility.getControllerId());
+        CallerOfTheClawWatcher watcher = game.getState().getWatcher(CallerOfTheClawWatcher.class, sourceAbility.getControllerId());
         if (watcher != null) {
             return watcher.getCreaturesCount();
         }

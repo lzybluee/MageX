@@ -24,19 +24,17 @@ public class AttackedLastTurnWatcher extends Watcher {
     public final Map<UUID, Set<MageObjectReference>> attackedThisTurnCreatures = new HashMap<>(); // dummy map for beginning of turn iteration purposes
 
     public AttackedLastTurnWatcher() {
-        super(AttackedLastTurnWatcher.class.getSimpleName(), WatcherScope.GAME);
+        super(WatcherScope.GAME);
     }
 
     public AttackedLastTurnWatcher(final AttackedLastTurnWatcher watcher) {
         super(watcher);
         for (Entry<UUID, Set<MageObjectReference>> entry : watcher.attackedLastTurnCreatures.entrySet()) {
-            Set<MageObjectReference> allAttackersCopy = new HashSet<>();
-            allAttackersCopy.addAll(entry.getValue());
+            Set<MageObjectReference> allAttackersCopy = new HashSet<>(entry.getValue());
             attackedLastTurnCreatures.put(entry.getKey(), allAttackersCopy);
         }
         for (Entry<UUID, Set<MageObjectReference>> entry : watcher.attackedThisTurnCreatures.entrySet()) {
-            Set<MageObjectReference> allAttackersCopy = new HashSet<>();
-            allAttackersCopy.addAll(entry.getValue());
+            Set<MageObjectReference> allAttackersCopy = new HashSet<>(entry.getValue());
             attackedThisTurnCreatures.put(entry.getKey(), allAttackersCopy);
         }
     }

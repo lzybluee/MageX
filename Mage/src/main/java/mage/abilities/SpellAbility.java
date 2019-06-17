@@ -1,7 +1,5 @@
-
 package mage.abilities;
 
-import java.util.UUID;
 import mage.MageObject;
 import mage.MageObjectReference;
 import mage.abilities.costs.Cost;
@@ -11,15 +9,14 @@ import mage.abilities.costs.mana.VariableManaCost;
 import mage.abilities.keyword.FlashAbility;
 import mage.cards.Card;
 import mage.cards.SplitCard;
-import mage.constants.AbilityType;
-import mage.constants.AsThoughEffectType;
-import mage.constants.SpellAbilityCastMode;
-import mage.constants.SpellAbilityType;
-import mage.constants.TimingRule;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.game.Game;
 import mage.game.events.GameEvent;
+import mage.game.stack.Spell;
 import mage.players.Player;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -76,7 +73,7 @@ public class SpellAbility extends ActivatedAbilityImpl {
             MageObjectReference permittingSource = game.getContinuousEffects().asThough(getSourceId(), AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE, null, playerId, game);
             if (permittingSource == null) {
                 Card card = game.getCard(sourceId);
-                if (!(card != null && card.getOwnerId().equals(playerId))) {
+                if (!(card != null && card.isOwnedBy(playerId))) {
                     return ActivationStatus.getFalse();
                 }
             }
@@ -165,13 +162,15 @@ public class SpellAbility extends ActivatedAbilityImpl {
             return 0;
         }
 
+        // mana cost instances
         for (ManaCost manaCost : card.getManaCost()) {
             if (manaCost instanceof VariableManaCost) {
-                xMultiplier = ((VariableManaCost) manaCost).getMultiplier();
+                xMultiplier = ((VariableManaCost) manaCost).getXInstancesCount();
                 break;
             }
         }
 
+        // mana cost final X value
         boolean hasNonManaXCost = false;
         for (Cost cost : getCosts()) {
             if (cost instanceof VariableCost) {
@@ -208,6 +207,30 @@ public class SpellAbility extends ActivatedAbilityImpl {
 
     public SpellAbility getSpellAbilityToResolve(Game game) {
         return this;
+    }
+
+    public Card getCharacteristics(Game game) {
+        Spell spell = game.getSpell(this.getId());
+        if (spell != null) {
+            return spell;
+        }
+        return game.getCard(this.getSourceId());
+    }
+
+    public static SpellAbility getSpellAbilityFromEvent(GameEvent event, Game game) {
+        if (event.getType() != GameEvent.EventType.CAST_SPELL) {
+            return null;
+        }
+
+        Card card = game.getCard(event.getSourceId());
+        if (card != null) {
+            Optional<Ability> ability = card.getAbilities(game).get(event.getTargetId());
+            if (ability.isPresent() && ability.get() instanceof SpellAbility) {
+                return (SpellAbility) ability.get();
+            }
+            return card.getSpellAbility();
+        }
+        return null;
     }
 
     public void setId(UUID idToUse) {

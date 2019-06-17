@@ -25,7 +25,7 @@ public class AttacksIfAbleSourceEffect extends RequirementEffect {
         super(duration);
         this.eachCombat = eachCombat;
         if (this.duration == Duration.EndOfTurn) {
-            staticText = "{this} attacks " + (eachCombat ? "each combat" : "this turn") + " if able";
+            staticText = "{this} attacks " + (eachCombat ? "each combat" : "this combat") + " if able";
         } else {
             staticText = "{this} attacks each " + (eachCombat ? "combat" : "turn") + " if able";
         }
@@ -47,7 +47,7 @@ public class AttacksIfAbleSourceEffect extends RequirementEffect {
             if (eachCombat) {
                 return true;
             }
-            AttackedThisTurnWatcher watcher = (AttackedThisTurnWatcher) game.getState().getWatchers().get(AttackedThisTurnWatcher.class.getSimpleName());
+            AttackedThisTurnWatcher watcher = game.getState().getWatcher(AttackedThisTurnWatcher.class);
             return watcher != null && !watcher.getAttackedThisTurnCreatures().contains(new MageObjectReference(permanent, game));
         }
         return false;

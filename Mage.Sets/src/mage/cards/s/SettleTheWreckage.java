@@ -73,14 +73,14 @@ class SettleTheWreckageEffect extends OneShotEffect {
         Iterator<UUID> creatureIds = game.getCombat().getAttackers().iterator();
         while (creatureIds.hasNext()) {
             Permanent creature = game.getPermanent(creatureIds.next());
-            if (creature != null && creature.getControllerId().equals(player.getId())) {
+            if (creature != null && creature.isControlledBy(player.getId())) {
                 toExile.add(creature);
                 attackers++;
             }
         }
         controller.moveCards(toExile, Zone.EXILED, source, game);
         TargetCardInLibrary target = new TargetCardInLibrary(0, attackers, StaticFilters.FILTER_CARD_BASIC_LAND);
-        if (player.chooseUse(Outcome.Benefit, "Search for up to " + attackers + " basic land" + ((attackers == 1) ? "" : "s") + "?", source, game) && player.searchLibrary(target, game)) {
+        if (player.chooseUse(Outcome.Benefit, "Search for up to " + attackers + " basic land" + ((attackers == 1) ? "" : "s") + "?", source, game) && player.searchLibrary(target, source, game)) {
             player.moveCards(new CardsImpl(target.getTargets()).getCards(game), Zone.BATTLEFIELD, source, game, true, false, false, null);
             player.shuffleLibrary(source, game);
         }

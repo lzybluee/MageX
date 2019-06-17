@@ -65,11 +65,11 @@ public class CantCastMoreThanOneSpellEffect extends ContinuousRuleModifyingEffec
                 break;
             case CONTROLLER_ATTACHED_TO:
                 Permanent attachment = game.getPermanent(source.getSourceId());
-                if (attachment == null || !attachment.getAttachedTo().equals(event.getPlayerId())) {
+                if (attachment == null || !attachment.isAttachedTo(event.getPlayerId())) {
                     return false;
                 }
         }
-        CastSpellLastTurnWatcher watcher = (CastSpellLastTurnWatcher) game.getState().getWatchers().get(CastSpellLastTurnWatcher.class.getSimpleName());
+        CastSpellLastTurnWatcher watcher = game.getState().getWatcher(CastSpellLastTurnWatcher.class);
         return watcher != null && watcher.getAmountOfSpellsPlayerCastOnCurrentTurn(event.getPlayerId()) > 0;
     }
 

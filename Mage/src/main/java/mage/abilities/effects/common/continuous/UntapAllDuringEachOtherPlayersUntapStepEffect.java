@@ -1,20 +1,14 @@
-
 package mage.abilities.effects.common.continuous;
 
 import mage.abilities.Ability;
 import mage.abilities.effects.ContinuousEffectImpl;
 import mage.abilities.effects.RestrictionEffect;
-import mage.constants.Duration;
-import mage.constants.Layer;
-import mage.constants.Outcome;
-import mage.constants.PhaseStep;
-import mage.constants.SubLayer;
+import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 
 /**
- *
  * @author LevelX2
  */
 public class UntapAllDuringEachOtherPlayersUntapStepEffect extends ContinuousEffectImpl {
@@ -39,26 +33,22 @@ public class UntapAllDuringEachOtherPlayersUntapStepEffect extends ContinuousEff
 
     @Override
     public boolean apply(Layer layer, SubLayer sublayer, Ability source, Game game) {
-        Boolean applied = (Boolean) game.getState().getValue(source.getSourceId() + "applied");
-        if (applied == null) {
-            applied = Boolean.FALSE;
-        }
-        if (!applied && layer == Layer.RulesEffects) {
-            if (!source.getControllerId().equals(game.getActivePlayerId()) && game.getStep().getType() == PhaseStep.UNTAP) {
-                game.getState().setValue(source.getSourceId() + "applied", true);
+        if (layer == Layer.RulesEffects && game.getStep().getType() == PhaseStep.UNTAP && !source.isControlledBy(game.getActivePlayerId())) {
+            Integer appliedTurn = (Integer) game.getState().getValue(source.getSourceId() + "appliedTurn");
+            if (appliedTurn == null) {
+                appliedTurn = 0;
+            }
+            if (appliedTurn < game.getTurnNum()) {
+                game.getState().setValue(source.getSourceId() + "appliedTurn", game.getTurnNum());
                 for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filter, source.getControllerId(), game)) {
                     boolean untap = true;
                     for (RestrictionEffect effect : game.getContinuousEffects().getApplicableRestrictionEffects(permanent, game).keySet()) {
-                        untap &= effect.canBeUntapped(permanent, source, game);
+                        untap &= effect.canBeUntapped(permanent, source, game, true);
                     }
                     if (untap) {
                         permanent.untap(game);
                     }
                 }
-            }
-        } else if (applied && layer == Layer.RulesEffects) {
-            if (game.getStep().getType() == PhaseStep.END_TURN) {
-                game.getState().setValue(source.getSourceId() + "applied", false);
             }
         }
         return true;

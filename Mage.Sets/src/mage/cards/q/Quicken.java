@@ -64,7 +64,7 @@ class QuickenAsThoughEffect extends AsThoughEffectImpl {
 
     @Override
     public void init(Ability source, Game game) {
-        quickenWatcher = (QuickenWatcher) game.getState().getWatchers().get(QuickenWatcher.class.getSimpleName());
+        quickenWatcher = game.getState().getWatcher(QuickenWatcher.class);
         Card card = game.getCard(source.getSourceId());
         if (quickenWatcher != null && card != null) {
             zoneChangeCounter = card.getZoneChangeCounter(game);
@@ -86,7 +86,7 @@ class QuickenAsThoughEffect extends AsThoughEffectImpl {
     public boolean applies(UUID sourceId, Ability source, UUID affectedControllerId, Game game) {
         if (quickenWatcher.isQuickenSpellActive(affectedControllerId, source.getSourceId(), zoneChangeCounter)) {
             Card card = game.getCard(sourceId);
-            if (card != null && card.isSorcery() && source.getControllerId().equals(affectedControllerId)) {
+            if (card != null && card.isSorcery() && source.isControlledBy(affectedControllerId)) {
                 return true;
             }
         }
@@ -97,13 +97,13 @@ class QuickenAsThoughEffect extends AsThoughEffectImpl {
 
 class QuickenWatcher extends Watcher {
 
-    public List<String> activeQuickenSpells = new ArrayList<>();
+    private List<String> activeQuickenSpells = new ArrayList<>();
 
     public QuickenWatcher() {
-        super(QuickenWatcher.class.getSimpleName(), WatcherScope.GAME);
+        super(WatcherScope.GAME);
     }
 
-    public QuickenWatcher(final QuickenWatcher watcher) {
+    private QuickenWatcher(final QuickenWatcher watcher) {
         super(watcher);
     }
 

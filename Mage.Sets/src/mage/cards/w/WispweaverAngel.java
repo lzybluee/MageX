@@ -36,7 +36,7 @@ public final class WispweaverAngel extends CardImpl {
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("another target creature you control");
 
     static {
-        filter.add(new AnotherPredicate());
+        filter.add(AnotherPredicate.instance);
     }
 
     public WispweaverAngel(UUID ownerId, CardSetInfo setInfo) {
@@ -96,7 +96,7 @@ class WispweaverAngelEffect extends OneShotEffect {
                             cardsToBattlefield.add(targetId);
                         } else {
                             Card card = game.getCard(targetId);
-                            if (card != null && card instanceof MeldCard) {
+                            if (card instanceof MeldCard) {
                                 MeldCard meldCard = (MeldCard) card;
                                 Card topCard = meldCard.getTopHalfCard();
                                 Card bottomCard = meldCard.getBottomHalfCard();

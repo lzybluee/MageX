@@ -57,7 +57,7 @@ class UnclaimedTerritoryManaBuilder extends ConditionalManaBuilder {
 
     @Override
     public ConditionalManaBuilder setMana(Mana mana, Ability source, Game game) {
-        SubType subType = ChooseCreatureTypeEffect.getChoosenCreatureType(source.getSourceId(), game);
+        SubType subType = ChooseCreatureTypeEffect.getChosenCreatureType(source.getSourceId(), game);
         if (subType != null) {
             creatureType = subType;
         }
@@ -104,7 +104,7 @@ class UnclaimedTerritoryManaCondition extends CreatureCastManaCondition {
         if (super.apply(game, source)) {
             // check: ... of the chosen type
             MageObject object = game.getObject(source.getSourceId());
-            if (creatureType != null && object.hasSubtype(creatureType, game)) {
+            if (creatureType != null && object != null && object.hasSubtype(creatureType, game)) {
                 return true;
             }
         }

@@ -1,37 +1,29 @@
-
 package mage.cards.w;
 
-import java.util.UUID;
-import mage.target.common.TargetCreaturePermanent;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksAttachedTriggeredAbility;
 import mage.abilities.condition.common.AttachedToMatchesFilterCondition;
 import mage.abilities.costs.mana.ManaCostsImpl;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
-import mage.abilities.effects.Effect;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.RestrictionEffect;
 import mage.abilities.effects.common.AttachEffect;
-import mage.abilities.effects.common.combat.CantBeBlockedAttachedEffect;
 import mage.abilities.effects.common.combat.CantBeBlockedTargetEffect;
-import mage.constants.Outcome;
-import mage.target.TargetPermanent;
 import mage.abilities.keyword.EnchantAbility;
 import mage.abilities.keyword.ForecastAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.AttachmentType;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.ComparisonType;
-import mage.constants.Duration;
+import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.PowerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
+import mage.target.TargetPermanent;
+import mage.target.common.TargetCreaturePermanent;
+
+import java.util.UUID;
 
 /**
- *
  * @author TheElk801
  */
 public final class WritOfPassage extends CardImpl {
@@ -51,7 +43,7 @@ public final class WritOfPassage extends CardImpl {
         // Whenever enchanted creature attacks, if its power is 2 or less, it's unblockable this turn.
         FilterPermanent filter = new FilterPermanent("if enchanted creature's power is 2 or less");
         filter.add(new PowerPredicate(ComparisonType.FEWER_THAN, 3));
-        ability = new ConditionalTriggeredAbility(new AttacksAttachedTriggeredAbility(
+        ability = new ConditionalInterveningIfTriggeredAbility(new AttacksAttachedTriggeredAbility(
                 new WritOfPassageAttachedEffect(AttachmentType.AURA), AttachmentType.AURA, false),
                 new AttachedToMatchesFilterCondition(filter), "Whenever enchanted creature attacks, if its power is 2 or less, it can't be blocked this turn.");
         this.addAbility(ability);
@@ -90,14 +82,13 @@ class WritOfPassageAttachedEffect extends RestrictionEffect {
     }
 
     @Override
-    public boolean canBeBlocked(Permanent attacker, Permanent blocker, Ability source, Game game) {
+    public boolean canBeBlocked(Permanent attacker, Permanent blocker, Ability source, Game game, boolean canUseChooseDialogs) {
         return false;
     }
 
     @Override
     public boolean applies(Permanent permanent, Ability source, Game game) {
         Permanent attachment = game.getPermanent(source.getSourceId());
-        return attachment != null && attachment.getAttachedTo() != null
-                && attachment.getAttachedTo().equals(permanent.getId());
+        return attachment != null && attachment.isAttachedTo(permanent.getId());
     }
 }

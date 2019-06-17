@@ -44,7 +44,7 @@ public final class ShiningShoal extends CardImpl {
         this.addAbility(new AlternativeCostSourceAbility(new ExileFromHandCost(new TargetCardInHand(filter), true)));
 
         // The next X damage that a source of your choice would deal to you and/or creatures you control this turn is dealt to any target instead.
-        this.getSpellAbility().addEffect(new ShiningShoalRedirectDamageTargetEffect(Duration.EndOfTurn, new ExileFromHandCostCardConvertedMana()));
+        this.getSpellAbility().addEffect(new ShiningShoalRedirectDamageTargetEffect(Duration.EndOfTurn, ExileFromHandCostCardConvertedMana.instance));
         this.getSpellAbility().addTarget(new TargetSource());
         this.getSpellAbility().addTarget(new TargetAnyTarget());
     }
@@ -103,7 +103,7 @@ class ShiningShoalRedirectDamageTargetEffect extends RedirectDamageFromSourceToT
                 return false;
             }
             // do the 2 objects match?
-            if (!sourceObject.getId().equals(chosenSourceObject.getId())) {
+            if (chosenSourceObject == null || !sourceObject.getId().equals(chosenSourceObject.getId())) {
                 return false;
             }
 
@@ -111,7 +111,7 @@ class ShiningShoalRedirectDamageTargetEffect extends RedirectDamageFromSourceToT
             //   check creature first
             Permanent permanent = game.getPermanent(event.getTargetId());
             if (permanent != null && permanent.isCreature()) {
-                if (permanent.getControllerId().equals(source.getControllerId())) {
+                if (permanent.isControlledBy(source.getControllerId())) {
                     // it's your creature
                     redirectTarget = source.getTargets().get(1);
                     return true;

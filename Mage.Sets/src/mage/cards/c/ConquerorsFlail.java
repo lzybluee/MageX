@@ -90,9 +90,8 @@ class ConquerorsFlailColorCount implements DynamicValue {
                     count++;
                 }
             }
-            return count;
         }
-        return 0;
+        return count;
     }
 
     @Override
@@ -149,7 +148,7 @@ class ConquerorsFlailEffect extends ContinuousRuleModifyingEffectImpl {
             }
         }
 
-        if (isAttached && game.getActivePlayerId().equals(source.getControllerId())
+        if (isAttached && game.isActivePlayer(source.getControllerId())
                 && game.getPlayer(source.getControllerId()).hasOpponent(event.getPlayerId(), game)) {
             return true;
         }

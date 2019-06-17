@@ -8,7 +8,7 @@ import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.LoyaltyAbility;
-import mage.abilities.common.PlanswalkerEntersWithLoyalityCountersAbility;
+import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.CreateTokenEffect;
 import mage.cards.Card;
@@ -43,7 +43,7 @@ public final class KarnScionOfUrza extends CardImpl {
 
         addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.KARN);
-        this.addAbility(new PlanswalkerEntersWithLoyalityCountersAbility(5));
+        this.addAbility(new PlaneswalkerEntersWithLoyaltyCountersAbility(5));
 
         // +1: Reveal the top two cards of your library. An opponent chooses one of them. Put that card into your hand and exile the other with a silver counter on it.
         LoyaltyAbility ability1 = new LoyaltyAbility(new KarnPlus1Effect(), 1);
@@ -89,8 +89,7 @@ class KarnPlus1Effect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         MageObject sourceObject = game.getObject(source.getSourceId());
         if (sourceObject != null && controller != null) {
-            Cards cards = new CardsImpl();
-            cards.addAll(controller.getLibrary().getTopCards(game, 2));
+            Cards cards = new CardsImpl(controller.getLibrary().getTopCards(game, 2));
 
             if (!cards.isEmpty()) {
                 controller.revealCards(staticText, cards, game);
@@ -170,7 +169,7 @@ class KarnMinus1Effect extends OneShotEffect {
                 Cards filteredCards = new CardsImpl();
 
                 for (Card exileCard : exile) {
-                    if (exileCard.getOwnerId().equals(source.getControllerId()) && filter.match(exileCard, game)) {
+                    if (exileCard.isOwnedBy(source.getControllerId()) && filter.match(exileCard, game)) {
                         filteredCards.add(exileCard);
                     }
                 }

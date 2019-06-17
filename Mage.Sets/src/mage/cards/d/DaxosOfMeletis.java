@@ -1,4 +1,3 @@
-
 package mage.cards.d;
 
 import java.util.Objects;
@@ -12,6 +11,7 @@ import mage.abilities.effects.AsThoughEffectImpl;
 import mage.abilities.effects.AsThoughManaEffect;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.OneShotEffect;
+import mage.abilities.effects.common.asthought.PlayFromNotOwnHandZoneTargetEffect;
 import mage.abilities.effects.common.combat.CantBeBlockedByCreaturesSourceEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
@@ -39,7 +39,7 @@ public final class DaxosOfMeletis extends CardImpl {
     }
 
     public DaxosOfMeletis(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{1}{W}{U}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{W}{U}");
         this.addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.HUMAN);
         this.subtype.add(SubType.SOLDIER);
@@ -89,9 +89,9 @@ class DaxosOfMeletisEffect extends OneShotEffect {
                 MageObject sourceObject = game.getObject(source.getSourceId());
                 UUID exileId = CardUtil.getCardExileZoneId(game, source);
                 Card card = damagedPlayer.getLibrary().getFromTop(game);
-                if (card != null) {
+                if (card != null && sourceObject != null) {
                     // move card to exile
-                    controller.moveCardToExileWithInfo(card, exileId, sourceObject.getIdName(), source.getSourceId(), game, Zone.LIBRARY, true);
+                    controller.moveCardsToExile(card, source, game, true, exileId, sourceObject.getIdName());
                     // player gains life
                     int cmc = card.getConvertedManaCost();
                     if (cmc > 0) {
@@ -100,10 +100,12 @@ class DaxosOfMeletisEffect extends OneShotEffect {
                     // Add effects only if the card has a spellAbility (e.g. not for lands).
                     if (card.getSpellAbility() != null) {
                         // allow to cast the card
-                        game.addEffect(new DaxosOfMeletisCastFromExileEffect(card.getId(), exileId), source);
+                        ContinuousEffect effect = new PlayFromNotOwnHandZoneTargetEffect(Zone.EXILED, Duration.EndOfTurn);
+                        effect.setTargetPointer(new FixedTarget(card, game));
+                        game.addEffect(effect, source);
                         // and you may spend mana as though it were mana of any color to cast it
-                        ContinuousEffect effect = new DaxosOfMeletisSpendAnyManaEffect();
-                        effect.setTargetPointer(new FixedTarget(card.getId()));
+                        effect = new DaxosOfMeletisSpendAnyManaEffect();
+                        effect.setTargetPointer(new FixedTarget(card, game));
                         game.addEffect(effect, source);
                     }
                 }
@@ -144,7 +146,7 @@ class DaxosOfMeletisCastFromExileEffect extends AsThoughEffectImpl {
 
     @Override
     public boolean applies(UUID sourceId, Ability source, UUID affectedControllerId, Game game) {
-        if (sourceId.equals(cardId) && source.getControllerId().equals(affectedControllerId)) {
+        if (sourceId.equals(cardId) && source.isControlledBy(affectedControllerId)) {
             ExileZone exileZone = game.getState().getExile().getExileZone(exileId);
             return exileZone != null && exileZone.contains(cardId);
         }
@@ -175,7 +177,8 @@ class DaxosOfMeletisSpendAnyManaEffect extends AsThoughEffectImpl implements AsT
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        return source.getControllerId().equals(affectedControllerId)
+        objectId = game.getCard(objectId).getMainCard().getId(); // for split cards
+        return source.isControlledBy(affectedControllerId)
                 && Objects.equals(objectId, ((FixedTarget) getTargetPointer()).getTarget())
                 && ((FixedTarget) getTargetPointer()).getZoneChangeCounter() + 1 == game.getState().getZoneChangeCounter(objectId)
                 && (((FixedTarget) getTargetPointer()).getZoneChangeCounter() + 1 == game.getState().getZoneChangeCounter(objectId))

@@ -1,4 +1,3 @@
-
 package mage.cards.d;
 
 import java.util.Objects;
@@ -11,6 +10,7 @@ import mage.abilities.effects.AsThoughManaEffect;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.ReplacementEffectImpl;
+import mage.abilities.effects.common.asthought.PlayFromNotOwnHandZoneTargetEffect;
 import mage.abilities.keyword.FirstStrikeAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
@@ -29,8 +29,6 @@ import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
-import mage.game.stack.Spell;
-import mage.game.stack.StackObject;
 import mage.players.ManaPoolItem;
 import mage.players.Player;
 import mage.target.common.TargetCardInOpponentsGraveyard;
@@ -81,7 +79,9 @@ class DireFleetDaredevilEffect extends OneShotEffect {
 
     public DireFleetDaredevilEffect() {
         super(Outcome.Benefit);
-        this.staticText = "exile target instant or sorcery card from an opponent's graveyard. You may cast that card this turn and you may spend mana as though it were mana of any color. If that card would be put into a graveyard this turn, exile it instead";
+        this.staticText = "exile target instant or sorcery card from an opponent's graveyard. "
+                + "You may cast that card this turn and you may spend mana as though it were mana of any color. "
+                + "If that card would be put into a graveyard this turn, exile it instead";
     }
 
     public DireFleetDaredevilEffect(final DireFleetDaredevilEffect effect) {
@@ -102,57 +102,21 @@ class DireFleetDaredevilEffect extends OneShotEffect {
                 if (controller.moveCards(targetCard, Zone.EXILED, source, game)) {
                     targetCard = game.getCard(targetCard.getId());
                     if (targetCard != null) {
-                        ContinuousEffect effect = new DireFleetDaredevilPlayEffect();
-                        effect.setTargetPointer(new FixedTarget(targetCard.getId(), targetCard.getZoneChangeCounter(game)));
+                        ContinuousEffect effect = new PlayFromNotOwnHandZoneTargetEffect(Zone.EXILED, Duration.EndOfTurn);
+                        effect.setTargetPointer(new FixedTarget(targetCard, game));
                         game.addEffect(effect, source);
                         effect = new DireFleetDaredevilSpendAnyManaEffect();
-                        effect.setTargetPointer(new FixedTarget(targetCard.getId(), targetCard.getZoneChangeCounter(game)));
+                        effect.setTargetPointer(new FixedTarget(targetCard, game));
                         game.addEffect(effect, source);
                         effect = new DireFleetDaredevilReplacementEffect();
-                        effect.setTargetPointer(new FixedTarget(targetCard.getId(), targetCard.getZoneChangeCounter(game)));
+                        effect.setTargetPointer(new FixedTarget(targetCard, game));
                         game.addEffect(effect, source);
-
+                        return true;
                     }
                 }
             }
-            return true;
         }
         return false;
-    }
-}
-
-class DireFleetDaredevilPlayEffect extends AsThoughEffectImpl {
-
-    public DireFleetDaredevilPlayEffect() {
-        super(AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE, Duration.EndOfTurn, Outcome.Benefit);
-        staticText = "You may cast that card this turn";
-    }
-
-    public DireFleetDaredevilPlayEffect(final DireFleetDaredevilPlayEffect effect) {
-        super(effect);
-    }
-
-    @Override
-    public boolean apply(Game game, Ability source) {
-        return true;
-    }
-
-    @Override
-    public DireFleetDaredevilPlayEffect copy() {
-        return new DireFleetDaredevilPlayEffect(this);
-    }
-
-    @Override
-    public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        UUID targetId = getTargetPointer().getFirst(game, source);
-        if (targetId != null) {
-            return targetId.equals(objectId)
-                    && source.getControllerId().equals(affectedControllerId);
-        } else {
-            // the target card has changed zone meanwhile, so the effect is no longer needed
-            discard();
-            return false;
-        }
     }
 }
 
@@ -179,7 +143,8 @@ class DireFleetDaredevilSpendAnyManaEffect extends AsThoughEffectImpl implements
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        return source.getControllerId().equals(affectedControllerId)
+        objectId = game.getCard(objectId).getMainCard().getId(); // for split cards
+        return source.isControlledBy(affectedControllerId)
                 && Objects.equals(objectId, ((FixedTarget) getTargetPointer()).getTarget())
                 && ((FixedTarget) getTargetPointer()).getZoneChangeCounter() + 1 == game.getState().getZoneChangeCounter(objectId)
                 && game.getState().getZone(objectId) == Zone.STACK;
@@ -210,19 +175,9 @@ class DireFleetDaredevilReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        UUID eventObject = ((ZoneChangeEvent) event).getTargetId();
-        StackObject stackObject = game.getStack().getStackObject(eventObject);
-        if (stackObject != null) {
-            if (stackObject instanceof Spell) {
-                game.rememberLKI(stackObject.getId(), Zone.STACK, (Spell) stackObject);
-            }
-            if (stackObject instanceof Card
-                    && stackObject.getSourceId().equals(((FixedTarget) getTargetPointer()).getTarget())
-                    && ((FixedTarget) getTargetPointer()).getZoneChangeCounter() + 1 == game.getState().getZoneChangeCounter(stackObject.getSourceId())
-                    && game.getState().getZone(stackObject.getSourceId()) == Zone.STACK) {
-                ((Card) stackObject).moveToExile(null, null, source.getSourceId(), game);
-                return true;
-            }
+        Card card = game.getCard(event.getTargetId());
+        if (card != null) {
+            return card.moveToZone(Zone.EXILED, source.getSourceId(), game, false);
         }
         return false;
     }
@@ -236,6 +191,8 @@ class DireFleetDaredevilReplacementEffect extends ReplacementEffectImpl {
     public boolean applies(GameEvent event, Ability source, Game game) {
         ZoneChangeEvent zEvent = (ZoneChangeEvent) event;
         return zEvent.getToZone() == Zone.GRAVEYARD
-                && ((ZoneChangeEvent) event).getTargetId().equals(((FixedTarget) getTargetPointer()).getTarget());
+                && event.getTargetId().equals(((FixedTarget) getTargetPointer()).getTarget())
+                && ((FixedTarget) getTargetPointer()).getZoneChangeCounter() + 1 
+                == game.getState().getZoneChangeCounter(event.getTargetId());
     }
 }

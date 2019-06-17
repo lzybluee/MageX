@@ -4,7 +4,7 @@ package mage.cards.a;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.LoyaltyAbility;
-import mage.abilities.common.PlanswalkerEntersWithLoyalityCountersAbility;
+import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.dynamicvalue.common.ControllerLifeCount;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.Effects;
@@ -34,7 +34,7 @@ public final class AjaniCallerOfThePride extends CardImpl {
         this.addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.AJANI);
 
-        this.addAbility(new PlanswalkerEntersWithLoyalityCountersAbility(4));
+        this.addAbility(new PlaneswalkerEntersWithLoyaltyCountersAbility(4));
         // +1: Put a +1/+1 counter on up to one target creature.
         Effect effect = new AddCountersTargetEffect(CounterType.P1P1.createInstance());
         effect.setText("Put a +1/+1 counter on up to one target creature");
@@ -49,7 +49,7 @@ public final class AjaniCallerOfThePride extends CardImpl {
         ability.addTarget(new TargetCreaturePermanent());
         this.addAbility(ability);
         // -8: create X 2/2 white Cat creature tokens, where X is your life total.
-        this.addAbility(new LoyaltyAbility(new CreateTokenEffect(new CatToken(), new ControllerLifeCount()), -8));
+        this.addAbility(new LoyaltyAbility(new CreateTokenEffect(new CatToken(), ControllerLifeCount.instance), -8));
     }
 
     public AjaniCallerOfThePride(final AjaniCallerOfThePride card) {

@@ -21,6 +21,7 @@ import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.permanent.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
+import mage.players.Player;
 
 /**
  *
@@ -28,7 +29,7 @@ import mage.game.permanent.Permanent;
  */
 public final class BelzenlokDemonToken extends TokenImpl {
 
-    final static private List<String> tokenImageSets = new ArrayList<>();
+    static final private List<String> tokenImageSets = new ArrayList<>();
     static {
         tokenImageSets.addAll(Arrays.asList("DOM"));
     }
@@ -71,7 +72,7 @@ class BelzenlokDemonTokenEffect extends OneShotEffect {
 
     static {
         filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(new AnotherPredicate());
+        filter.add(AnotherPredicate.instance);
     }
 
     BelzenlokDemonTokenEffect() {
@@ -94,9 +95,9 @@ class BelzenlokDemonTokenEffect extends OneShotEffect {
         if (otherCreatures > 0) {
             new SacrificeControllerEffect(filter, 1, "").apply(game, source);
         } else {
-            Permanent permanent = game.getPermanentOrLKIBattlefield(source.getSourceId());
-            if (permanent != null) {
-                permanent.damage(6, permanent.getId(), game, false, true);
+            Player controller = game.getPlayer(source.getControllerId());
+            if (controller != null) {
+                controller.damage(6, source.getSourceId(), game, false, true);
             }
         }
         return true;

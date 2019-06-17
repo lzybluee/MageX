@@ -18,6 +18,7 @@ import mage.counters.Counter;
 import mage.counters.CounterType;
 import mage.filter.Filter;
 import mage.filter.FilterCard;
+import mage.filter.FilterPermanent;
 import mage.filter.predicate.permanent.CardCounterPredicate;
 import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
@@ -39,7 +40,7 @@ public final class DustOfMoments extends CardImpl {
 
         // Or put two time counters on each permanent with a time counter on it and each suspended card
         Mode mode = new Mode();
-        mode.getEffects().add(new AddCountersEffect());
+        mode.addEffect(new AddCountersEffect());
         this.getSpellAbility().addMode(mode);
     }
 
@@ -59,13 +60,13 @@ public final class DustOfMoments extends CardImpl {
     public abstract static class DustOfMomentsEffect extends OneShotEffect {
 
         private final Counter counter;
-        private final Filter<Card> permFilter;
+        private final Filter<Permanent> permFilter;
         private final Filter<Card> exiledFilter;
 
         public DustOfMomentsEffect() {
             super(Outcome.Benefit);
             this.counter = new Counter(CounterType.TIME.getName(), 2);
-            this.permFilter = new FilterCard("permanent and each suspended card");
+            this.permFilter = new FilterPermanent("permanent and each suspended card");
             permFilter.add(new CounterPredicate(CounterType.TIME));
 
             this.exiledFilter = new FilterCard("permanent and each suspended card");
@@ -118,10 +119,10 @@ public final class DustOfMoments extends CardImpl {
                         card.addCounters(counter, source, game);
                     }
                     if (!game.isSimulation()) {
-                        game.informPlayers(new StringBuilder(sourceObject.getName()).append(": ")
-                                .append(controller.getLogName()).append(getActionStr()).append('s')
-                                .append(counter.getCount()).append(' ').append(counterName.toLowerCase(Locale.ENGLISH))
-                                .append(" counter on ").append(card.getName()).toString());
+                        game.informPlayers(sourceObject.getName() + ": " +
+                                controller.getLogName() + getActionStr() + 's' +
+                                counter.getCount() + ' ' + counterName.toLowerCase(Locale.ENGLISH) +
+                                " counter on " + card.getName());
                     }
                 }
             }
@@ -143,10 +144,10 @@ public final class DustOfMoments extends CardImpl {
                         card.addCounters(counter, source, game);
                     }
                     if (!game.isSimulation()) {
-                        game.informPlayers(new StringBuilder(sourceObject.getName()).append(": ")
-                                .append(controller.getLogName()).append(getActionStr()).append("s ")
-                                .append(counter.getCount()).append(' ').append(counterName.toLowerCase(Locale.ENGLISH))
-                                .append(" counter on ").append(card.getName()).toString());
+                        game.informPlayers(sourceObject.getName() + ": " +
+                                controller.getLogName() + getActionStr() + "s " +
+                                counter.getCount() + ' ' + counterName.toLowerCase(Locale.ENGLISH) +
+                                " counter on " + card.getName());
                     }
                 }
             }

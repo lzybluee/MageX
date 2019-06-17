@@ -69,7 +69,7 @@ class RhysTheRedeemedEffect extends OneShotEffect {
 
     static {
         filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(new TokenPredicate());
+        filter.add(TokenPredicate.instance);
     }
 
     public RhysTheRedeemedEffect() {
@@ -91,7 +91,7 @@ class RhysTheRedeemedEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filter, game)) {
-                if (permanent.getControllerId().equals(source.getControllerId())) {
+                if (permanent.isControlledBy(source.getControllerId())) {
                     CreateTokenCopyTargetEffect effect = new CreateTokenCopyTargetEffect();
                     effect.setTargetPointer(new FixedTarget(permanent, game));
                     effect.apply(game, source);

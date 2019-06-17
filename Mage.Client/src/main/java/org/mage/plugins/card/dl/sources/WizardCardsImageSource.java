@@ -1,40 +1,23 @@
-
 package org.mage.plugins.card.dl.sources;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.prefs.Preferences;
 
 import mage.cards.Sets;
 import mage.cards.repository.CardCriteria;
 import mage.cards.repository.CardInfo;
 import mage.cards.repository.CardRepository;
-import mage.client.MageFrame;
-import mage.client.dialog.PreferencesDialog;
-import mage.remote.Connection;
-import mage.remote.Connection.ProxyType;
+import mage.client.util.CardLanguage;
 import org.apache.log4j.Logger;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.mage.plugins.card.dl.DownloadServiceInfo;
 import org.mage.plugins.card.images.CardDownloadData;
+import org.mage.plugins.card.utils.CardImageUtils;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author North
@@ -46,9 +29,10 @@ public enum WizardCardsImageSource implements CardImageSource {
     private static final Logger logger = Logger.getLogger(WizardCardsImageSource.class);
 
     private final Map<String, String> setsAliases;
-    private final Map<String, String> languageAliases;
+    private final Map<CardLanguage, String> languageAliases;
     private final Map<String, Map<String, String>> sets;
     private final Set<String> supportedSets;
+    private CardLanguage currentLanguage = CardLanguage.ENGLISH; // working language
 
     @Override
     public String getSourceName() {
@@ -56,6 +40,20 @@ public enum WizardCardsImageSource implements CardImageSource {
     }
 
     WizardCardsImageSource() {
+
+        languageAliases = new EnumMap<>(CardLanguage.class);
+        languageAliases.put(CardLanguage.ENGLISH, "English");
+        languageAliases.put(CardLanguage.SPANISH, "Spanish");
+        languageAliases.put(CardLanguage.FRENCH, "French");
+        languageAliases.put(CardLanguage.GERMAN, "German");
+        languageAliases.put(CardLanguage.ITALIAN, "Italian");
+        languageAliases.put(CardLanguage.PORTUGUESE, "Portuguese (Brazil)");
+        languageAliases.put(CardLanguage.JAPANESE, "Japanese");
+        languageAliases.put(CardLanguage.KOREAN, "Korean");
+        languageAliases.put(CardLanguage.RUSSIAN, "Russian");
+        languageAliases.put(CardLanguage.CHINES_SIMPLE, "Chinese Simplified");
+        languageAliases.put(CardLanguage.CHINES_TRADITION, "Chinese Traditional ");
+
         supportedSets = new LinkedHashSet<>();
         // supportedSets.add("PTC"); // Prerelease Events
         supportedSets.add("LEA");
@@ -152,7 +150,7 @@ public enum WizardCardsImageSource implements CardImageSource {
         supportedSets.add("WWK");
         supportedSets.add("DDE");
         supportedSets.add("ROE");
-        supportedSets.add("DPA");
+        //supportedSets.add("DPA");
         supportedSets.add("ARC");
         supportedSets.add("M11");
         supportedSets.add("V10");
@@ -232,9 +230,8 @@ public enum WizardCardsImageSource implements CardImageSource {
         supportedSets.add("DDS");
         supportedSets.add("W17");
         supportedSets.add("AKH");
-        supportedSets.add("MPS");
         supportedSets.add("CMA");
-//        supportedSets.add("CM2"); // Commander Anthology, Vol. II
+        supportedSets.add("CM2"); // Commander Anthology, Vol. II
         supportedSets.add("E01");
         supportedSets.add("HOU");
         supportedSets.add("C17");
@@ -248,7 +245,12 @@ public enum WizardCardsImageSource implements CardImageSource {
         supportedSets.add("RIX"); // Rivals of Ixalan
         supportedSets.add("A25"); // Masters 25
         supportedSets.add("DOM"); // Dominaria
-//        supportedSets.add("M19"); // Core 2019
+        supportedSets.add("BBD"); // Battlebond
+        supportedSets.add("GS1"); // Global Series: Jiang Yanggu and Mu Yanling
+        supportedSets.add("M19"); // Core 2019
+        supportedSets.add("C18"); // Commander 2018
+//      supportedSets.add("GRN"); // Guilds of Ravnica
+//      supportedSets.add("RNA"); // Ravnica Allegiance
 
         sets = new HashMap<>();
         setsAliases = new HashMap<>();
@@ -285,7 +287,7 @@ public enum WizardCardsImageSource implements CardImageSource {
         setsAliases.put("C16", "Commander 2016");
         setsAliases.put("C17", "Commander 2017");
         setsAliases.put("CMA", "Commander Anthology");
-//        setsAliases.put("CM2", "Commander Anthology, Vol. II");
+        setsAliases.put("CM2", "Commander Anthology 2018");
         setsAliases.put("CHK", "Champions of Kamigawa");
         setsAliases.put("CHR", "Chronicles");
         setsAliases.put("CMD", "Magic: The Gathering-Commander");
@@ -438,18 +440,6 @@ public enum WizardCardsImageSource implements CardImageSource {
         setsAliases.put("WTH", "Weatherlight");
         setsAliases.put("WWK", "Worldwake");
         setsAliases.put("ZEN", "Zendikar");
-
-        languageAliases = new HashMap<>();
-        languageAliases.put("en", "English");
-        languageAliases.put("es", "Spanish");
-        languageAliases.put("jp", "Japanese");
-        languageAliases.put("it", "Italian");
-        languageAliases.put("fr", "French");
-        languageAliases.put("cn", "Chinese Simplified");
-        languageAliases.put("de", "German");
-        languageAliases.put("ko", "Korean");
-        languageAliases.put("pt", "Portuguese (Brazil)");
-        languageAliases.put("ru", "Russian");
     }
 
     @Override
@@ -463,7 +453,12 @@ public enum WizardCardsImageSource implements CardImageSource {
     }
 
     @Override
-    public CardImageUrls generateURL(CardDownloadData card) throws Exception {
+    public boolean prepareDownloadList(DownloadServiceInfo downloadServiceInfo, List<CardDownloadData> downloadList) {
+        return true;
+    }
+
+    @Override
+    public CardImageUrls generateCardUrl(CardDownloadData card) throws Exception {
         String collectorId = card.getCollectorId();
         String cardSet = card.getSet();
         if (collectorId == null || cardSet == null) {
@@ -525,7 +520,7 @@ public enum WizardCardsImageSource implements CardImageSource {
             if (setNames == null) {
                 setNames = Sets.getInstance().get(cardSet).getName();
             }
-            String preferredLanguage = PreferencesDialog.getCachedValue(PreferencesDialog.KEY_CARD_IMAGES_PREF_LANGUAGE, "en");
+
             for (String setName : setNames.split("\\^")) {
                 // String URLSetName = URLEncoder.encode(setName, "UTF-8");
                 String URLSetName = setName.replaceAll(" ", "%20");
@@ -535,7 +530,7 @@ public enum WizardCardsImageSource implements CardImageSource {
                 while (page < 999) {
                     String searchUrl = "http://gatherer.wizards.com/Pages/Search/Default.aspx?sort=cn+&page=" + page + "&action=advanced&output=spoiler&method=visual&set=+%5B%22" + URLSetName + "%22%5D";
                     logger.debug("URL: " + searchUrl);
-                    Document doc = getDocument(searchUrl);
+                    Document doc = CardImageUtils.downloadHtmlDocument(searchUrl);
                     Elements cardsImages = doc.select("img[src^=../../Handlers/]");
                     if (cardsImages.isEmpty()) {
                         break;
@@ -555,15 +550,15 @@ public enum WizardCardsImageSource implements CardImageSource {
                                 getLandVariations(setLinks, cardSet, multiverseId, cardName);
                             } else {
                                 String numberChar = "";
-                                int pos1 = cardName.indexOf("(");
+                                int pos1 = cardName.indexOf('(');
                                 if (pos1 > 0) {
-                                    int pos2 = cardName.indexOf("(", pos1 + 1);
+                                    int pos2 = cardName.indexOf('(', pos1 + 1);
                                     if (pos2 > 0) {
                                         numberChar = cardName.substring(pos2 + 1, pos2 + 2);
                                         cardName = cardName.substring(0, pos1);
                                     }
                                 }
-                                Integer preferredMultiverseId = getLocalizedMultiverseId(preferredLanguage, multiverseId);
+                                Integer preferredMultiverseId = getLocalizedMultiverseId(getCurrentLanguage(), multiverseId);
                                 setLinks.put(cardName.toLowerCase(Locale.ENGLISH) + numberChar, generateLink(preferredMultiverseId));
                             }
                         }
@@ -587,33 +582,6 @@ public enum WizardCardsImageSource implements CardImageSource {
         return setLinks;
     }
 
-    private Document getDocument(String urlString) throws NumberFormatException, IOException {
-        Preferences prefs = MageFrame.getPreferences();
-        Connection.ProxyType proxyType = Connection.ProxyType.valueByText(prefs.get("proxyType", "None"));
-        Document doc;
-        if (proxyType == ProxyType.NONE) {
-            doc = Jsoup.connect(urlString).timeout(60 * 1000).get();
-        } else {
-            String proxyServer = prefs.get("proxyAddress", "");
-            int proxyPort = Integer.parseInt(prefs.get("proxyPort", "0"));
-            URL url = new URL(urlString);
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyServer, proxyPort));
-            HttpURLConnection uc = (HttpURLConnection) url.openConnection(proxy);
-            uc.setConnectTimeout(10000);
-            uc.setReadTimeout(60000);
-            uc.connect();
-
-            String line;
-            StringBuffer tmp = new StringBuffer();
-            BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-            while ((line = in.readLine()) != null) {
-                tmp.append(line);
-            }
-            doc = Jsoup.parse(String.valueOf(tmp));
-        }
-        return doc;
-    }
-
     private void getLandVariations(LinkedHashMap<String, String> setLinks, String cardSet, int multiverseId, String cardName) throws IOException, NumberFormatException {
         CardCriteria criteria = new CardCriteria();
         criteria.nameExact(cardName);
@@ -621,7 +589,7 @@ public enum WizardCardsImageSource implements CardImageSource {
         List<CardInfo> cards = CardRepository.instance.findCards(criteria);
 
         String urlLandDocument = "http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=" + multiverseId;
-        Document landDoc = getDocument(urlLandDocument);
+        Document landDoc = CardImageUtils.downloadHtmlDocument(urlLandDocument);
         Elements variations = landDoc.select("a.variationlink");
         if (!variations.isEmpty()) {
             if (variations.size() > cards.size()) {
@@ -652,8 +620,8 @@ public enum WizardCardsImageSource implements CardImageSource {
         return "/Handlers/Image.ashx?multiverseid=" + landMultiverseId + "&type=card";
     }
 
-    private int getLocalizedMultiverseId(String preferredLanguage, Integer multiverseId) throws IOException {
-        if (preferredLanguage.equals("en")) {
+    private int getLocalizedMultiverseId(CardLanguage preferredLanguage, Integer multiverseId) throws IOException {
+        if (preferredLanguage.equals(CardLanguage.ENGLISH)) {
             return multiverseId;
         }
 
@@ -668,7 +636,7 @@ public enum WizardCardsImageSource implements CardImageSource {
 
     private HashMap<String, Integer> getlocalizedMultiverseIds(Integer englishMultiverseId) throws IOException {
         String cardLanguagesUrl = "http://gatherer.wizards.com/Pages/Card/Languages.aspx?multiverseid=" + englishMultiverseId;
-        Document cardLanguagesDoc = getDocument(cardLanguagesUrl);
+        Document cardLanguagesDoc = CardImageUtils.downloadHtmlDocument(cardLanguagesUrl);
         Elements languageTableRows = cardLanguagesDoc.select("tr.cardItem");
         HashMap<String, Integer> localizedIds = new HashMap<>();
         if (!languageTableRows.isEmpty()) {
@@ -717,43 +685,6 @@ public enum WizardCardsImageSource implements CardImageSource {
         return 60.0f;
     }
 
-    //    private final class GetImageLinkTask implements Runnable {
-//
-//        private int multiverseId;
-//        private String cardName;
-//        private String preferredLanguage;
-//        private LinkedHashMap setLinks;
-//
-//        public GetImageLinkTask(int multiverseId, String cardName, String preferredLanguage, LinkedHashMap setLinks) {
-//            try {
-//                this.multiverseId = multiverseId;
-//                this.cardName = cardName;
-//                this.preferredLanguage = preferredLanguage;
-//                this.setLinks = setLinks;
-//            } catch (Exception ex) {
-//                logger.error(ex.getMessage());
-//                logger.error("multiverseId: " + multiverseId);
-//                logger.error("cardName: " + cardName);
-//                logger.error("preferredLanguage: " + preferredLanguage);
-//                logger.error("setLinks: " + setLinks.toString());
-//            }
-//        }
-//
-//        @Override
-//        public void run() {
-//            try {
-//                if (cardName.equals("Forest") || cardName.equals("Swamp") || cardName.equals("Mountain") || cardName.equals("Island") || cardName.equals("Plains")) {
-//                    setLinks.putAll(getLandVariations(multiverseId, cardName));
-//                } else {
-//                    Integer preferredMultiverseId = getLocalizedMultiverseId(preferredLanguage, multiverseId);
-//                    setLinks.put(cardName.toLowerCase(Locale.ENGLISH), generateLink(preferredMultiverseId));
-//                }
-//            } catch (IOException | NumberFormatException ex) {
-//                logger.error("Exception when parsing the wizards page: " + ex.getMessage());
-//            }
-//        }
-//
-//    }
     @Override
     public int getTotalImages() {
         return -1;
@@ -762,6 +693,21 @@ public enum WizardCardsImageSource implements CardImageSource {
     @Override
     public boolean isTokenSource() {
         return false;
+    }
+
+    @Override
+    public boolean isLanguagesSupport() {
+        return true;
+    }
+
+    @Override
+    public void setCurrentLanguage(CardLanguage cardLanguage) {
+        this.currentLanguage = cardLanguage;
+    }
+
+    @Override
+    public CardLanguage getCurrentLanguage() {
+        return currentLanguage;
     }
 
     @Override

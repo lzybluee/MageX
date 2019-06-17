@@ -1,7 +1,5 @@
-
 package mage.cards.e;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.MageObject;
 import mage.abilities.Ability;
@@ -24,10 +22,12 @@ import mage.filter.predicate.ObjectSourcePlayerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
+import mage.util.CardUtil;
 import mage.util.functions.ApplyToPermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author BetaSteward
  */
 public final class EvilTwin extends CardImpl {
@@ -39,9 +39,9 @@ public final class EvilTwin extends CardImpl {
         this.power = new MageInt(0);
         this.toughness = new MageInt(0);
 
-        // You may have Evil Twin enter the battlefield as a copy of any creature on the battlefield except it gains "{U}{B}, {T}: Destroy target creature with the same name as this creature."
+        // You may have Evil Twin enter the battlefield as a copy of any creature on the battlefield, except it has "{U}{B}, {T}: Destroy target creature with the same name as this creature."
         Effect effect = new CopyPermanentEffect(StaticFilters.FILTER_PERMANENT_CREATURE, new EvilTwinApplyToPermanent());
-        effect.setText("as a copy of any creature on the battlefield except it gains \"{U}{B}, {T}: Destroy target creature with the same name as this creature.\"");
+        effect.setText("as a copy of any creature on the battlefield, except it has \"{U}{B}, {T}: Destroy target creature with the same name as this creature.\"");
         this.addAbility(new EntersBattlefieldAbility(effect, true));
 
     }
@@ -90,7 +90,7 @@ class EvilTwinPredicate implements ObjectSourcePlayerPredicate<ObjectSourcePlaye
     public boolean apply(ObjectSourcePlayer<Permanent> input, Game game) {
         Permanent permanent = input.getObject();
         Permanent twin = game.getPermanent(input.getSourceId());
-        return permanent != null && twin != null && !twin.getName().isEmpty() && permanent.getName().equals(twin.getName());
+        return CardUtil.haveSameNames(permanent, twin);
     }
 
     @Override

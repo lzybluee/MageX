@@ -1,4 +1,3 @@
-
 package mage.abilities.keyword;
 
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
+import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.players.ManaPool;
 import mage.players.Player;
@@ -69,7 +69,7 @@ public class ConvokeAbility extends SimpleStaticAbility implements AlternateMana
     private static final FilterCreaturePermanent filterUntapped = new FilterCreaturePermanent();
 
     static {
-        filterUntapped.add(Predicates.not(new TappedPredicate()));
+        filterUntapped.add(Predicates.not(TappedPredicate.instance));
     }
 
     public ConvokeAbility() {
@@ -96,7 +96,7 @@ public class ConvokeAbility extends SimpleStaticAbility implements AlternateMana
                 specialAction.setSourceId(source.getSourceId());
                 // create filter for possible creatures to tap
                 FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent();
-                filter.add(Predicates.not(new TappedPredicate()));
+                filter.add(Predicates.not(TappedPredicate.instance));
                 if (unpaid.getMana().getGeneric() == 0) {
                     List<ColorPredicate> colorPredicates = new ArrayList<>();
                     if (unpaid.getMana().getBlack() > 0) {
@@ -223,6 +223,7 @@ class ConvokeEffect extends OneShotEffect {
                         manaPool.unlockManaType(ManaType.COLORLESS);
                         manaName = "colorless";
                     }
+                    game.fireEvent(GameEvent.getEvent(GameEvent.EventType.CONVOKED, perm.getId(), source.getSourceId(), source.getControllerId()));
                     game.informPlayers("Convoke: " + controller.getLogName() + " taps " + perm.getLogName() + " to pay one " + manaName + " mana");
                 }
 

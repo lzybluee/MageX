@@ -94,10 +94,10 @@ class FiendslayerPaladinEffect extends ContinuousRuleModifyingEffectImpl {
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
         Card targetCard = game.getCard(event.getTargetId());
-        StackObject stackObject = (StackObject) game.getStack().getStackObject(event.getSourceId());
+        StackObject stackObject = game.getStack().getStackObject(event.getSourceId());
         if (targetCard != null && stackObject != null && targetCard.getId().equals(source.getSourceId())) {
             if (stackObject.getColor(game).isBlack() || stackObject.getColor(game).isRed()) {
-                if (!stackObject.getControllerId().equals(source.getControllerId())
+                if (!stackObject.isControlledBy(source.getControllerId())
                         && stackObject.isInstant()
                         || stackObject.isSorcery()) {
                     return true;

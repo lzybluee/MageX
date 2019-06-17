@@ -2,6 +2,7 @@
 package mage.cards.j;
 
 import java.util.UUID;
+
 import mage.abilities.Ability;
 import mage.abilities.common.DiesAttachedTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
@@ -12,7 +13,6 @@ import mage.abilities.keyword.TransformAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.cards.a.AtzalCaveOfEternity;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
@@ -24,7 +24,6 @@ import mage.players.Player;
 import mage.target.TargetPermanent;
 
 /**
- *
  * @author LevelX2
  */
 public final class JourneyToEternity extends CardImpl {
@@ -36,7 +35,7 @@ public final class JourneyToEternity extends CardImpl {
         this.subtype.add(SubType.AURA);
 
         this.transformable = true;
-        this.secondSideCardClazz = AtzalCaveOfEternity.class;
+        this.secondSideCardClazz = mage.cards.a.AtzalCaveOfEternity.class;
 
         // Enchant creature you control
         TargetPermanent auraTarget = new TargetPermanent(StaticFilters.FILTER_PERMANENT_CREATURE_CONTROLLED);
@@ -86,7 +85,7 @@ class JourneyToEternityReturnTransformedSourceEffect extends OneShotEffect {
         if (card != null && controller != null) {
             Zone zone = game.getState().getZone(card.getId());
             // cards needs to be in public non battlefield zone
-            if (zone.equals(Zone.BATTLEFIELD) || !zone.isPublicZone()) {
+            if (zone == Zone.BATTLEFIELD || !zone.isPublicZone()) {
                 return true;
             }
             game.getState().setValue(TransformAbility.VALUE_KEY_ENTER_TRANSFORMED + source.getSourceId(), Boolean.TRUE);

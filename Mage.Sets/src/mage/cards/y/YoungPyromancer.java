@@ -1,7 +1,5 @@
-
 package mage.cards.y;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.common.SpellCastControllerTriggeredAbility;
 import mage.abilities.effects.common.CreateTokenEffect;
@@ -12,8 +10,9 @@ import mage.constants.SubType;
 import mage.filter.StaticFilters;
 import mage.game.permanent.token.YoungPyromancerElementalToken;
 
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class YoungPyromancer extends CardImpl {
@@ -27,7 +26,10 @@ public final class YoungPyromancer extends CardImpl {
         this.toughness = new MageInt(1);
 
         // Whenever you cast an instant or sorcery spell, create a 1/1 red Elemental creature token.
-        this.addAbility(new SpellCastControllerTriggeredAbility(new CreateTokenEffect(new YoungPyromancerElementalToken()), StaticFilters.FILTER_SPELL_INSTANT_OR_SORCERY, false));
+        this.addAbility(new SpellCastControllerTriggeredAbility(
+                new CreateTokenEffect(new YoungPyromancerElementalToken()),
+                StaticFilters.FILTER_SPELL_AN_INSTANT_OR_SORCERY, false
+        ));
 
     }
 

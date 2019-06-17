@@ -1,14 +1,15 @@
-
 package mage.cards.t;
 
 import java.util.UUID;
+
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.condition.common.DeliriumCondition;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.TapTargetEffect;
+import mage.abilities.hint.common.DeliriumHint;
 import mage.abilities.keyword.FlyingAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -26,7 +27,6 @@ import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
- *
  * @author fireshoes
  */
 public final class Topplegeist extends CardImpl {
@@ -38,7 +38,7 @@ public final class Topplegeist extends CardImpl {
     }
 
     public Topplegeist(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{W}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{W}");
         this.subtype.add(SubType.SPIRIT);
         this.power = new MageInt(1);
         this.toughness = new MageInt(1);
@@ -53,11 +53,12 @@ public final class Topplegeist extends CardImpl {
 
         // <i>Delirium</i> &mdash; At the beginning of each opponent's upkeep, if there are four or more card types among cards in your graveyard,
         // tap target creature that player controls.
-        ability = new ConditionalTriggeredAbility(
+        ability = new ConditionalInterveningIfTriggeredAbility(
                 new TopplegeistAbility(),
                 DeliriumCondition.instance,
                 "<i>Delirium</i> &mdash; At the beginning of each opponent's upkeep, if there are four or more card types among cards in your graveyard, "
                         + "tap target creature that player controls.");
+        ability.addHint(DeliriumHint.instance);
         this.addAbility(ability);
     }
 

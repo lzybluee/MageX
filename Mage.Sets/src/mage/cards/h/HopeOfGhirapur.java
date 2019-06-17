@@ -1,10 +1,8 @@
 
 package mage.cards.h;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+
 import mage.MageInt;
 import mage.MageObject;
 import mage.MageObjectReference;
@@ -128,7 +126,7 @@ class HopeOfGhirapurPlayerLostLifePredicate implements ObjectSourcePlayerPredica
         if (targetPlayer == null) {
             return false;
         }
-        HopeOfGhirapurCombatDamageWatcher watcher = (HopeOfGhirapurCombatDamageWatcher) game.getState().getWatchers().get(HopeOfGhirapurCombatDamageWatcher.class.getSimpleName());
+        HopeOfGhirapurCombatDamageWatcher watcher = game.getState().getWatcher(HopeOfGhirapurCombatDamageWatcher.class);
         if (watcher != null) {
             return watcher.playerGotCombatDamage(input.getSourceId(), input.getObject().getId(), game);
         }
@@ -138,10 +136,10 @@ class HopeOfGhirapurPlayerLostLifePredicate implements ObjectSourcePlayerPredica
 
 class HopeOfGhirapurCombatDamageWatcher extends Watcher {
 
-    private final HashMap<MageObjectReference, Set<UUID>> combatDamagedPlayers = new HashMap<>();
+    private final Map<MageObjectReference, Set<UUID>> combatDamagedPlayers = new HashMap<>();
 
     public HopeOfGhirapurCombatDamageWatcher() {
-        super(HopeOfGhirapurCombatDamageWatcher.class.getSimpleName(), WatcherScope.GAME);
+        super(WatcherScope.GAME);
     }
 
     public HopeOfGhirapurCombatDamageWatcher(final HopeOfGhirapurCombatDamageWatcher watcher) {
@@ -184,7 +182,7 @@ class HopeOfGhirapurCombatDamageWatcher extends Watcher {
     public boolean playerGotCombatDamage(UUID objectId, UUID playerId, Game game) {
         StackObject stackObject = game.getState().getStack().getStackObject(objectId);
         MageObjectReference mor;
-        if (stackObject != null && stackObject instanceof StackAbility) {
+        if (stackObject instanceof StackAbility) {
             // This is neccessary because the source object was sacrificed as cost and the correct zone change counter for target calid check can only be get from stack
             mor = new MageObjectReference(objectId, ((StackAbility) stackObject).getSourceObjectZoneChangeCounter(), game);
         } else {

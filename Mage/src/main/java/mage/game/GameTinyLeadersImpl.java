@@ -1,9 +1,5 @@
-
 package mage.game;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
@@ -16,12 +12,17 @@ import mage.cards.CardSetInfo;
 import mage.cards.repository.CardInfo;
 import mage.cards.repository.CardRepository;
 import mage.constants.*;
+import mage.game.mulligan.Mulligan;
 import mage.game.turn.TurnMod;
 import mage.players.Player;
 import mage.watchers.common.CommanderInfoWatcher;
+import mage.watchers.common.CommanderPlaysCountWatcher;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
- *
  * @author JRHerlehy
  */
 public abstract class GameTinyLeadersImpl extends GameImpl {
@@ -30,8 +31,8 @@ public abstract class GameTinyLeadersImpl extends GameImpl {
     protected boolean alsoLibrary; // replace also commander going to library
     protected boolean startingPlayerSkipsDraw = true;
 
-    public GameTinyLeadersImpl(MultiplayerAttackOption attackOption, RangeOfInfluence range, int freeMulligans, int startLife) {
-        super(attackOption, range, freeMulligans, startLife);
+    public GameTinyLeadersImpl(MultiplayerAttackOption attackOption, RangeOfInfluence range, Mulligan mulligan, int startLife) {
+        super(attackOption, range, mulligan, startLife);
     }
 
     public GameTinyLeadersImpl(final GameTinyLeadersImpl game) {
@@ -42,8 +43,10 @@ public abstract class GameTinyLeadersImpl extends GameImpl {
 
     @Override
     protected void init(UUID choosingPlayerId) {
-        Ability ability = new SimpleStaticAbility(Zone.COMMAND, new InfoEffect("Commander effects"));
-        //Move tiny leader to command zone
+        // plays watcher
+        state.addWatcher(new CommanderPlaysCountWatcher());
+
+        // move tiny leader to command zone
         for (UUID playerId : state.getPlayerList(startingPlayerId)) {
             Player player = getPlayer(playerId);
             if (player != null) {
@@ -54,21 +57,21 @@ public abstract class GameTinyLeadersImpl extends GameImpl {
                     this.loadCards(cards, playerId);
                     player.addCommanderId(commander.getId());
                     commander.moveToZone(Zone.COMMAND, null, this, true);
-                    ability.addEffect(new CommanderReplacementEffect(commander.getId(), alsoHand, alsoLibrary));
+                    Ability ability = new SimpleStaticAbility(Zone.COMMAND, new InfoEffect("Commander effects"));
+                    ability.addEffect(new CommanderReplacementEffect(commander.getId(), alsoHand, alsoLibrary, false, "Commander"));
                     ability.addEffect(new CommanderCostModification(commander.getId()));
                     // Commander rule #4 was removed Jan. 18, 2016
                     // ability.addEffect(new CommanderManaReplacementEffect(player.getId(), CardUtil.getColorIdentity(commander)));
-                    getState().setValue(commander.getId() + "_castCount", 0);
-                    CommanderInfoWatcher watcher = new CommanderInfoWatcher(commander.getId(), false);
-                    getState().getWatchers().add(watcher);
+                    CommanderInfoWatcher watcher = new CommanderInfoWatcher("Commander", commander.getId(), false);
+                    getState().addWatcher(watcher);
                     watcher.addCardInfoToCommander(this);
+                    this.getState().addAbility(ability, null);
                 } else {
                     throw new UnknownError("Commander card could not be created. Name: [" + player.getMatchPlayer().getDeck().getName() + ']');
                 }
             }
 
         }
-        this.getState().addAbility(ability, null);
         super.init(choosingPlayerId);
         if (startingPlayerSkipsDraw) {
             state.getTurnMods().add(new TurnMod(startingPlayerId, PhaseStep.DRAW));

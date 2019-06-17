@@ -70,7 +70,7 @@ class OrderOfSuccessionEffect extends OneShotEffect {
         if (controller != null) {
             Map<UUID, UUID> playerCreature = new HashMap<>(2);
             Choice choice = new ChoiceLeftOrRight();
-            if (controller.choose(Outcome.Neutral, choice, game)) {
+            if (!controller.choose(Outcome.Neutral, choice, game)) {
                 return false;
             }
             boolean left = choice.getChoice().equals("Left");
@@ -97,7 +97,7 @@ class OrderOfSuccessionEffect extends OneShotEffect {
                 }
                 // if player is in range he chooses a creature to control
                 if (currentPlayer != null && game.getState().getPlayersInRange(controller.getId(), game).contains(currentPlayer.getId())) {
-                    FilterCreaturePermanent filter = new FilterCreaturePermanent(new StringBuilder("creature controlled by ").append(nextPlayer.getLogName()).toString());
+                    FilterCreaturePermanent filter = new FilterCreaturePermanent("creature controlled by " + nextPlayer.getLogName());
                     filter.add(new ControllerIdPredicate(nextPlayer.getId()));
                     Target target = new TargetCreaturePermanent(filter);
                     target.setNotTarget(true);

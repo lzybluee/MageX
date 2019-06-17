@@ -1,13 +1,10 @@
-
 package mage.deck;
 
 import mage.cards.ExpansionSet;
 import mage.cards.Sets;
 import mage.cards.decks.Constructed;
-import mage.constants.SetType;
 
 /**
- *
  * LevelX2
  */
 public class Legacy extends Constructed {
@@ -15,7 +12,7 @@ public class Legacy extends Constructed {
     public Legacy() {
         super("Constructed - Legacy");
         for (ExpansionSet set : Sets.getInstance().values()) {
-            if (set.getSetType() != SetType.CUSTOM_SET) {
+            if (set.getSetType().isEternalLegal()) {
                 setCodes.add(set.getCode());
             }
         }
@@ -32,6 +29,7 @@ public class Legacy extends Constructed {
         banned.add("Chaos Orb");
         banned.add("Contract from Below");
         banned.add("Darkpact");
+        banned.add("Deathrite Shaman");
         banned.add("Demonic Attorney");
         banned.add("Demonic Consultation");
         banned.add("Demonic Tutor");
@@ -42,6 +40,7 @@ public class Legacy extends Constructed {
         banned.add("Fastbond");
         banned.add("Flash");
         banned.add("Frantic Search");
+        banned.add("Gitaxian Probe");
         banned.add("Goblin Recruiter");
         banned.add("Gush");
         banned.add("Hermit Druid");

@@ -5,7 +5,7 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.condition.common.PermanentsOnTheBattlefieldCondition;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
 import mage.abilities.keyword.FlyingAbility;
 import mage.cards.CardImpl;
@@ -30,7 +30,7 @@ public final class FaerieMiscreant extends CardImpl {
 
     static {
         filter.add(new NamePredicate("Faerie Miscreant"));
-        filter.add(new AnotherPredicate());
+        filter.add(AnotherPredicate.instance);
         filter.add(new ControllerPredicate(TargetController.YOU));
     }
 
@@ -45,7 +45,7 @@ public final class FaerieMiscreant extends CardImpl {
         this.addAbility(FlyingAbility.getInstance());
         
         // When Faerie Miscreant enters the battlefield, if you control another creature named Faerie Miscreant, draw a card.
-        Ability ability = new ConditionalTriggeredAbility(
+        Ability ability = new ConditionalInterveningIfTriggeredAbility(
                 new EntersBattlefieldTriggeredAbility(new DrawCardSourceControllerEffect(1), false),
                 new PermanentsOnTheBattlefieldCondition(filter),
                 "When Faerie Miscreant enters the battlefield, if you control another creature named Faerie Miscreant, draw a card");

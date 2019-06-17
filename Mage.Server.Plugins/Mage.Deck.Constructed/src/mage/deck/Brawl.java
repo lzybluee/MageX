@@ -1,17 +1,15 @@
 package mage.deck;
 
-import java.util.*;
 import mage.abilities.common.CanBeYourCommanderAbility;
 import mage.cards.Card;
-import mage.cards.ExpansionSet;
-import mage.cards.Sets;
 import mage.cards.decks.Constructed;
 import mage.cards.decks.Deck;
-import mage.constants.SetType;
 import mage.filter.FilterMana;
+import mage.util.ManaUtil;
+
+import java.util.*;
 
 /**
- *
  * @author spjspj
  */
 public class Brawl extends Constructed {
@@ -22,50 +20,11 @@ public class Brawl extends Constructed {
         super("Brawl");
 
         // Copy of standard sets
-        GregorianCalendar current = new GregorianCalendar();
-        List<ExpansionSet> sets = new ArrayList(Sets.getInstance().values());
-        Collections.sort(sets, new Comparator<ExpansionSet>() {
-            @Override
-            public int compare(final ExpansionSet lhs, ExpansionSet rhs) {
-                return lhs.getReleaseDate().after(rhs.getReleaseDate()) ? -1 : 1;
-            }
-        });
-        int fallSetsAdded = 0;
-        Date earliestDate = null;
-        // Get the second most recent fall set that's been released.
-        for (ExpansionSet set : sets) {
-            if (set.getReleaseDate().after(current.getTime())) {
-                continue;
-            }
-            if (isFallSet(set)) {
-                fallSetsAdded++;
-                if (fallSetsAdded == 2) {
-                    earliestDate = set.getReleaseDate();
-                    break;
-                }
-            }
-        }
-        // Get all sets released on or after the second most recent fall set's release
-        for (ExpansionSet set : sets) {
-            if ((set.getSetType() == SetType.CORE
-                    || set.getSetType() == SetType.EXPANSION
-                    || set.getSetType() == SetType.SUPPLEMENTAL_STANDARD_LEGAL)
-                    && (!set.getReleaseDate().before(earliestDate)
-                    && !set.getReleaseDate().after(current.getTime()))) {
-                setCodes.add(set.getCode());
-            }
-        }
+        setCodes.addAll(Standard.makeLegalSets());
+
         banned.add("Baral, Chief of Compliance");
         banned.add("Smuggler's Copter");
-        banned.add("Sorcerers' Spyglass");
-    }
-
-    private static boolean isFallSet(ExpansionSet set) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(set.getReleaseDate());
-        // Fall sets are normally released during or after September
-        return set.getSetType() == SetType.EXPANSION
-                && (cal.get(Calendar.MONTH) > 7);
+        banned.add("Sorcerous Spyglass");
     }
 
     public Brawl(String name) {
@@ -73,12 +32,17 @@ public class Brawl extends Constructed {
     }
 
     @Override
+    public int getSideboardMinSize() {
+        return 1;
+    }
+
+    @Override
     public boolean validate(Deck deck) {
         boolean valid = true;
         FilterMana colorIdentity = new FilterMana();
 
-        if (deck.getCards().size() + deck.getSideboard().size() != 60) {
-            invalid.put("Deck", "Must contain 60 cards: has " + (deck.getCards().size() + deck.getSideboard().size()) + " cards");
+        if (deck.getCards().size() + deck.getSideboard().size() != getDeckMinSize()) {
+            invalid.put("Deck", "Must contain " + getDeckMinSize() + " cards: has " + (deck.getCards().size() + deck.getSideboard().size()) + " cards");
             valid = false;
         }
 
@@ -115,25 +79,7 @@ public class Brawl extends Constructed {
                     invalid.put("Brawl", "Invalid Commander (" + commander.getName() + ')');
                     valid = false;
                 }
-                FilterMana commanderColor = commander.getColorIdentity();
-                if (commanderColor.isWhite()) {
-                    colorIdentity.setWhite(true);
-                }
-                if (commanderColor.isBlue()) {
-                    colorIdentity.setBlue(true);
-                }
-                if (commanderColor.isBlack()) {
-                    colorIdentity.setBlack(true);
-                }
-                if (commanderColor.isRed()) {
-                    colorIdentity.setRed(true);
-                }
-                if (commanderColor.isGreen()) {
-                    colorIdentity.setGreen(true);
-                }
-                if (commanderColor.isColorless()) {
-                    colorIdentity.setColorless(true);
-                }
+                ManaUtil.collectColorIdentity(colorIdentity, commander.getColorIdentity());
             }
         }
         Set<String> basicsInDeck = new HashSet<>();
@@ -145,7 +91,7 @@ public class Brawl extends Constructed {
             }
         }
         for (Card card : deck.getCards()) {
-            if (!cardHasValidColor(colorIdentity, card)
+            if (!ManaUtil.isColorIdentityCompatible(colorIdentity, card.getColorIdentity())
                     && !(colorIdentity.isColorless()
                     && basicsInDeck.size() == 1
                     && basicsInDeck.contains(card.getName()))) {
@@ -170,15 +116,6 @@ public class Brawl extends Constructed {
             }
         }
         return valid;
-    }
-
-    public boolean cardHasValidColor(FilterMana commander, Card card) {
-        FilterMana cardColor = card.getColorIdentity();
-        return !(cardColor.isBlack() && !commander.isBlack()
-                || cardColor.isBlue() && !commander.isBlue()
-                || cardColor.isGreen() && !commander.isGreen()
-                || cardColor.isRed() && !commander.isRed()
-                || cardColor.isWhite() && !commander.isWhite());
     }
 
 }

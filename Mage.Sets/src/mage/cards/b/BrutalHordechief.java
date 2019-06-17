@@ -74,7 +74,7 @@ public final class BrutalHordechief extends CardImpl {
     
         @Override
         public boolean apply(Game game, Ability source) {
-            ChooseBlockersRedundancyWatcher watcher = (ChooseBlockersRedundancyWatcher) game.getState().getWatchers().get(ChooseBlockersRedundancyWatcher.class.getSimpleName());
+            ChooseBlockersRedundancyWatcher watcher = game.getState().getWatcher(ChooseBlockersRedundancyWatcher.class);
             if (watcher != null) {
                 watcher.increment();
                 return true;
@@ -113,7 +113,7 @@ class BrutalHordechiefTriggeredAbility extends TriggeredAbilityImpl {
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         Permanent source = game.getPermanent(event.getSourceId());
-        if (source != null && source.getControllerId().equals(controllerId)) {
+        if (source != null && source.isControlledBy(controllerId)) {
             UUID defendingPlayerId = game.getCombat().getDefendingPlayerId(event.getSourceId(), game);
             this.getEffects().get(0).setTargetPointer(new FixedTarget(defendingPlayerId));
             return true;
@@ -155,7 +155,10 @@ class BrutalHordechiefChooseBlockersEffect extends ContinuousRuleModifyingEffect
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        ChooseBlockersRedundancyWatcher watcher = (ChooseBlockersRedundancyWatcher) game.getState().getWatchers().get(ChooseBlockersRedundancyWatcher.class.getSimpleName());
+        ChooseBlockersRedundancyWatcher watcher = game.getState().getWatcher(ChooseBlockersRedundancyWatcher.class);
+        if(watcher == null){
+            return false;
+        }
         watcher.decrement();
         if (watcher.copyCountApply > 0) {
             game.informPlayers(source.getSourceObject(game).getIdName() + " didn't apply");

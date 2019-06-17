@@ -29,7 +29,7 @@ public final class MoltenPsyche extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{1}{R}{R}");
 
         // Each player shuffles the cards from their hand into their library, then draws that many cards.
-        // Metalcraft - If you control three or more artifacts, Molten Psyche deals damage to each opponent equal to the number of cards that player has drawn this turn.
+        // <i>Metalcraft</i> &mdash; If you control three or more artifacts, Molten Psyche deals damage to each opponent equal to the number of cards that player has drawn this turn.
         this.getSpellAbility().addEffect(new MoltenPsycheEffect());
         this.getSpellAbility().addWatcher(new MoltenPsycheWatcher());
     }
@@ -83,11 +83,11 @@ class MoltenPsycheEffect extends OneShotEffect {
                 }
             }
             if (MetalcraftCondition.instance.apply(game, source)) {
-                MoltenPsycheWatcher watcher = (MoltenPsycheWatcher) game.getState().getWatchers().get(MoltenPsycheWatcher.class.getSimpleName());
+                MoltenPsycheWatcher watcher = game.getState().getWatcher(MoltenPsycheWatcher.class);
                 for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
                     if (game.isOpponent(controller, playerId)) {
                         Player player = game.getPlayer(playerId);
-                        if (player != null) {
+                        if (player != null && watcher != null) {
                             player.damage(watcher.getDraws(playerId), source.getSourceId(), game, false, true);
                         }
                     }
@@ -111,7 +111,7 @@ class MoltenPsycheWatcher extends Watcher {
     private final Map<UUID, Integer> draws = new HashMap<>();
 
     public MoltenPsycheWatcher() {
-        super(MoltenPsycheWatcher.class.getSimpleName(), WatcherScope.GAME);
+        super(WatcherScope.GAME);
     }
 
     public MoltenPsycheWatcher(final MoltenPsycheWatcher watcher) {

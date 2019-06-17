@@ -1,8 +1,5 @@
-
 package mage.game;
 
-import java.util.Map;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.effects.common.InfoEffect;
@@ -13,9 +10,14 @@ import mage.constants.MultiplayerAttackOption;
 import mage.constants.PhaseStep;
 import mage.constants.RangeOfInfluence;
 import mage.constants.Zone;
+import mage.game.mulligan.Mulligan;
 import mage.game.turn.TurnMod;
 import mage.players.Player;
 import mage.watchers.common.CommanderInfoWatcher;
+import mage.watchers.common.CommanderPlaysCountWatcher;
+
+import java.util.Map;
+import java.util.UUID;
 
 public abstract class GameCommanderImpl extends GameImpl {
 
@@ -25,8 +27,8 @@ public abstract class GameCommanderImpl extends GameImpl {
     protected boolean alsoLibrary; // replace commander going to library
     protected boolean startingPlayerSkipsDraw = true;
 
-    public GameCommanderImpl(MultiplayerAttackOption attackOption, RangeOfInfluence range, int freeMulligans, int startLife) {
-        super(attackOption, range, freeMulligans, startLife);
+    public GameCommanderImpl(MultiplayerAttackOption attackOption, RangeOfInfluence range, Mulligan mulligan, int startLife) {
+        super(attackOption, range, mulligan, startLife);
     }
 
     public GameCommanderImpl(final GameCommanderImpl game) {
@@ -39,32 +41,59 @@ public abstract class GameCommanderImpl extends GameImpl {
 
     @Override
     protected void init(UUID choosingPlayerId) {
-        Ability ability = new SimpleStaticAbility(Zone.COMMAND, new InfoEffect("Commander effects"));
-        //Move commander to command zone
+        // Karn Liberated calls it to restart game, all data and commanders must be re-initialized
+
+        // plays watcher
+        state.addWatcher(new CommanderPlaysCountWatcher());
+
+        // move commanders to command zone
         for (UUID playerId : state.getPlayerList(startingPlayerId)) {
             Player player = getPlayer(playerId);
             if (player != null) {
-                while (!player.getSideboard().isEmpty()) {
-                    Card commander = this.getCard(player.getSideboard().iterator().next());
+                // add new commanders
+                for (UUID id : player.getSideboard()) {
+                    Card commander = this.getCard(id);
                     if (commander != null) {
-                        player.addCommanderId(commander.getId());
-                        commander.moveToZone(Zone.COMMAND, null, this, true);
-                        commander.getAbilities().setControllerId(player.getId());
-                        ability.addEffect(new CommanderReplacementEffect(commander.getId(), alsoHand, alsoLibrary));
-                        ability.addEffect(new CommanderCostModification(commander.getId()));
-                        getState().setValue(commander.getId() + "_castCount", 0);
-                        CommanderInfoWatcher watcher = new CommanderInfoWatcher(commander.getId(), checkCommanderDamage);
-                        getState().getWatchers().add(watcher);
-                        watcher.addCardInfoToCommander(this);
+                        addCommander(commander, player);
+                    }
+                }
+
+                // init commanders
+                for (UUID commanderId : this.getCommandersIds(player)) {
+                    Card commander = this.getCard(commanderId);
+                    if (commander != null) {
+                        initCommander(commander, player);
                     }
                 }
             }
         }
-        this.getState().addAbility(ability, null);
+
         super.init(choosingPlayerId);
         if (startingPlayerSkipsDraw) {
             state.getTurnMods().add(new TurnMod(startingPlayerId, PhaseStep.DRAW));
         }
+    }
+
+    public void initCommander(Card commander, Player player) {
+        commander.moveToZone(Zone.COMMAND, null, this, true);
+        commander.getAbilities().setControllerId(player.getId());
+
+        Ability ability = new SimpleStaticAbility(Zone.COMMAND, new InfoEffect("Commander effects"));
+        initCommanderEffects(commander, player, ability);
+        CommanderInfoWatcher watcher = initCommanderWatcher(commander, checkCommanderDamage);
+        getState().addWatcher(watcher);
+        watcher.addCardInfoToCommander(this);
+        this.getState().addAbility(ability, null);
+    }
+
+    public CommanderInfoWatcher initCommanderWatcher(Card commander, boolean checkCommanderDamage) {
+        return new CommanderInfoWatcher("Commander", commander.getId(), checkCommanderDamage);
+    }
+
+    public void initCommanderEffects(Card commander, Player player, Ability commanderAbility) {
+        // all commander effects must be independent from sourceId or controllerId
+        commanderAbility.addEffect(new CommanderReplacementEffect(commander.getId(), alsoHand, alsoLibrary, false, "Commander"));
+        commanderAbility.addEffect(new CommanderCostModification(commander.getId()));
     }
 
     //20130711
@@ -154,8 +183,8 @@ public abstract class GameCommanderImpl extends GameImpl {
     @Override
     protected boolean checkStateBasedActions() {
         for (Player player : getPlayers().values()) {
-            for (UUID commanderId : player.getCommandersIds()) {
-                CommanderInfoWatcher damageWatcher = (CommanderInfoWatcher) getState().getWatchers().get(CommanderInfoWatcher.class.getSimpleName(), commanderId);
+            for (UUID commanderId : this.getCommandersIds(player)) {
+                CommanderInfoWatcher damageWatcher = getState().getWatcher(CommanderInfoWatcher.class, commanderId);
                 if (damageWatcher == null) {
                     continue;
                 }
@@ -186,6 +215,10 @@ public abstract class GameCommanderImpl extends GameImpl {
 
     public void setCheckCommanderDamage(boolean checkCommanderDamage) {
         this.checkCommanderDamage = checkCommanderDamage;
+    }
+
+    public void addCommander(Card card, Player player) {
+        player.addCommanderId(card.getId());
     }
 
 }

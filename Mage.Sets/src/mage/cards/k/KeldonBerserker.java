@@ -6,7 +6,7 @@ import mage.MageInt;
 import mage.abilities.common.AttacksTriggeredAbility;
 import mage.abilities.condition.InvertCondition;
 import mage.abilities.condition.common.PermanentsOnTheBattlefieldCondition;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.continuous.BoostSourceEffect;
 import mage.constants.SubType;
 import mage.cards.CardImpl;
@@ -26,7 +26,7 @@ public final class KeldonBerserker extends CardImpl {
     private static final FilterControlledLandPermanent filter = new FilterControlledLandPermanent("untapped lands");
 
     static {
-        filter.add(Predicates.not(new TappedPredicate()));
+        filter.add(Predicates.not(TappedPredicate.instance));
     }
 
     public KeldonBerserker(UUID ownerId, CardSetInfo setInfo) {
@@ -39,7 +39,7 @@ public final class KeldonBerserker extends CardImpl {
         this.toughness = new MageInt(3);
 
         // Whenever Keldon Berserker attacks, if you control no untapped lands, it gets +3/+0 until end of turn.
-        this.addAbility(new ConditionalTriggeredAbility(
+        this.addAbility(new ConditionalInterveningIfTriggeredAbility(
                 new AttacksTriggeredAbility(new BoostSourceEffect(3, 0, Duration.EndOfTurn), false),
                 new InvertCondition(new PermanentsOnTheBattlefieldCondition(filter)),
                 "Whenever {this} attacks, if you control no untapped lands, it gets +3/+0 until end of turn."

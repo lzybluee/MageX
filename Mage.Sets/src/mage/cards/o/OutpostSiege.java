@@ -35,8 +35,8 @@ import mage.target.targetpointer.FixedTarget;
  */
 public final class OutpostSiege extends CardImpl {
 
-    private final static String ruleTrigger1 = "&bull Khans &mdash; At the beginning of your upkeep, exile the top card of your library. Until end of turn, you may play that card.";
-    private final static String ruleTrigger2 = "&bull Dragons &mdash; Whenever a creature you control leaves the battlefield, {this} deals 1 damage to any target.";
+    private static final String ruleTrigger1 = "&bull Khans &mdash; At the beginning of your upkeep, exile the top card of your library. Until end of turn, you may play that card.";
+    private static final String ruleTrigger2 = "&bull Dragons &mdash; Whenever a creature you control leaves the battlefield, {this} deals 1 damage to any target.";
 
     public OutpostSiege(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{3}{R}");
@@ -133,7 +133,7 @@ class CastFromNonHandZoneTargetEffect extends AsThoughEffectImpl {
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
         if (getTargetPointer().getTargets(game, source).contains(objectId)
-                && source.getControllerId().equals(affectedControllerId)) {
+                && source.isControlledBy(affectedControllerId)) {
             Card card = game.getCard(objectId);
             if (card != null) {
                 return true;

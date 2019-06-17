@@ -89,7 +89,7 @@ class TritonTacticsUntapTargetEffect extends OneShotEffect {
             // save the targets for the watcher in a map with zone change counter (as the card is recast during combat it's neccessary to save with zone change counter)
             Map<Integer, Set<String>> targetMap;
             Object object = game.getState().getValue("targets" + source.getSourceId());
-            if (object != null && object instanceof Map) {
+            if (object instanceof Map) {
                 targetMap = (Map<Integer, Set<String>>) object;
             } else {
                 targetMap = new HashMap<>();
@@ -155,7 +155,7 @@ class TritonTacticsEndOfCombatEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Map<Integer, Set<String>> attackerMap = null;
         Object object = game.getState().getValue("blockedAttackers" + source.getSourceId());
-        if (object != null && object instanceof Map) {
+        if (object instanceof Map) {
             attackerMap = (Map<Integer, Set<String>>) object;
             for (Set<String> attackerSet : attackerMap.values()) {
                 List<Permanent> doNotUntapNextUntapStep = new ArrayList<>();
@@ -164,7 +164,7 @@ class TritonTacticsEndOfCombatEffect extends OneShotEffect {
                         // tap creature and add the not untap effect
                         creature.tap(game);
                         doNotUntapNextUntapStep.add(creature);
-                        game.informPlayers(new StringBuilder("Triton Tactics: ").append(creature.getName()).append(" doesn't untap during its controller's next untap step").toString());
+                        game.informPlayers("Triton Tactics: " + creature.getName() + " doesn't untap during its controller's next untap step");
                     }
                 }
                 if (!doNotUntapNextUntapStep.isEmpty()) {
@@ -185,7 +185,7 @@ class TritonTacticsEndOfCombatEffect extends OneShotEffect {
 class BlockedCreaturesWatcher extends Watcher {
 
     public BlockedCreaturesWatcher() {
-        super("BlockedCreatures", WatcherScope.CARD);
+        super(WatcherScope.CARD);
     }
 
     public BlockedCreaturesWatcher(final BlockedCreaturesWatcher watcher) {
@@ -197,7 +197,7 @@ class BlockedCreaturesWatcher extends Watcher {
         if (event.getType() == GameEvent.EventType.BLOCKER_DECLARED) {
             Map<Integer, Set<String>> targetMap;
             Object object = game.getState().getValue("targets" + this.getSourceId().toString());
-            if (object != null && object instanceof Map) {
+            if (object instanceof Map) {
                 Permanent blocker = game.getPermanent(event.getSourceId());
                 if (blocker != null) {
                     targetMap = (Map<Integer, Set<String>>) object;
@@ -217,7 +217,7 @@ class BlockedCreaturesWatcher extends Watcher {
         Set<String> attackers;
         Map<Integer, Set<String>> attackerMap;
         Object object = game.getState().getValue("blockedAttackers" + getSourceId());
-        if (object != null && object instanceof Map) {
+        if (object instanceof Map) {
             attackerMap = (Map<Integer, Set<String>>) object;
         } else {
             attackerMap = new HashMap<>();

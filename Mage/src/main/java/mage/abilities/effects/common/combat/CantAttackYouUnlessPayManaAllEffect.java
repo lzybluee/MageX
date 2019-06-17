@@ -12,7 +12,6 @@ import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 
 /**
- *
  * @author LevelX2
  */
 public class CantAttackYouUnlessPayManaAllEffect extends PayCostToAttackBlockEffectImpl {
@@ -37,7 +36,7 @@ public class CantAttackYouUnlessPayManaAllEffect extends PayCostToAttackBlockEff
                 + (payAlsoForAttackingPlaneswalker ? "or a planeswalker you control " : "")
                 + "unless their controller pays "
                 + (manaCosts == null ? "" : manaCosts.getText())
-                + " for each creature he or she controls that's attacking you";
+                + " for each creature they control that's attacking you";
     }
 
     public CantAttackYouUnlessPayManaAllEffect(final CantAttackYouUnlessPayManaAllEffect effect) {
@@ -56,7 +55,7 @@ public class CantAttackYouUnlessPayManaAllEffect extends PayCostToAttackBlockEff
             }
         }
         // attack target is controlling player
-        if (source.getControllerId().equals(event.getTargetId())) {
+        if (source.isControlledBy(event.getTargetId())) {
             return true;
         }
         // or attack target is a planeswalker of the controlling player
@@ -64,7 +63,7 @@ public class CantAttackYouUnlessPayManaAllEffect extends PayCostToAttackBlockEff
             Permanent permanent = game.getPermanent(event.getTargetId());
             if (permanent != null
                     && permanent.isPlaneswalker()
-                    && permanent.getControllerId().equals(source.getControllerId())) {
+                    && permanent.isControlledBy(source.getControllerId())) {
                 return true;
             }
         }

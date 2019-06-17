@@ -106,8 +106,8 @@ class DontUntapIfAttackedLastTurnEnchantedEffect extends ContinuousRuleModifying
             Permanent enchantment = game.getPermanent(source.getSourceId());
             if (enchantment != null && enchantment.getAttachedTo() != null && event.getTargetId().equals(enchantment.getAttachedTo())) {
                 Permanent permanent = game.getPermanent(enchantment.getAttachedTo());
-                if (permanent != null &&  permanent.getControllerId().equals(game.getActivePlayerId())) {
-                    AttackedLastTurnWatcher watcher = (AttackedLastTurnWatcher) game.getState().getWatchers().get(AttackedLastTurnWatcher.class.getSimpleName());
+                if (permanent != null &&  permanent.isControlledBy(game.getActivePlayerId())) {
+                    AttackedLastTurnWatcher watcher = game.getState().getWatcher(AttackedLastTurnWatcher.class);
                     if (watcher != null) {
                         Set<MageObjectReference> attackingCreatures = watcher.getAttackedLastTurnCreatures(permanent.getControllerId());
                         MageObjectReference mor = new MageObjectReference(permanent, game);

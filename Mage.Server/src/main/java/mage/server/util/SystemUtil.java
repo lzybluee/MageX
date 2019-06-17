@@ -1,34 +1,39 @@
 package mage.server.util;
 
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import mage.abilities.Ability;
 import mage.cards.Card;
-import mage.cards.Cards;
 import mage.cards.repository.CardCriteria;
 import mage.cards.repository.CardInfo;
 import mage.cards.repository.CardRepository;
 import mage.choices.Choice;
 import mage.choices.ChoiceImpl;
+import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
+import mage.counters.CounterType;
 import mage.game.Game;
+import mage.game.GameCommanderImpl;
+import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.util.RandomUtil;
+
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author JayDi85
  */
 public final class SystemUtil {
+
+    private SystemUtil() {
+    }
 
     public static final DateFormat dateFormat = new SimpleDateFormat("yy-M-dd HH:mm:ss");
 
@@ -111,12 +116,15 @@ public final class SystemUtil {
 
         for (UUID cardID : cardsList) {
             Card card = game.getCard(cardID);
+            if (card == null) {
+                continue;
+            }
 
             // basic info (card + set)
             String cardInfo = card.getName() + " - " + card.getExpansionSetCode();
 
             // optional info
-            ArrayList<String> resInfo = new ArrayList<>();
+            List<String> resInfo = new ArrayList<>();
             for (String param : commandParams) {
                 switch (param) {
                     case PARAM_COLOR_COST:
@@ -143,7 +151,7 @@ public final class SystemUtil {
                 }
             }
 
-            if (resInfo.size() > 0) {
+            if (!resInfo.isEmpty()) {
                 cardInfo += ": " + resInfo.stream().collect(Collectors.joining("; "));
             }
 
@@ -225,7 +233,7 @@ public final class SystemUtil {
      * <br/>
      * <b>Implementation note:</b><br/>
      * 1. Read init.txt line by line<br/>
-     * 2. Parse line using for searching groups like: [group 1] 
+     * 2. Parse line using for searching groups like: [group 1]
      * 3. Parse line using the following format: line ::=
      * <zone>:<nickname>:<card name>:<amount><br/>
      * 4. If zone equals to 'hand', add card to player's library<br/>
@@ -408,7 +416,7 @@ public final class SystemUtil {
                     Class<?> c = Class.forName("mage.game.permanent.token." + command.cardName);
                     Constructor<?> cons = c.getConstructor();
                     Object token = cons.newInstance();
-                    if (token != null && token instanceof mage.game.permanent.token.Token) {
+                    if (token instanceof mage.game.permanent.token.Token) {
                         ((mage.game.permanent.token.Token) token).putOntoBattlefield(command.Amount, game, null, player.getId(), false, false);
                         continue;
                     }
@@ -417,7 +425,7 @@ public final class SystemUtil {
                     Class<?> c = Class.forName("mage.game.command.emblems." + command.cardName);
                     Constructor<?> cons = c.getConstructor();
                     Object emblem = cons.newInstance();
-                    if (emblem != null && emblem instanceof mage.game.command.Emblem) {
+                    if (emblem instanceof mage.game.command.Emblem) {
                         ((mage.game.command.Emblem) emblem).setControllerId(player.getId());
                         game.addEmblem((mage.game.command.Emblem) emblem, null, player.getId());
                         continue;
@@ -427,11 +435,41 @@ public final class SystemUtil {
                     Class<?> c = Class.forName("mage.game.command.planes." + command.cardName);
                     Constructor<?> cons = c.getConstructor();
                     Object plane = cons.newInstance();
-                    if (plane != null && plane instanceof mage.game.command.Plane) {
+                    if (plane instanceof mage.game.command.Plane) {
                         ((mage.game.command.Plane) plane).setControllerId(player.getId());
                         game.addPlane((mage.game.command.Plane) plane, null, player.getId());
                         continue;
                     }
+                } else if ("loyalty".equalsIgnoreCase(command.zone)) {
+                    for (Permanent perm : game.getBattlefield().getAllActivePermanents(player.getId())) {
+                        if (perm.getName().equals(command.cardName) && perm.getCardType().contains(CardType.PLANESWALKER)) {
+                            perm.addCounters(CounterType.LOYALTY.createInstance(command.Amount), null, game);
+                        }
+                    }
+                    continue;
+                } else if ("stack".equalsIgnoreCase(command.zone)) {
+                    // simple cast (without targets or modes)
+
+                    // find card info
+                    CardInfo cardInfo = CardRepository.instance.findCard(command.cardName);
+                    if (cardInfo == null) {
+                        logger.warn("Unknown card for stack command [" + command.cardName + "]: " + line);
+                        continue;
+                    }
+
+                    // put card to game
+                    Set<Card> cardsToLoad = new HashSet<>();
+                    for (int i = 0; i < command.Amount; i++) {
+                        cardsToLoad.add(cardInfo.getCard());
+                    }
+                    game.loadCards(cardsToLoad, player.getId());
+
+                    // move card from exile to stack
+                    for (Card card : cardsToLoad) {
+                        swapWithAnyCard(game, player, card, Zone.STACK);
+                    }
+
+                    continue;
                 }
 
                 Zone gameZone;
@@ -448,6 +486,8 @@ public final class SystemUtil {
                 } else if ("emblem".equalsIgnoreCase(command.zone)) {
                     gameZone = Zone.COMMAND;
                 } else if ("plane".equalsIgnoreCase(command.zone)) {
+                    gameZone = Zone.COMMAND;
+                } else if ("commander".equalsIgnoreCase(command.zone)) {
                     gameZone = Zone.COMMAND;
                 } else {
                     logger.warn("Unknown zone [" + command.zone + "]: " + line);
@@ -477,8 +517,21 @@ public final class SystemUtil {
                     }
                 }
                 game.loadCards(cardsToLoad, player.getId());
-                for (Card card : cardsToLoad) {
-                    swapWithAnyCard(game, player, card, gameZone);
+
+                if ("commander".equalsIgnoreCase(command.zone) && cardsToLoad.size() > 0) {
+                    // as commander (only commander games, look at init code in GameCommanderImpl)
+                    if (game instanceof GameCommanderImpl) {
+                        GameCommanderImpl gameCommander = (GameCommanderImpl) game;
+                        cardsToLoad.forEach(card -> gameCommander.addCommander(card, player));
+                        cardsToLoad.forEach(card -> gameCommander.initCommander(card, player));
+                    } else {
+                        logger.fatal("Commander card can be used in commander game only: " + command.cardName);
+                    }
+                } else {
+                    // as other card
+                    for (Card card : cardsToLoad) {
+                        swapWithAnyCard(game, player, card, gameZone);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -505,6 +558,8 @@ public final class SystemUtil {
                 game.getExile().getPermanentExile().remove(card);
                 player.getLibrary().putOnTop(card, game);
                 break;
+            case STACK:
+                card.cast(game, Zone.EXILED, card.getSpellAbility(), player.getId());
             default:
                 card.moveToZone(zone, null, game, false);
         }
@@ -519,12 +574,9 @@ public final class SystemUtil {
      * @return
      */
     private static Optional<Player> findPlayer(Game game, String name) {
-        for (Player player : game.getPlayers().values()) {
-            if (player.getName().equals(name)) {
-                return Optional.of(player);
-            }
-        }
-        return Optional.empty();
+        return game.getPlayers().values().stream()
+                .filter(player -> player.getName().equals(name)).findFirst();
+
     }
 
     public static String sanitize(String input) {
@@ -537,8 +589,8 @@ public final class SystemUtil {
     /**
      * Get a diff between two dates
      *
-     * @param date1 the oldest date
-     * @param date2 the newest date
+     * @param date1    the oldest date
+     * @param date2    the newest date
      * @param timeUnit the unit in which you want the diff
      * @return the diff value, in the provided unit
      */

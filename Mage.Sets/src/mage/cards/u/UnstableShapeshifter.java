@@ -27,10 +27,10 @@ import mage.util.functions.EmptyApplyToPermanent;
  */
 public final class UnstableShapeshifter extends CardImpl {
 
-    final static FilterCreaturePermanent filterAnotherCreature = new FilterCreaturePermanent("another creature");
+    static final FilterCreaturePermanent filterAnotherCreature = new FilterCreaturePermanent("another creature");
 
     static {
-        filterAnotherCreature.add(new AnotherPredicate());
+        filterAnotherCreature.add(AnotherPredicate.instance);
     }
 
     public UnstableShapeshifter(UUID ownerId, CardSetInfo setInfo) {
@@ -40,7 +40,7 @@ public final class UnstableShapeshifter extends CardImpl {
         this.power = new MageInt(0);
         this.toughness = new MageInt(1);
 
-        // Whenever another creature enters the battlefield, Unstable Shapeshifter becomes a copy of that creature and gains this ability.
+        // Whenever another creature enters the battlefield, Unstable Shapeshifter becomes a copy of that creature, except it has this ability.
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD, new UnstableShapeshifterEffect(), filterAnotherCreature, false, SetTargetPointer.PERMANENT, ""));
     }
 
@@ -58,7 +58,7 @@ class UnstableShapeshifterEffect extends OneShotEffect {
 
     public UnstableShapeshifterEffect() {
         super(Outcome.Copy);
-        this.staticText = "{this} becomes a copy of that creature and gains this ability";
+        this.staticText = "{this} becomes a copy of that creature, except it has this ability";
     }
 
     public UnstableShapeshifterEffect(final UnstableShapeshifterEffect effect) {

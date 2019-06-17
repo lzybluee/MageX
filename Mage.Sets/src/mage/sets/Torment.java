@@ -32,7 +32,7 @@ public final class Torment extends ExpansionSet {
         cards.add(new SetCardInfo("Acorn Harvest", 118, Rarity.COMMON, mage.cards.a.AcornHarvest.class));
         cards.add(new SetCardInfo("Ambassador Laquatus", 23, Rarity.RARE, mage.cards.a.AmbassadorLaquatus.class));
         cards.add(new SetCardInfo("Angel of Retribution", 1, Rarity.RARE, mage.cards.a.AngelOfRetribution.class));
-        cards.add(new SetCardInfo("Anurid Scavenger", 119, Rarity.COMMON, mage.cards.a.AnuridScavenger.class));
+        cards.add(new SetCardInfo("Anurid Scavenger", 119, Rarity.UNCOMMON, mage.cards.a.AnuridScavenger.class));
         cards.add(new SetCardInfo("Aquamoeba", 24, Rarity.COMMON, mage.cards.a.Aquamoeba.class));
         cards.add(new SetCardInfo("Arrogant Wurm", 120, Rarity.UNCOMMON, mage.cards.a.ArrogantWurm.class));
         cards.add(new SetCardInfo("Aven Trooper", 2, Rarity.COMMON, mage.cards.a.AvenTrooper.class));
@@ -136,6 +136,7 @@ public final class Torment extends ExpansionSet {
         cards.add(new SetCardInfo("Rancid Earth", 78, Rarity.COMMON, mage.cards.r.RancidEarth.class));
         cards.add(new SetCardInfo("Reborn Hero", 14, Rarity.RARE, mage.cards.r.RebornHero.class));
         cards.add(new SetCardInfo("Restless Dreams", 79, Rarity.COMMON, mage.cards.r.RestlessDreams.class));
+        cards.add(new SetCardInfo("Retraced Image", 46, Rarity.RARE, mage.cards.r.RetracedImage.class));
         cards.add(new SetCardInfo("Sengir Vampire", 80, Rarity.RARE, mage.cards.s.SengirVampire.class));
         cards.add(new SetCardInfo("Seton's Scout", 138, Rarity.UNCOMMON, mage.cards.s.SetonsScout.class));
         cards.add(new SetCardInfo("Shade's Form", 81, Rarity.COMMON, mage.cards.s.ShadesForm.class));

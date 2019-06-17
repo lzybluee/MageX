@@ -6,7 +6,7 @@ import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.LoyaltyAbility;
-import mage.abilities.common.PlanswalkerEntersWithLoyalityCountersAbility;
+import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
@@ -39,7 +39,7 @@ public final class SarkhanTheMad extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.PLANESWALKER}, "{3}{B}{R}");
         this.addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.SARKHAN);
-        this.addAbility(new PlanswalkerEntersWithLoyalityCountersAbility(7));
+        this.addAbility(new PlaneswalkerEntersWithLoyaltyCountersAbility(7));
 
         this.addAbility(new LoyaltyAbility(new SarkhanTheMadRevealAndDrawEffect(), 0));
 
@@ -119,10 +119,13 @@ class SarkhanTheMadSacEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getTargets().getFirstTarget());
         if (permanent != null) {
-            Player player = game.getPlayer(permanent.getControllerId());
             permanent.sacrifice(this.getId(), game);
-            Token dragonToken = new DragonToken2();
-            dragonToken.putOntoBattlefield(1, game, this.getId(), player.getId());
+
+            Player player = game.getPlayer(permanent.getControllerId());
+            if(player != null) {
+                Token dragonToken = new DragonToken2();
+                dragonToken.putOntoBattlefield(1, game, this.getId(), player.getId());
+            }
         }
         return false;
     }

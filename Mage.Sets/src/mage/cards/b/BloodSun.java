@@ -1,7 +1,6 @@
 
 package mage.cards.b;
 
-import java.util.Iterator;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -14,7 +13,6 @@ import mage.constants.AbilityType;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Layer;
-import static mage.constants.Layer.AbilityAddingRemovingEffects_6;
 import mage.constants.Outcome;
 import mage.constants.SubLayer;
 import mage.constants.Zone;
@@ -39,7 +37,7 @@ public final class BloodSun extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BloodSunEffect(Duration.WhileOnBattlefield)));
     }
 
-    public BloodSun(final BloodSun card) {
+    private BloodSun(final BloodSun card) {
         super(card);
     }
 
@@ -56,7 +54,7 @@ class BloodSunEffect extends ContinuousEffectImpl {
         staticText = "all lands lose all abilities except mana abilities";
     }
 
-    public BloodSunEffect(final BloodSunEffect effect) {
+    private BloodSunEffect(final BloodSunEffect effect) {
         super(effect);
     }
 
@@ -72,12 +70,7 @@ class BloodSunEffect extends ContinuousEffectImpl {
             for (Permanent permanent : game.getState().getBattlefield().getActivePermanents(StaticFilters.FILTER_LANDS, player.getId(), source.getSourceId(), game)) {
                 switch (layer) {
                     case AbilityAddingRemovingEffects_6:
-                        for (Iterator<Ability> it = permanent.getAbilities().iterator(); it.hasNext();) {
-                            Ability ability = it.next();
-                            if (!ability.getAbilityType().equals(AbilityType.MANA)) {
-                                it.remove();
-                            }
-                        }
+                        permanent.getAbilities().removeIf(ability -> ability.getAbilityType() != AbilityType.MANA);
                         break;
                 }
             }

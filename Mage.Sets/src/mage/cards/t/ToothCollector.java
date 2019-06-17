@@ -1,14 +1,15 @@
-
 package mage.cards.t;
 
 import java.util.UUID;
+
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.condition.common.DeliriumCondition;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.continuous.BoostTargetEffect;
+import mage.abilities.hint.common.DeliriumHint;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -26,7 +27,6 @@ import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
- *
  * @author fireshoes
  */
 public final class ToothCollector extends CardImpl {
@@ -38,7 +38,7 @@ public final class ToothCollector extends CardImpl {
     }
 
     public ToothCollector(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{2}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{B}");
         this.subtype.add(SubType.HUMAN);
         this.subtype.add(SubType.ROGUE);
         this.power = new MageInt(3);
@@ -51,11 +51,12 @@ public final class ToothCollector extends CardImpl {
 
         // {<i>Delirium</i> &mdash; At the beginning of each opponent's upkeep, if there are four or more card types among cards in your graveyard,
         // target creature that player controls gets -1/-1 until end of turn.
-        ability = new ConditionalTriggeredAbility(
+        ability = new ConditionalInterveningIfTriggeredAbility(
                 new ToothCollectorAbility(),
                 DeliriumCondition.instance,
                 "<i>Delirium</i> &mdash; At the beginning of each opponent's upkeep, if there are four or more card types among cards in your graveyard, "
                         + "target creature that player controls gets -1/-1 until end of turn.");
+        ability.addHint(DeliriumHint.instance);
         this.addAbility(ability);
     }
 

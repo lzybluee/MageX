@@ -94,7 +94,7 @@ class ThoughtPrisonImprintEffect extends OneShotEffect {
                         Permanent permanent = game.getPermanent(source.getSourceId());
                         if (permanent != null) {
                             permanent.imprint(card.getId(), game);
-                            permanent.addInfo("imprint", new StringBuilder("[Exiled card - ").append(card.getName()).append(']').toString(), game);
+                            permanent.addInfo("imprint", "[Exiled card - " + card.getName() + ']', game);
                         }
                         return true;
                     }
@@ -137,7 +137,7 @@ class ThoughtPrisonTriggeredAbility extends TriggeredAbilityImpl {
         Spell spell = (Spell) game.getObject(event.getTargetId());
         Permanent sourcePermanent = game.getPermanent(this.getSourceId());
 
-        if (spell != null && spell instanceof Spell) {
+        if (spell instanceof Spell) {
             if (sourcePermanent == null) {
                 sourcePermanent = (Permanent) game.getLastKnownInformation(event.getSourceId(), Zone.BATTLEFIELD);
             }

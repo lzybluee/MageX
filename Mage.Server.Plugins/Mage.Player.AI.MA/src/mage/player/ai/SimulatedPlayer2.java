@@ -1,8 +1,8 @@
-
 package mage.player.ai;
 
 import mage.MageObject;
 import mage.abilities.Ability;
+import mage.abilities.AbilityImpl;
 import mage.abilities.TriggeredAbility;
 import mage.abilities.common.PassAbility;
 import mage.abilities.costs.mana.ManaCost;
@@ -25,7 +25,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public class SimulatedPlayer2 extends ComputerPlayer {
@@ -130,11 +129,12 @@ public class SimulatedPlayer2 extends ComputerPlayer {
                 }
             }
             if (variableManaCost != null) {
-                int multiplier = variableManaCost.getMultiplier();
+                int xInstancesCount = variableManaCost.getXInstancesCount();
 
                 for (int mana = variableManaCost.getMinX(); mana <= numAvailable; mana++) {
-                    if (mana % multiplier == 0) { // use only values dependant from multiplier
-                        int xAmount = mana / multiplier;
+                    if (mana % xInstancesCount == 0) { // use only values dependant from multiplier
+                        // find possible X value to pay
+                        int xAnnounceValue = mana / xInstancesCount;
                         Ability newAbility = ability.copy();
                         VariableManaCost varCost = null;
                         for (ManaCost cost : newAbility.getManaCostsToPay()) {
@@ -143,9 +143,13 @@ public class SimulatedPlayer2 extends ComputerPlayer {
                                 break; // only one VariableManCost per spell (or is it possible to have more?)
                             }
                         }
-                        // add the specific value for x
-                        newAbility.getManaCostsToPay().add(new ManaCostsImpl(new StringBuilder("{").append(xAmount).append('}').toString()));
-                        newAbility.getManaCostsToPay().setX(xAmount);
+                        // find real X value after replace events
+                        int xMultiplier = 1;
+                        if (newAbility instanceof AbilityImpl) {
+                            xMultiplier = ((AbilityImpl) newAbility).handleManaXMultiplier(game, xMultiplier);
+                        }
+                        newAbility.getManaCostsToPay().add(new ManaCostsImpl(new StringBuilder("{").append(xAnnounceValue).append('}').toString()));
+                        newAbility.getManaCostsToPay().setX(xAnnounceValue * xMultiplier, xAnnounceValue * xInstancesCount);
                         if (varCost != null) {
                             varCost.setPaid();
                         }
@@ -173,6 +177,7 @@ public class SimulatedPlayer2 extends ComputerPlayer {
 //            allActions.add(new SimulatedAction(sim, actions));
 //        }
 //    }
+
     /**
      * if suggested abilities exist, return only those from playables
      *
@@ -191,11 +196,13 @@ public class SimulatedPlayer2 extends ComputerPlayer {
         List<Ability> filtered = new ArrayList<>();
         for (Ability ability : playables) {
             Card card = game.getCard(ability.getSourceId());
-            for (String s : suggested) {
-                if (s.equals(card.getName())) {
-                    logger.debug("matched: " + s);
-                    forced = true;
-                    filtered.add(ability);
+            if (card != null) {
+                for (String s : suggested) {
+                    if (s.equals(card.getName())) {
+                        logger.debug("matched: " + s);
+                        forced = true;
+                        filtered.add(ability);
+                    }
                 }
             }
         }
@@ -216,26 +223,28 @@ public class SimulatedPlayer2 extends ComputerPlayer {
         for (Ability option : options) {
             if (!option.getTargets().isEmpty() && option.getTargets().get(0).getMaxNumberOfTargets() == 1) {
                 Card card = game.getCard(ability.getSourceId());
-                for (String s : suggested) {
-                    String[] groups = s.split(";");
-                    logger.trace("s=" + s + ";groups=" + groups.length);
-                    if (groups.length == 2) {
-                        if (groups[0].equals(card.getName()) && groups[1].startsWith("name=")) {
-                            // extract target and compare to suggested
-                            String targetName = groups[1].split("=")[1];
-                            Player player = game.getPlayer(option.getFirstTarget());
-                            if (player != null && targetName.equals(player.getName())) {
-                                System.out.println("matched(option): " + s);
-                                filtered.add(option);
-                                return filtered;
-                            } else {
-                                Card target = game.getCard(option.getFirstTarget());
-                                if (target != null && target.getName().equals(targetName)) {
+                if (card != null) {
+                    for (String s : suggested) {
+                        String[] groups = s.split(";");
+                        logger.trace("s=" + s + ";groups=" + groups.length);
+                        if (groups.length == 2) {
+                            if (groups[0].equals(card.getName()) && groups[1].startsWith("name=")) {
+                                // extract target and compare to suggested
+                                String targetName = groups[1].split("=")[1];
+                                Player player = game.getPlayer(option.getFirstTarget());
+                                if (player != null && targetName.equals(player.getName())) {
                                     System.out.println("matched(option): " + s);
                                     filtered.add(option);
                                     return filtered;
+                                } else {
+                                    Card target = game.getCard(option.getFirstTarget());
+                                    if (target != null && target.getName().equals(targetName)) {
+                                        System.out.println("matched(option): " + s);
+                                        filtered.add(option);
+                                        return filtered;
+                                    }
+                                    System.out.println("not equal UUID for target, player=" + player);
                                 }
-                                System.out.println("not equal UUID for target, player=" + player);
                             }
                         }
                     }

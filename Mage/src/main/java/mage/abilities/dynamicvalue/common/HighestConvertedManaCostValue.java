@@ -25,6 +25,11 @@ public class HighestConvertedManaCostValue implements DynamicValue {
         this.filter = filter;
     }
 
+    public HighestConvertedManaCostValue(final HighestConvertedManaCostValue dynamicValue){
+        super();
+        this.filter = dynamicValue.filter.copy();
+    }
+
     @Override
     public int calculate(Game game, Ability sourceAbility, Effect effect) {
         Player controller = game.getPlayer(sourceAbility.getControllerId());
@@ -32,7 +37,7 @@ public class HighestConvertedManaCostValue implements DynamicValue {
             return 0;
         }
         int highCMC = 0;
-        for (Permanent permanent : game.getBattlefield().getActivePermanents(filter, controller.getId(), game)) {
+        for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filter, controller.getId(), game)) {
             int cmc = permanent.getConvertedManaCost();
             highCMC = Math.max(highCMC, cmc);
         }
@@ -41,7 +46,7 @@ public class HighestConvertedManaCostValue implements DynamicValue {
 
     @Override
     public DynamicValue copy() {
-        return new HighestConvertedManaCostValue();
+        return new HighestConvertedManaCostValue(this);
     }
 
     @Override

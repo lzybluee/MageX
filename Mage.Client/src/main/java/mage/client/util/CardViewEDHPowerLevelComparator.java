@@ -11,7 +11,7 @@ import mage.view.CardView;
  */
 public class CardViewEDHPowerLevelComparator implements Comparator<CardView> {
 
-    public int getPowerLevel(CardView card) {
+    private int getPowerLevel(CardView card) {
 
         int thisMaxPower = 0;
 
@@ -306,7 +306,7 @@ public class CardViewEDHPowerLevelComparator implements Comparator<CardView> {
             thisMaxPower = Math.max(thisMaxPower, 1);
         }
 
-        if (card.getCardTypes().contains("Plainswalker")) {
+        if (card.isPlanesWalker()) {
             if (card.getName().toLowerCase(Locale.ENGLISH).equals("jace, the mind sculptor")) {
                 thisMaxPower = Math.max(thisMaxPower, 6);
             }
@@ -428,7 +428,7 @@ public class CardViewEDHPowerLevelComparator implements Comparator<CardView> {
                 || cn.equals("krosan restorer") || cn.equals("laboratory maniac")
                 || cn.equals("leovold, emissary of trest")
                 || cn.equals("leonin relic-warder") || cn.equals("leyline of the void")
-                || cn.equals("memnarch") || cn.equals("memnarch")
+                || cn.equals("memnarch")
                 || cn.equals("meren of clan nel toth") || cn.equals("mikaeus, the unhallowed")
                 || cn.equals("mindcrank") || cn.equals("mindslaver")
                 || cn.equals("minion reflector") || cn.equals("mycosynth lattice")
@@ -446,7 +446,7 @@ public class CardViewEDHPowerLevelComparator implements Comparator<CardView> {
                 || cn.equals("sunder")
                 || cn.equals("storm cauldron") || cn.equals("teferi's puzzle box")
                 || cn.equals("tangle wire")
-                || cn.equals("teferi, mage of zhalfir") || cn.equals("teferi, mage of zhalfir")
+                || cn.equals("teferi, mage of zhalfir")
                 || cn.equals("tezzeret the seeker") || cn.equals("time stretch")
                 || cn.equals("time warp") || cn.equals("training grounds")
                 || cn.equals("triskelavus") || cn.equals("triskelion")
@@ -509,7 +509,7 @@ public class CardViewEDHPowerLevelComparator implements Comparator<CardView> {
 
     @Override
     public int compare(CardView o1, CardView o2) {
-        return Integer.valueOf(getPowerLevel(o1)).compareTo(getPowerLevel(o2));
+        return Integer.compare(getPowerLevel(o1), getPowerLevel(o2));
     }
 
 }

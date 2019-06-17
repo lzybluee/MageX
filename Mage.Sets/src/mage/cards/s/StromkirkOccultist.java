@@ -81,7 +81,7 @@ class StromkirkOccultistExileEffect extends OneShotEffect {
         if (sourcePermanent != null && controller != null && controller.getLibrary().hasCards()) {
             Card card = controller.getLibrary().getFromTop(game);
             if (card != null) {
-                String exileName = new StringBuilder(sourcePermanent.getIdName()).append(" <this card may be played the turn it was exiled>").toString();
+                String exileName = sourcePermanent.getIdName() + " <this card may be played the turn it was exiled>";
                 if (controller.moveCardToExileWithInfo(card, source.getSourceId(), exileName, source.getSourceId(), game, Zone.LIBRARY, true)) {
                     ContinuousEffect effect = new StromkirkOccultistPlayFromExileEffect();
                     effect.setTargetPointer(new FixedTarget(card.getId()));
@@ -117,7 +117,7 @@ class StromkirkOccultistPlayFromExileEffect extends AsThoughEffectImpl {
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        return source.getControllerId().equals(affectedControllerId)
+        return source.isControlledBy(affectedControllerId)
                 && objectId.equals(getTargetPointer().getFirst(game, source));
     }
 }

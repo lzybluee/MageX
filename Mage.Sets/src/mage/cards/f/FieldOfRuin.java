@@ -90,8 +90,8 @@ class FieldOfRuinEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
                     TargetCardInLibrary target = new TargetCardInLibrary(0, 1, StaticFilters.FILTER_CARD_BASIC_LAND);
-                    if (player.searchLibrary(target, game)) {
-                        player.moveCards(new CardsImpl(target.getTargets()), Zone.BATTLEFIELD, source, game);
+                    if (player.searchLibrary(target, source, game)) {
+                        player.moveCards(new CardsImpl(target.getTargets()).getCards(game), Zone.BATTLEFIELD, source, game);
                         player.shuffleLibrary(source, game);
                     }
                 }

@@ -1,9 +1,5 @@
-
 package mage.cards.c;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.common.AsEntersBattlefieldAbility;
@@ -22,8 +18,11 @@ import mage.game.stack.StackObject;
 import mage.players.Player;
 import mage.util.SubTypeList;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author anonymous
  */
 public final class Conspiracy extends CardImpl {
@@ -66,49 +65,49 @@ class ConspiracyEffect extends ContinuousEffectImpl {
     @Override
     public boolean apply(Layer layer, SubLayer sublayer, Ability source, Game game) {
         Player controller = game.getPlayer(source.getControllerId());
-        SubType subType = ChooseCreatureTypeEffect.getChoosenCreatureType(source.getSourceId(), game);
+        SubType subType = ChooseCreatureTypeEffect.getChosenCreatureType(source.getSourceId(), game);
         if (controller != null && subType != null) {
             // Creature cards you own that aren't on the battlefield
             // in graveyard
             for (UUID cardId : controller.getGraveyard()) {
                 Card card = game.getCard(cardId);
-                if (card.isCreature()) {
+                if (card != null && card.isCreature()) {
                     setCreatureSubtype(card, subType, game);
                 }
             }
             // on Hand
             for (UUID cardId : controller.getHand()) {
                 Card card = game.getCard(cardId);
-                if (card.isCreature()) {
+                if (card != null && card.isCreature()) {
                     setCreatureSubtype(card, subType, game);
                 }
             }
             // in Exile
             for (Card card : game.getState().getExile().getAllCards(game)) {
-                if (card.getOwnerId().equals(controller.getId()) && card.isCreature()) {
+                if (card.isOwnedBy(controller.getId()) && card.isCreature()) {
                     setCreatureSubtype(card, subType, game);
                 }
             }
             // in Library (e.g. for Mystical Teachings)
             for (Card card : controller.getLibrary().getCards(game)) {
-                if (card.getOwnerId().equals(controller.getId()) && card.isCreature()) {
+                if (card.isOwnedBy(controller.getId()) && card.isCreature()) {
                     setCreatureSubtype(card, subType, game);
                 }
             }
             // commander in command zone
-            for (UUID commanderId : controller.getCommandersIds()) {
+            for (UUID commanderId : game.getCommandersIds(controller)) {
                 if (game.getState().getZone(commanderId) == Zone.COMMAND) {
                     Card card = game.getCard(commanderId);
-                    if (card.isCreature()) {
+                    if (card != null && card.isCreature()) {
                         setCreatureSubtype(card, subType, game);
                     }
                 }
             }
             // creature spells you control
-            for (Iterator<StackObject> iterator = game.getStack().iterator(); iterator.hasNext();) {
+            for (Iterator<StackObject> iterator = game.getStack().iterator(); iterator.hasNext(); ) {
                 StackObject stackObject = iterator.next();
                 if (stackObject instanceof Spell
-                        && stackObject.getControllerId().equals(source.getControllerId())
+                        && stackObject.isControlledBy(source.getControllerId())
                         && stackObject.isCreature()) {
                     Card card = ((Spell) stackObject).getCard();
                     setCreatureSubtype(card, subType, game);
@@ -140,7 +139,7 @@ class ConspiracyEffect extends ContinuousEffectImpl {
 
     private void setChosenSubtype(SubTypeList subtype, SubType choice) {
         if (subtype.size() != 1 || !subtype.contains(choice)) {
-            subtype.removeAll(SubType.getCreatureTypes(false));
+            subtype.clear();
             subtype.add(choice);
         }
     }

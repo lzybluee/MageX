@@ -14,10 +14,9 @@ import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.command.Emblem;
 
 /**
- *
  * @author spjspj
  */
-public class ElspethKnightErrantEmblem extends Emblem {
+public final class ElspethKnightErrantEmblem extends Emblem {
 
     public ElspethKnightErrantEmblem() {
         this.setName("Emblem Elspeth");
@@ -28,7 +27,7 @@ public class ElspethKnightErrantEmblem extends Emblem {
                 new CardTypePredicate(CardType.ENCHANTMENT),
                 new CardTypePredicate(CardType.LAND)));
         Effect effect = new GainAbilityAllEffect(IndestructibleAbility.getInstance(), Duration.WhileOnBattlefield, filter, false);
-        effect.setText("Artifacts, creatures, enchantments, and lands you control are indestructible");
+        effect.setText("Artifacts, creatures, enchantments, and lands you control have indestructible");
         this.getAbilities().add(new SimpleStaticAbility(Zone.COMMAND, effect));
         this.setExpansionSetCodeForImage("MMA");
     }

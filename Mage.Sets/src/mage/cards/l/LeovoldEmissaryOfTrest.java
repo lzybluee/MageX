@@ -71,7 +71,7 @@ class LeovoldEmissaryOfTrestEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        CardsAmountDrawnThisTurnWatcher watcher = (CardsAmountDrawnThisTurnWatcher) game.getState().getWatchers().get(CardsAmountDrawnThisTurnWatcher.class.getSimpleName());
+        CardsAmountDrawnThisTurnWatcher watcher = game.getState().getWatcher(CardsAmountDrawnThisTurnWatcher.class);
         Player controller = game.getPlayer(source.getControllerId());
         return watcher != null && controller != null && watcher.getAmountCardsDrawn(event.getPlayerId()) >= 1
                 && game.isOpponent(controller, event.getPlayerId());
@@ -109,7 +109,7 @@ class LeovoldEmissaryOfTrestTriggeredAbility extends TriggeredAbilityImpl {
                 return true; // Player was targeted
             }
             Permanent permanent = game.getPermanentOrLKIBattlefield(event.getTargetId());
-            if (permanent != null && this.getControllerId().equals(permanent.getControllerId())) {
+            if (permanent != null && this.isControlledBy(permanent.getControllerId())) {
                 return true;
             }
         }

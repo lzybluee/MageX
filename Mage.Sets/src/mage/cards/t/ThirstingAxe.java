@@ -14,7 +14,7 @@ import mage.abilities.condition.Condition;
 import mage.abilities.condition.InvertCondition;
 import mage.abilities.condition.common.AttachedCondition;
 import mage.abilities.costs.mana.GenericManaCost;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.SacrificeEquippedEffect;
 import mage.abilities.effects.common.continuous.BoostEquippedEffect;
 import mage.abilities.keyword.EquipAbility;
@@ -48,7 +48,7 @@ public final class ThirstingAxe extends CardImpl {
                 new InvertCondition(new EquippedDealtCombatDamageToCreatureCondition()));
         String triggeredAbilityText = "At the beginning of your end step, if equipped creature " +
             "didn't deal combat damage to a creature this turn, sacrifice it.";
-        ConditionalTriggeredAbility sacrificeTriggeredAbility = new ConditionalTriggeredAbility(ability, condition, triggeredAbilityText);
+        ConditionalInterveningIfTriggeredAbility sacrificeTriggeredAbility = new ConditionalInterveningIfTriggeredAbility(ability, condition, triggeredAbilityText);
         this.addAbility(sacrificeTriggeredAbility, new CombatDamageToCreatureWatcher());
 
         // Equip {2}
@@ -72,8 +72,8 @@ class EquippedDealtCombatDamageToCreatureCondition implements Condition {
         Permanent equipment = game.getPermanent(source.getSourceId());
         if (equipment != null && equipment.getAttachedTo() != null) {
             CombatDamageToCreatureWatcher watcher =
-                    (CombatDamageToCreatureWatcher) game.getState().getWatchers().get(CombatDamageToCreatureWatcher.BASIC_KEY);
-            return watcher.dealtDamage(equipment.getAttachedTo(), equipment.getAttachedToZoneChangeCounter(), game);
+                    game.getState().getWatcher(CombatDamageToCreatureWatcher.class);
+            return watcher != null && watcher.dealtDamage(equipment.getAttachedTo(), equipment.getAttachedToZoneChangeCounter(), game);
         }
         return false;
     }
@@ -83,12 +83,11 @@ class EquippedDealtCombatDamageToCreatureCondition implements Condition {
 class CombatDamageToCreatureWatcher extends Watcher {
 
     // which objects dealt combat damage to creature during the turn
-    public final Set<MageObjectReference> dealtCombatDamageToCreature;
+    private final Set<MageObjectReference> dealtCombatDamageToCreature;
 
-    final static String BASIC_KEY = "CombatDamageToCreatureWatcher";
 
     public CombatDamageToCreatureWatcher() {
-        super(BASIC_KEY, WatcherScope.GAME);
+        super(WatcherScope.GAME);
         dealtCombatDamageToCreature = new HashSet<>();
     }
 

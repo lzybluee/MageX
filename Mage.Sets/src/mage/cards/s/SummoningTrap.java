@@ -55,7 +55,7 @@ enum SummoningTrapCondition implements Condition {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        SummoningTrapWatcher watcher = (SummoningTrapWatcher) game.getState().getWatchers().get(SummoningTrapWatcher.class.getSimpleName());
+        SummoningTrapWatcher watcher = game.getState().getWatcher(SummoningTrapWatcher.class);
         return watcher != null && watcher.creatureSpellOfPlayerWasCountered(source.getControllerId());
     }
 
@@ -67,10 +67,10 @@ enum SummoningTrapCondition implements Condition {
 
 class SummoningTrapWatcher extends Watcher {
 
-    Set<UUID> players = new HashSet<>();
+    private Set<UUID> players = new HashSet<>();
 
     public SummoningTrapWatcher() {
-        super(SummoningTrapWatcher.class.getSimpleName(), WatcherScope.GAME);
+        super(WatcherScope.GAME);
     }
 
     public SummoningTrapWatcher(final SummoningTrapWatcher watcher) {
@@ -90,8 +90,7 @@ class SummoningTrapWatcher extends Watcher {
             if (counteredSpell == null) {
                 counteredSpell = (StackObject) game.getLastKnownInformation(event.getTargetId(), Zone.STACK);
             }
-            if (counteredSpell != null
-                    && counteredSpell instanceof Spell
+            if (counteredSpell instanceof Spell
                     && !players.contains(counteredSpell.getControllerId())
                     && counteredSpell.isCreature()) {
                 StackObject counteringStackObject = game.getStack().getStackObject(event.getSourceId());
@@ -134,8 +133,7 @@ class SummoningTrapEffect extends OneShotEffect {
         if (controller == null) {
             return false;
         }
-        Cards cards = new CardsImpl();
-        cards.addAll(controller.getLibrary().getTopCards(game, 7));
+        Cards cards = new CardsImpl(controller.getLibrary().getTopCards(game, 7));
         if (!cards.isEmpty()) {
             TargetCard target = new TargetCard(Zone.LIBRARY,
                     new FilterCreatureCard(

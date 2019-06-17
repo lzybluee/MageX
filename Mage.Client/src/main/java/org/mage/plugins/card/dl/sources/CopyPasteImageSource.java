@@ -1,21 +1,20 @@
 package org.mage.plugins.card.dl.sources;
 
-import java.awt.Toolkit;
+import mage.cards.Sets;
+import org.mage.plugins.card.dl.DownloadServiceInfo;
+import org.mage.plugins.card.images.CardDownloadData;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.JOptionPane;
-import mage.cards.Sets;
-import org.mage.plugins.card.images.CardDownloadData;
 
 /**
- *
  * @author spjspj
  */
 public enum CopyPasteImageSource implements CardImageSource {
@@ -74,7 +73,12 @@ public enum CopyPasteImageSource implements CardImageSource {
     }
 
     @Override
-    public CardImageUrls generateURL(CardDownloadData card) throws Exception {
+    public boolean prepareDownloadList(DownloadServiceInfo downloadServiceInfo, List<CardDownloadData> downloadList) {
+        return true;
+    }
+
+    @Override
+    public CardImageUrls generateCardUrl(CardDownloadData card) throws Exception {
         if (singleLinks == null) {
             setupLinks();
         }
@@ -198,7 +202,7 @@ public enum CopyPasteImageSource implements CardImageSource {
     @Override
     public CardImageUrls generateTokenUrl(CardDownloadData card) throws IOException {
         try {
-            return generateURL(card);
+            return generateCardUrl(card);
         } catch (Exception ex) {
         }
         return null;
@@ -239,12 +243,17 @@ public enum CopyPasteImageSource implements CardImageSource {
     }
 
     @Override
-    public boolean isImageProvided(String setCode, String cardName) {
+    public boolean isCardImageProvided(String setCode, String cardName) {
         missingCards.add(setCode + "/" + cardName);
 
         if (singleLinks != null) {
             return singleLinks.containsKey(setCode + "/" + cardName) || singleLinks.containsKey(setCode + "/" + cardName + "-a");
         }
+        return false;
+    }
+
+    @Override
+    public boolean isTokenImageProvided(String setCode, String cardName, Integer tokenNumber) {
         return false;
     }
 

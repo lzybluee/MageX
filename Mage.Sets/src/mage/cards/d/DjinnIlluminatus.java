@@ -52,7 +52,7 @@ public final class DjinnIlluminatus extends CardImpl {
 
 class DjinnIlluminatusGainReplicateEffect extends ContinuousEffectImpl {
 
-    private final static FilterInstantOrSorcerySpell filter = new FilterInstantOrSorcerySpell();
+    private static final FilterInstantOrSorcerySpell filter = new FilterInstantOrSorcerySpell();
     private final Map<UUID, ReplicateAbility> replicateAbilities = new HashMap<>();
 
     public DjinnIlluminatusGainReplicateEffect() {
@@ -81,8 +81,8 @@ class DjinnIlluminatusGainReplicateEffect extends ContinuousEffectImpl {
             // only spells cast, so no copies of spells
             if ((stackObject instanceof Spell) 
                     && !stackObject.isCopy() 
-                    && stackObject.getControllerId().equals(source.getControllerId())
-                    && djinn.getControllerId().equals(source.getControllerId())  // verify that the controller of the djinn cast that spell
+                    && stackObject.isControlledBy(source.getControllerId())
+                    && djinn.isControlledBy(source.getControllerId())  // verify that the controller of the djinn cast that spell
                     && !stackObject.getManaCost().isEmpty()) { //handle cases like Ancestral Vision
                 Spell spell = (Spell) stackObject;
                 if (filter.match(stackObject, game)) {

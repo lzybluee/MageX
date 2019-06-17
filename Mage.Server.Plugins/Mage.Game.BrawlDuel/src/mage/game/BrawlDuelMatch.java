@@ -3,6 +3,7 @@ package mage.game;
 
 import mage.game.match.MatchImpl;
 import mage.game.match.MatchOptions;
+import mage.game.mulligan.Mulligan;
 
 /**
  *
@@ -16,9 +17,9 @@ public class BrawlDuelMatch extends MatchImpl {
 
     @Override
     public void startGame() throws GameException {
-        int startLife = 20;
-        boolean alsoHand = true;
-        BrawlDuel game = new BrawlDuel(options.getAttackOption(), options.getRange(), options.getFreeMulligans(), startLife);
+        int startLife = 25;
+        Mulligan mulligan = options.getMulliganType().getMulligan(options.getFreeMulligans());
+        BrawlDuel game = new BrawlDuel(options.getAttackOption(), options.getRange(), mulligan, startLife);
         game.setCheckCommanderDamage(false);
         game.setStartMessage(this.createGameStartMessage());
         game.setAlsoHand(true);

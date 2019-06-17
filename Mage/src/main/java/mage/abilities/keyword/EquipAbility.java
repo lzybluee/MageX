@@ -1,16 +1,12 @@
 package mage.abilities.keyword;
 
-import java.util.UUID;
 import mage.abilities.ActivatedAbilityImpl;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.mana.GenericManaCost;
-import mage.abilities.effects.common.AttachEffect;
+import mage.abilities.effects.EquipEffect;
 import mage.constants.Outcome;
-import mage.constants.SubType;
 import mage.constants.TimingRule;
 import mage.constants.Zone;
-import mage.game.Game;
-import mage.game.permanent.Permanent;
 import mage.target.Target;
 import mage.target.common.TargetControlledCreaturePermanent;
 
@@ -28,19 +24,9 @@ public class EquipAbility extends ActivatedAbilityImpl {
     }
 
     public EquipAbility(Outcome outcome, Cost cost, Target target) {
-        super(Zone.BATTLEFIELD, new AttachEffect(outcome, "Equip"), cost);
+        super(Zone.BATTLEFIELD, new EquipEffect(outcome), cost);
         this.addTarget(target);
         this.timing = TimingRule.SORCERY;
-    }
-
-    @Override
-    public ActivationStatus canActivate(UUID playerId, Game game) {
-        Permanent permanent = game.getPermanent(sourceId);
-        if (permanent != null && permanent.hasSubtype(SubType.EQUIPMENT, game) && !permanent.isCreature()) {
-            return super.canActivate(playerId, game);
-        } else {
-            return ActivationStatus.getFalse();
-        }
     }
 
     public EquipAbility(final EquipAbility ability) {
@@ -54,7 +40,7 @@ public class EquipAbility extends ActivatedAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Equip " + costs.getText() + manaCosts.getText() + " (" + manaCosts.getText() + ": <i>Attach to target creature you control. Equip only as a sorcery.)</i>";
+        return "Equip " + costs.getText() + manaCosts.getText() + " <i>(" + manaCosts.getText() + ": Attach to target creature you control. Equip only as a sorcery.)</i>";
     }
 
 }

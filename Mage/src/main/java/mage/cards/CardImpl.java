@@ -1,33 +1,19 @@
-
 package mage.cards;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import com.google.common.collect.ImmutableList;
 import mage.MageObject;
 import mage.MageObjectImpl;
 import mage.Mana;
 import mage.ObjectColor;
 import mage.abilities.*;
-import mage.abilities.costs.Cost;
-import mage.abilities.costs.VariableCost;
-import mage.abilities.costs.common.RemoveVariableCountersTargetCost;
-import mage.abilities.effects.common.ChooseACardNameEffect;
+import mage.abilities.hint.Hint;
+import mage.abilities.hint.HintUtils;
 import mage.abilities.mana.ActivatedManaAbilityImpl;
 import mage.cards.repository.PluginClassloaderRegistery;
 import mage.constants.*;
 import mage.counters.Counter;
-import mage.counters.CounterType;
 import mage.counters.Counters;
-import mage.filter.FilterCard;
 import mage.filter.FilterMana;
-import mage.filter.FilterPermanent;
-import mage.filter.FilterSpell;
-import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
-import mage.filter.predicate.mageobject.NamePredicate;
-import mage.filter.predicate.mageobject.PowerPredicate;
 import mage.game.*;
 import mage.game.command.CommandObject;
 import mage.game.events.GameEvent;
@@ -35,15 +21,17 @@ import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.game.stack.StackObject;
-import mage.target.TargetCard;
-import mage.target.TargetPermanent;
-import mage.target.TargetSpell;
-import mage.target.common.TargetCardInOpponentsGraveyard;
-import mage.target.common.TargetCreaturePermanent;
 import mage.util.GameLog;
 import mage.util.SubTypeList;
 import mage.watchers.Watcher;
 import org.apache.log4j.Logger;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class CardImpl extends MageObjectImpl implements Card {
 
@@ -59,7 +47,7 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
 
     protected UUID ownerId;
     protected String cardNumber;
-    public String expansionSetCode;
+    protected String expansionSetCode;
     protected String tokenSetCode;
     protected String tokenDescriptor;
     protected Rarity rarity;
@@ -237,11 +225,7 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
         game.getState().getCardState(objectId).addInfo(key, value);
     }
 
-    protected static final ArrayList<String> rulesError = new ArrayList<String>() {
-        {
-            add("Exception occurred in rules generation");
-        }
-    };
+    protected static final List<String> rulesError = ImmutableList.of("Exception occurred in rules generation");
 
     @Override
     public List<String> getRules() {
@@ -258,6 +242,7 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
         try {
             List<String> rules = getRules();
             if (game != null) {
+                // debug state
                 CardState cardState = game.getState().getCardState(objectId);
                 if (cardState != null) {
                     for (String data : cardState.getInfo().values()) {
@@ -266,6 +251,27 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
                     for (Ability ability : cardState.getAbilities()) {
                         rules.add(ability.getRule());
                     }
+                }
+
+                // ability hints
+                List<String> abilityHints = new ArrayList<>();
+                if (HintUtils.ABILITY_HINTS_ENABLE) {
+                    for (Ability ability : abilities) {
+                        for (Hint hint : ability.getHints()) {
+                            String s = hint.getText(game, ability);
+                            if (s != null && !s.isEmpty()) {
+                                abilityHints.add(s);
+                            }
+                        }
+                    }
+                }
+
+                // restrict hints only for permanents, not cards
+
+                // total hints
+                if (!abilityHints.isEmpty()) {
+                    rules.add(HintUtils.HINT_START_MARK);
+                    HintUtils.appendHints(rules, abilityHints);
                 }
             }
             return rules;
@@ -342,115 +348,14 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
         return spellAbility;
     }
 
-//    @Override
-//    public void adjustCosts(Ability ability, Game game) {
-//    }
+    @Override
+    public void adjustCosts(Ability ability, Game game) {
+        ability.adjustCosts(game);
+    }
+
     @Override
     public void adjustTargets(Ability ability, Game game) {
-        int xValue;
-        TargetPermanent oldTargetPermanent;
-        FilterPermanent permanentFilter;
-        int minTargets;
-        int maxTargets;
-        switch (ability.getTargetAdjustment()) {
-            case NONE:
-                break;
-            case X_CMC_EQUAL_PERM:
-                xValue = ability.getManaCostsToPay().getX();
-                oldTargetPermanent = (TargetPermanent) ability.getTargets().get(0);
-                minTargets = oldTargetPermanent.getMinNumberOfTargets();
-                maxTargets = oldTargetPermanent.getMaxNumberOfTargets();
-                permanentFilter = oldTargetPermanent.getFilter().copy();
-                permanentFilter.add(new ConvertedManaCostPredicate(ComparisonType.EQUAL_TO, xValue));
-                ability.getTargets().clear();
-                ability.getTargets().add(new TargetPermanent(minTargets, maxTargets, permanentFilter, false));
-                break;
-            case X_TARGETS:
-                xValue = ability.getManaCostsToPay().getX();
-                permanentFilter = ((TargetPermanent) ability.getTargets().get(0)).getFilter();
-                ability.getTargets().clear();
-                ability.addTarget(new TargetPermanent(xValue, permanentFilter));
-                break;
-            case X_POWER_LEQ:// Minamo Sightbender only
-                xValue = ability.getManaCostsToPay().getX();
-                oldTargetPermanent = (TargetPermanent) ability.getTargets().get(0);
-                minTargets = oldTargetPermanent.getMinNumberOfTargets();
-                maxTargets = oldTargetPermanent.getMaxNumberOfTargets();
-                permanentFilter = oldTargetPermanent.getFilter().copy();
-                permanentFilter.add(new PowerPredicate(ComparisonType.FEWER_THAN, xValue + 1));
-                ability.getTargets().clear();
-                ability.getTargets().add(new TargetPermanent(minTargets, maxTargets, permanentFilter, false));
-                break;
-            case VERSE_COUNTER_TARGETS:
-                Permanent sourcePermanent = game.getPermanentOrLKIBattlefield(ability.getSourceId());
-                if (sourcePermanent != null) {
-                    xValue = sourcePermanent.getCounters(game).getCount(CounterType.VERSE);
-                    permanentFilter = ((TargetPermanent) ability.getTargets().get(0)).getFilter();
-                    ability.getTargets().clear();
-                    ability.addTarget(new TargetPermanent(0, xValue, permanentFilter, false));
-                }
-                break;
-            case X_CMC_EQUAL_GY_CARD: //Geth, Lord of the Vault only
-                xValue = ability.getManaCostsToPay().getX();
-                TargetCard oldTarget = (TargetCard) ability.getTargets().get(0);
-                FilterCard filterCard = oldTarget.getFilter().copy();
-                filterCard.add(new ConvertedManaCostPredicate(ComparisonType.EQUAL_TO, xValue));
-                ability.getTargets().clear();
-                ability.getTargets().add(new TargetCardInOpponentsGraveyard(filterCard));
-                break;
-            case CHOSEN_NAME: //Declaration of Naught only
-                ability.getTargets().clear();
-                FilterSpell filterSpell = new FilterSpell("spell with the chosen name");
-                filterSpell.add(new NamePredicate((String) game.getState().getValue(ability.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY)));
-                TargetSpell target = new TargetSpell(1, filterSpell);
-                ability.addTarget(target);
-                break;
-            case CHOSEN_COLOR: //Pentarch Paladin only
-                ObjectColor chosenColor = (ObjectColor) game.getState().getValue(ability.getSourceId() + "_color");
-                ability.getTargets().clear();
-                FilterPermanent filter = new FilterPermanent("permanent of the chosen color.");
-                if (chosenColor != null) {
-                    filter.add(new ColorPredicate(chosenColor));
-                } else {
-                    filter.add(new ConvertedManaCostPredicate(ComparisonType.FEWER_THAN, -5));// Pretty sure this is always false
-                }
-                oldTargetPermanent = new TargetPermanent(filter);
-                ability.addTarget(oldTargetPermanent);
-                break;
-            case TREASURE_COUNTER_POWER: //Legacy's Allure only
-                sourcePermanent = game.getPermanentOrLKIBattlefield(ability.getSourceId());
-                if (sourcePermanent != null) {
-                    xValue = sourcePermanent.getCounters(game).getCount(CounterType.TREASURE);
-                    FilterCreaturePermanent filter2 = new FilterCreaturePermanent("creature with power less than or equal to the number of treasure counters on {this}");
-                    filter2.add(new PowerPredicate(ComparisonType.FEWER_THAN, xValue + 1));
-                    ability.getTargets().clear();
-                    ability.getTargets().add(new TargetCreaturePermanent(filter2));
-                }
-                break;
-            case SIMIC_MANIPULATOR: //Simic Manipulator only
-                xValue = 0;
-                for (Cost cost : ability.getCosts()) {
-                    if (cost instanceof RemoveVariableCountersTargetCost) {
-                        xValue = ((RemoveVariableCountersTargetCost) cost).getAmount();
-                        break;
-                    }
-                }
-                ability.getTargets().clear();
-                FilterCreaturePermanent newFilter = new FilterCreaturePermanent("creature with power less than or equal to " + xValue);
-                newFilter.add(new PowerPredicate(ComparisonType.FEWER_THAN, xValue + 1));
-                ability.addTarget(new TargetCreaturePermanent(newFilter));
-                break;
-            case CREATURE_POWER_X_OR_LESS: // Aryel, Knight of Windgrace
-                int value = 0;
-                for (VariableCost cost : ability.getCosts().getVariableCosts()) {
-                    value = cost.getAmount();
-                }
-                FilterCreaturePermanent filterCreaturePermanent = new FilterCreaturePermanent("creature with power " + value + " or less");
-                filterCreaturePermanent.add(new PowerPredicate(ComparisonType.FEWER_THAN, value + 1));
-                ability.getTargets().clear();
-                ability.addTarget(new TargetCreaturePermanent(filterCreaturePermanent));
-                break;
-        }
+        ability.adjustTargets(game);
     }
 
     @Override
@@ -478,9 +383,7 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
     public List<Mana> getMana() {
         List<Mana> mana = new ArrayList<>();
         for (ActivatedManaAbilityImpl ability : this.abilities.getActivatedManaAbilities(Zone.BATTLEFIELD)) {
-            for (Mana netMana : ability.getNetMana(null)) {
-                mana.add(netMana);
-            }
+            mana.addAll(ability.getNetMana(null));
         }
         return mana;
     }
@@ -604,7 +507,7 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
                     }
                 }
                 if (lkiObject != null) {
-                    removed = game.getState().getCommand().remove((CommandObject) lkiObject);
+                    removed = game.getState().getCommand().remove(lkiObject);
                 }
                 break;
             case OUTSIDE:
@@ -709,7 +612,6 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
         }
 
         List<ExpansionSet.SetCardInfo> cardInfo = Sets.findSet(expansionSetCode).findCardInfoByClass(secondSideCardClazz);
-        assert cardInfo.size() == 1;    // should find 1 second side card
         if (cardInfo.isEmpty()) {
             return null;
         }
@@ -779,28 +681,42 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
     @Override
     public boolean addCounters(Counter counter, Ability source, Game game, List<UUID> appliedEffects, boolean isEffect) {
         boolean returnCode = true;
-        UUID sourceId = (source == null ? getId() : source.getSourceId());
-        GameEvent countersEvent = GameEvent.getEvent(GameEvent.EventType.ADD_COUNTERS, objectId, sourceId, getControllerOrOwner(), counter.getName(), counter.getCount());
-        countersEvent.setAppliedEffects(appliedEffects);
-        countersEvent.setFlag(isEffect);
-        if (!game.replaceEvent(countersEvent)) {
-            int amount = countersEvent.getAmount();
+        UUID sourceId = getId();
+        if (source != null) {
+            MageObject object = game.getObject(source.getId());
+            if (object instanceof StackObject) {
+                sourceId = source.getId();
+            } else {
+                sourceId = source.getSourceId();
+            }
+        }
+        GameEvent addingAllEvent = GameEvent.getEvent(GameEvent.EventType.ADD_COUNTERS, objectId, sourceId, getControllerOrOwner(), counter.getName(), counter.getCount());
+        addingAllEvent.setAppliedEffects(appliedEffects);
+        addingAllEvent.setFlag(isEffect);
+        if (!game.replaceEvent(addingAllEvent)) {
+            int amount = addingAllEvent.getAmount();
+            boolean isEffectFlag = addingAllEvent.getFlag();
             int finalAmount = amount;
             for (int i = 0; i < amount; i++) {
                 Counter eventCounter = counter.copy();
                 eventCounter.remove(eventCounter.getCount() - 1);
-                GameEvent event = GameEvent.getEvent(GameEvent.EventType.ADD_COUNTER, objectId, sourceId, getControllerOrOwner(), counter.getName(), 1);
-                event.setAppliedEffects(appliedEffects);
-                if (!game.replaceEvent(event)) {
+                GameEvent addingOneEvent = GameEvent.getEvent(GameEvent.EventType.ADD_COUNTER, objectId, sourceId, getControllerOrOwner(), counter.getName(), 1);
+                addingOneEvent.setAppliedEffects(appliedEffects);
+                addingOneEvent.setFlag(isEffectFlag);
+                if (!game.replaceEvent(addingOneEvent)) {
                     getCounters(game).addCounter(eventCounter);
-                    game.fireEvent(GameEvent.getEvent(GameEvent.EventType.COUNTER_ADDED, objectId, sourceId, getControllerOrOwner(), counter.getName(), 1));
+                    GameEvent addedOneEvent = GameEvent.getEvent(GameEvent.EventType.COUNTER_ADDED, objectId, sourceId, getControllerOrOwner(), counter.getName(), 1);
+                    addedOneEvent.setFlag(addingOneEvent.getFlag());
+                    game.fireEvent(addedOneEvent);
                 } else {
                     finalAmount--;
                     returnCode = false;
                 }
             }
             if (finalAmount > 0) {
-                game.fireEvent(GameEvent.getEvent(GameEvent.EventType.COUNTERS_ADDED, objectId, sourceId, getControllerOrOwner(), counter.getName(), amount));
+                GameEvent addedAllEvent = GameEvent.getEvent(GameEvent.EventType.COUNTERS_ADDED, objectId, sourceId, getControllerOrOwner(), counter.getName(), amount);
+                addedAllEvent.setFlag(isEffectFlag);
+                game.fireEvent(addedAllEvent);
             }
         } else {
             returnCode = false;
@@ -810,6 +726,7 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
 
     @Override
     public void removeCounters(String name, int amount, Game game) {
+        int finalAmount = 0;
         for (int i = 0; i < amount; i++) {
             if (!getCounters(game).removeCounter(name, 1)) {
                 break;
@@ -817,7 +734,12 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
             GameEvent event = GameEvent.getEvent(GameEvent.EventType.COUNTER_REMOVED, objectId, getControllerOrOwner());
             event.setData(name);
             game.fireEvent(event);
+            finalAmount++;
         }
+        GameEvent event = GameEvent.getEvent(GameEvent.EventType.COUNTERS_REMOVED, objectId, getControllerOrOwner());
+        event.setData(name);
+        event.setAmount(finalAmount);
+        game.fireEvent(event);
     }
 
     @Override
@@ -830,7 +752,7 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
     @Override
     public String getLogName() {
         if (name.isEmpty()) {
-            return GameLog.getNeutralColoredText("face down card");
+            return GameLog.getNeutralColoredText(EmptyNames.FACE_DOWN_CREATURE.toString());
         } else {
             return GameLog.getColoredObjectIdName(this);
         }

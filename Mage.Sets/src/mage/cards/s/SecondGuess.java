@@ -10,7 +10,7 @@ import mage.constants.CardType;
 import mage.filter.FilterSpell;
 import mage.filter.predicate.Predicate;
 import mage.game.Game;
-import mage.game.stack.Spell;
+import mage.game.stack.StackObject;
 import mage.target.TargetSpell;
 import mage.watchers.common.CastSpellLastTurnWatcher;
 
@@ -45,13 +45,13 @@ public final class SecondGuess extends CardImpl {
     }
 }
 
-class SecondSpellPredicate implements Predicate<Spell> {
+class SecondSpellPredicate implements Predicate<StackObject> {
 
     @Override
-    public boolean apply(Spell input, Game game) {
-        CastSpellLastTurnWatcher watcher = (CastSpellLastTurnWatcher) game.getState().getWatchers().get(CastSpellLastTurnWatcher.class.getSimpleName());
+    public boolean apply(StackObject input, Game game) {
+        CastSpellLastTurnWatcher watcher = game.getState().getWatcher(CastSpellLastTurnWatcher.class);
 
-        if (watcher.getSpellOrder(new MageObjectReference(input.getId(), game), game) == 2) {
+        if (watcher != null && watcher.getSpellOrder(new MageObjectReference(input.getId(), game), game) == 2) {
             return true;
         }
 

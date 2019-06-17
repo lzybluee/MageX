@@ -37,7 +37,7 @@ public final class TimeOfIce extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("tapped creatures");
 
     static {
-        filter.add(new TappedPredicate());
+        filter.add(TappedPredicate.instance);
     }
 
     public TimeOfIce(UUID ownerId, CardSetInfo setInfo) {
@@ -119,7 +119,7 @@ class TimeOfIceEffect extends ContinuousRuleModifyingEffectImpl {
                 if (game.getTurn().getStepType() == PhaseStep.UNTAP && event.getTargetId().equals(targetPointer.getFirst(game, source))) {
                     Permanent targetCreature = game.getPermanent(targetPointer.getFirst(game, source));
                     if (targetCreature != null) {
-                        return targetCreature.getControllerId().equals(game.getActivePlayerId());
+                        return targetCreature.isControlledBy(game.getActivePlayerId());
                     } else {
                         discard();
                         return false;
@@ -141,7 +141,7 @@ class TimeOfIceEffect extends ContinuousRuleModifyingEffectImpl {
 class TimeOfIceWatcher extends Watcher {
 
     TimeOfIceWatcher() {
-        super("ControlLost", WatcherScope.CARD);
+        super(WatcherScope.CARD);
     }
 
     TimeOfIceWatcher(TimeOfIceWatcher watcher) {

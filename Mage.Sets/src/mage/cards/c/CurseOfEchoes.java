@@ -90,7 +90,7 @@ class CurseOfEchoesCopyTriggeredAbility extends TriggeredAbilityImpl {
             Permanent enchantment = game.getPermanent(sourceId);
             if (enchantment != null && enchantment.getAttachedTo() != null) {
                 Player player = game.getPlayer(enchantment.getAttachedTo());
-                if (player != null && spell.getControllerId().equals(player.getId())) {
+                if (player != null && spell.isControlledBy(player.getId())) {
                     this.getEffects().get(0).setTargetPointer(new FixedTarget(spell.getId()));
                     return true;
                 }
@@ -121,9 +121,9 @@ class CurseOfEchoesEffect extends OneShotEffect {
         if (spell != null) {
             String chooseMessage = "Copy target spell?  You may choose new targets for the copy.";
             for (UUID playerId : game.getState().getPlayersInRange(source.getControllerId(), game)) {
-                if (!playerId.equals(spell.getControllerId())) {
+                if (!spell.isControlledBy(playerId)) {
                     Player player = game.getPlayer(playerId);
-                    if (player.chooseUse(Outcome.Copy, chooseMessage, source, game)) {
+                    if (player != null && player.chooseUse(Outcome.Copy, chooseMessage, source, game)) {
                         spell.createCopyOnStack(game, source, player.getId(), true);
                     }
                 }

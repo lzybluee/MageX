@@ -7,6 +7,7 @@ import mage.client.components.ext.dlg.DialogContainer;
 import mage.client.components.ext.dlg.DialogManager;
 import mage.client.components.ext.dlg.DlgParams;
 import mage.client.components.ext.dlg.IDialogPanel;
+import mage.client.dialog.PreferencesDialog;
 import mage.client.game.FeedbackPanel;
 import mage.client.plugins.impl.Plugins;
 import mage.client.util.Command;
@@ -33,14 +34,14 @@ public class StackDialog extends IDialogPanel {
 
     private JLayeredPane jLayeredPane;
     private final FeedbackPanel feedbackPanel;
-    
+
     private final UUID gameId;
 
     private static class CustomLabel extends JLabel {
 
         @Override
         public void paintComponent(Graphics g) {
-            Graphics2D g2D = (Graphics2D)g;
+            Graphics2D g2D = (Graphics2D) g;
             g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -66,7 +67,7 @@ public class StackDialog extends IDialogPanel {
 
     /**
      * This method initializes this
-     * 
+     *
      * @return void
      */
     private void initialize() {
@@ -84,11 +85,6 @@ public class StackDialog extends IDialogPanel {
         jTitle.setBounds(new Rectangle(5, 3, w, 16));
         jTitle.setFont(new Font("Dialog", Font.BOLD, 14));
         jTitle.setText("Current stack: ");
-
-        /*jTitle2 = new CustomLabel();
-        jTitle2.setBounds(new Rectangle(5, 5 + SettingsManager.getInstance().getCardSize().height + 30, 129, 20));
-        jTitle2.setFont(new Font("Dialog", Font.BOLD, 14));
-        jTitle2.setText("Spell targets:");*/
 
         this.setLayout(null);
         jLayeredPane.setLayout(null);
@@ -116,7 +112,7 @@ public class StackDialog extends IDialogPanel {
         for (CardView card : cards.values()) {
 
             if (card instanceof StackAbilityView) {
-                CardView tmp = ((StackAbilityView)card).getSourceCard();
+                CardView tmp = ((StackAbilityView) card).getSourceCard();
                 tmp.overrideRules(card.getRules());
                 tmp.setIsAbility(true);
                 tmp.overrideTargets(card.getTargets());
@@ -124,7 +120,7 @@ public class StackDialog extends IDialogPanel {
                 card = tmp;
             }
 
-            MageCard cardImg = Plugins.instance.getMageCard(card, bigCard, getCardDimension(), gameId, true, true);
+            MageCard cardImg = Plugins.instance.getMageCard(card, bigCard, getCardDimension(), gameId, true, true, PreferencesDialog.getRenderMode());
             //cardImg.setBorder(BorderFactory.createLineBorder(Color.red));
             cardImg.setLocation(dx, dy);
 
@@ -148,10 +144,11 @@ public class StackDialog extends IDialogPanel {
             jButtonAccept.setObserver(new Command() {
                 @Override
                 public void execute() {
-                    DialogManager.getManager(gameId).fadeOut((DialogContainer)getParent());
+                    DialogManager.getManager(gameId).fadeOut((DialogContainer) getParent());
                     //GameManager.getInputControl().getInput().selectButtonOK();
                     StackDialog.this.feedbackPanel.doClick();
                 }
+
                 private static final long serialVersionUID = 1L;
             });
         }
@@ -171,11 +168,12 @@ public class StackDialog extends IDialogPanel {
             jButtonResponse.setObserver(new Command() {
                 @Override
                 public void execute() {
-                    DialogManager.getManager(gameId).fadeOut((DialogContainer)getParent());
+                    DialogManager.getManager(gameId).fadeOut((DialogContainer) getParent());
                 }
+
                 private static final long serialVersionUID = 1L;
             });
         }
         return jButtonResponse;
     }
- }
+}

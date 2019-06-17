@@ -29,7 +29,7 @@ import mage.game.stack.Spell;
  */
 public final class VanquishersBanner extends CardImpl {
 
-    private final static FilterCreaturePermanent filter = new FilterCreaturePermanent("creatures you control of the chosen type");
+    private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creatures you control of the chosen type");
 
     static {
         filter.add(new ControllerPredicate(TargetController.YOU));
@@ -81,13 +81,13 @@ class DrawCardIfCreatureTypeAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        SubType subType = ChooseCreatureTypeEffect.getChoosenCreatureType(getSourceId(), game);
+        SubType subType = ChooseCreatureTypeEffect.getChosenCreatureType(getSourceId(), game);
         if (subType != null) {
             Spell spell = game.getStack().getSpell(event.getTargetId());
             if (spell != null
                     && spell.isCreature()
                     && spell.hasSubtype(subType, game)
-                    && spell.getControllerId().equals(getControllerId())) {
+                    && spell.isControlledBy(getControllerId())) {
                 return true;
             }
         }

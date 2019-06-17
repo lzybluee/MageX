@@ -73,7 +73,7 @@ class MangarasTomeSearchEffect extends OneShotEffect {
         Permanent permanent = game.getPermanentOrLKIBattlefield(source.getSourceId());
         if (controller != null && permanent != null) {
             TargetCardInLibrary target = new TargetCardInLibrary(5, new FilterCard());
-            if (controller.searchLibrary(target, game)) {
+            if (controller.searchLibrary(target, source, game)) {
                 for (UUID targetId : target.getTargets()) {
                     Card card = controller.getLibrary().getCard(targetId, game);
                     if (card != null) {
@@ -123,6 +123,6 @@ class MangarasTomeReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        return source.getControllerId().equals(event.getPlayerId());
+        return source.isControlledBy(event.getPlayerId());
     }
 }

@@ -1,28 +1,17 @@
-
 package mage.cards.k;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.DelayedTriggeredAbility;
 import mage.abilities.LoyaltyAbility;
-import mage.abilities.common.PlanswalkerEntersWithLoyalityCountersAbility;
+import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.ExileTargetForSourceEffect;
-import mage.cards.Card;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.cards.Cards;
-import mage.cards.CardsImpl;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.Outcome;
-import mage.constants.SuperType;
-import mage.constants.Zone;
+import mage.cards.*;
+import mage.constants.*;
 import mage.game.ExileZone;
 import mage.game.Game;
+import mage.game.GameImpl;
 import mage.game.command.Commander;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
@@ -34,8 +23,11 @@ import mage.target.TargetPlayer;
 import mage.target.common.TargetCardInHand;
 import mage.util.CardUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author bunchOfDevs
  */
 public final class KarnLiberated extends CardImpl {
@@ -44,7 +36,7 @@ public final class KarnLiberated extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.PLANESWALKER}, "{7}");
         this.addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.KARN);
-        this.addAbility(new PlanswalkerEntersWithLoyalityCountersAbility(6));
+        this.addAbility(new PlaneswalkerEntersWithLoyaltyCountersAbility(6));
 
         // +4: Target player exiles a card from their hand.
         LoyaltyAbility ability1 = new LoyaltyAbility(new KarnPlayerExileEffect(), 4);
@@ -102,6 +94,9 @@ class KarnLiberatedEffect extends OneShotEffect {
             }
         }
         game.getState().clear();
+        // default watchers init, TODO: remove all restart/init code to game
+        ((GameImpl) game).initGameDefaultWatchers();
+
         for (Card card : game.getCards()) {
             game.getState().addCard(card);
         }
@@ -111,17 +106,19 @@ class KarnLiberatedEffect extends OneShotEffect {
                 player.getHand().clear();
                 player.getLibrary().clear();
                 for (Card card : game.getCards()) {
-                    if (card.getOwnerId().equals(player.getId()) && !card.isCopy() // no copies
+                    if (card.isOwnedBy(player.getId()) && !card.isCopy() // no copies
                             && !player.getSideboard().contains(card.getId())
                             && !cards.contains(card)) { // not the exiled cards
-                        if (player.getCommandersIds().contains(card.getId())) {
-                            game.addCommander(new Commander(card));
+                        if (game.getCommandersIds(player).contains(card.getId())) {
+                            game.addCommander(new Commander(card)); // TODO: check restart and init
+                            // no needs in initCommander call -- it's uses on game startup (init)
                             game.setZone(card.getId(), Zone.COMMAND);
                         } else {
                             player.getLibrary().putOnTop(card, game);
                         }
                     }
                 }
+                ((GameImpl) game).initPlayerDefaultWatchers(player.getId());
                 player.init(game);
             }
         }
@@ -195,8 +192,7 @@ class KarnLiberatedDelayedEffect extends OneShotEffect {
             if (exile != null) {
                 // Creatures put onto the battlefield due to Karn's ability will have been under their controller's control continuously
                 // since the beginning of the first turn. They can attack and their activated abilities with {T} in the cost can be activated.
-                Cards cards = new CardsImpl(); // needed because putOntoTheBattlefield removes from exile
-                cards.addAll(exile);
+                Cards cards = new CardsImpl(exile); // needed because putOntoTheBattlefield removes from exile
                 if (!cards.isEmpty()) {
                     controller.moveCards(cards, Zone.BATTLEFIELD, source, game);
                     for (Card card : cards.getCards(game)) {

@@ -92,9 +92,9 @@ class KeranosGodOfStormsTriggeredAbility extends TriggeredAbilityImpl {
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         if (event.getPlayerId().equals(this.getControllerId())) {
-            if (game.getActivePlayerId().equals(this.getControllerId())) {
+            if (game.isActivePlayer(this.getControllerId())) {
                 CardsAmountDrawnThisTurnWatcher watcher =
-                        (CardsAmountDrawnThisTurnWatcher) game.getState().getWatchers().get(CardsAmountDrawnThisTurnWatcher.class.getSimpleName());
+                        game.getState().getWatcher(CardsAmountDrawnThisTurnWatcher.class);
                 if (watcher != null && watcher.getAmountCardsDrawn(event.getPlayerId()) != 1) {
                     return false;
                 }

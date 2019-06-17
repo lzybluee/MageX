@@ -1,7 +1,5 @@
-
 package mage.cards.c;
 
-import java.util.UUID;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
@@ -22,8 +20,9 @@ import mage.game.events.GameEvent.EventType;
 import mage.players.Player;
 import mage.target.common.TargetOpponent;
 
+import java.util.UUID;
+
 /**
- *
  * @author Plopman
  */
 public final class CarpetOfFlowers extends CardImpl {
@@ -74,12 +73,7 @@ class CarpetOfFlowersTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkInterveningIfClause(Game game) {
-        Boolean activatedThisTurn = (Boolean) game.getState().getValue(this.originalId.toString() + "addMana");
-        if (activatedThisTurn == null) {
-            return true;
-        } else {
-            return !activatedThisTurn;
-        }
+        return !Boolean.TRUE.equals(game.getState().getValue(this.originalId.toString() + "addMana"));
     }
 
     @Override
@@ -98,8 +92,7 @@ class CarpetOfFlowersTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        StringBuilder sb = new StringBuilder("At the beginning of each of your main phases, if you haven't added mana with this ability this turn, ");
-        return sb.append(super.getRule()).toString();
+        return "At the beginning of each of your main phases, if you haven't added mana with this ability this turn, " + super.getRule();
     }
 
 }

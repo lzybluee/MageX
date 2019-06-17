@@ -1,8 +1,8 @@
-
 package mage.abilities.condition.common;
 
 import mage.abilities.Ability;
 import mage.abilities.condition.Condition;
+import mage.constants.CommanderCardType;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -22,9 +22,9 @@ public enum CommanderInPlayCondition implements Condition {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            for (UUID commanderId : controller.getCommandersIds()) {
+            for (UUID commanderId : game.getCommandersIds(controller, CommanderCardType.COMMANDER_OR_OATHBREAKER)) {
                 Permanent commander = game.getPermanent(commanderId);
-                if (commander != null && commander.getControllerId().equals(source.getControllerId())) {
+                if (commander != null && commander.isControlledBy(source.getControllerId())) {
                     return true;
                 }
             }

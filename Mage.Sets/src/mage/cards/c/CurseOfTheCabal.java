@@ -1,4 +1,3 @@
-
 package mage.cards.c;
 
 import mage.abilities.Ability;
@@ -7,7 +6,7 @@ import mage.abilities.condition.common.SuspendedCondition;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.common.SacrificeTargetCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.dynamicvalue.common.StaticValue;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.counter.AddCountersSourceEffect;
@@ -42,10 +41,13 @@ public final class CurseOfTheCabal extends CardImpl {
         // Target player sacrifices half the permanents he or she controls, rounded down.
         this.getSpellAbility().addTarget(new TargetPlayer());
         this.getSpellAbility().addEffect(new CurseOfTheCabalSacrificeEffect());
+
         // Suspend 2-{2}{B}{B}
         this.addAbility(new SuspendAbility(2, new ManaCostsImpl("{2}{B}{B}"), this));
+
         // At the beginning of each player's upkeep, if Curse of the Cabal is suspended, that player may sacrifice a permanent. If he or she does, put two time counters on Curse of the Cabal.
-        this.addAbility(new CurseOfTheCabalTriggeredAbility());
+        this.addAbility(new CurseOfTheCabalInterveningIfTriggeredAbility());
+
     }
 
     public CurseOfTheCabal(final CurseOfTheCabal card) {
@@ -84,7 +86,8 @@ class CurseOfTheCabalSacrificeEffect extends OneShotEffect {
             }
             Target target = new TargetControlledPermanent(amount, amount, StaticFilters.FILTER_CONTROLLED_PERMANENT, true);
             if (target.canChoose(targetPlayer.getId(), game)) {
-                while (!target.isChosen() && target.canChoose(targetPlayer.getId(), game) && targetPlayer.canRespond()) {
+                while (!target.isChosen() 
+                        && target.canChoose(targetPlayer.getId(), game) && targetPlayer.canRespond()) {
                     targetPlayer.choose(Outcome.Sacrifice, target, source.getSourceId(), game);
                 }
                 //sacrifice all chosen (non null) permanents
@@ -99,27 +102,29 @@ class CurseOfTheCabalSacrificeEffect extends OneShotEffect {
     }
 }
 
-class CurseOfTheCabalTriggeredAbility extends ConditionalTriggeredAbility {
+class CurseOfTheCabalInterveningIfTriggeredAbility extends ConditionalInterveningIfTriggeredAbility {
 
-    public CurseOfTheCabalTriggeredAbility() {
+    public CurseOfTheCabalInterveningIfTriggeredAbility() {
         super(new BeginningOfUpkeepTriggeredAbility(
                 Zone.EXILED, new CurseOfTheCabalTriggeredAbilityConditionalDelay(),
                 TargetController.ANY, false, true
         ),
                 SuspendedCondition.instance,
-                "At the beginning of each player's upkeep, if {this} is suspended, that player may sacrifice a permanent. If he or she does, put two time counters on {this}."
+                "At the beginning of each player's upkeep, if {this} is suspended, "
+                        + "that player may sacrifice a permanent. If he or she does, "
+                        + "put two time counters on {this}."
         );
         // controller has to sac a permanent
         // counters aren't placed
     }
 
-    public CurseOfTheCabalTriggeredAbility(final CurseOfTheCabalTriggeredAbility effect) {
+    public CurseOfTheCabalInterveningIfTriggeredAbility(final CurseOfTheCabalInterveningIfTriggeredAbility effect) {
         super(effect);
     }
 
     @Override
-    public CurseOfTheCabalTriggeredAbility copy() {
-        return new CurseOfTheCabalTriggeredAbility(this);
+    public CurseOfTheCabalInterveningIfTriggeredAbility copy() {
+        return new CurseOfTheCabalInterveningIfTriggeredAbility(this);
     }
 }
 

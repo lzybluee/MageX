@@ -1,4 +1,3 @@
-
 package mage.counters;
 
 /**
@@ -10,6 +9,7 @@ public enum CounterType {
 
     AGE("age"),
     AIM("aim"),
+    ARROW("arrow"),
     ARROWHEAD("arrowhead"),
     AWAKENING("awakening"),
     BLAZE("blaze"),
@@ -20,6 +20,7 @@ public enum CounterType {
     CAGE("cage"),
     CARRION("carrion"),
     CHARGE("charge"),
+    CHIP("chip"),
     CORPSE("corpse"),
     CREDIT("credit"),
     CRYSTAL("crystal"),
@@ -45,15 +46,18 @@ public enum CounterType {
     FEATHER("feather"),
     FILIBUSTER("filibuster"),
     FLOOD("flood"),
+    FUNK("funk"),
     FURY("fury"),
     FUNGUS("fungus"),
     FUSE("fuse"),
     GEM("gem"),
     GLOBE("globe"),
+    GLYPH("glyph"),
     GOLD("gold"),
     GROWTH("growth"),
     HATCHLING("hatchling"),
     HEALING("healing"),
+    HIT("hit"),
     HOOFPRINT("hoofprint"),
     HOUR("hour"),
     HOURGLASS("hourglass"),
@@ -71,15 +75,18 @@ public enum CounterType {
     LOYALTY("loyalty"),
     MANIFESTATION("manifestation"),
     MANNEQUIN("mannequin"),
+    MATRIX("matrix"),
     M1M1(new BoostCounter(-1, -1).name),
     M2M1(new BoostCounter(-2, -1).name),
     M2M2(new BoostCounter(-2, -2).name),
     MINE("mine"),
     MINING("mining"),
     MIRE("mire"),
+    MUSIC("music"),
     MUSTER("muster"),
     NET("net"),
     OMEN("omen"),
+    ORE("ore"),
     P0P1(new BoostCounter(0, 1).name),
     P1P0(new BoostCounter(1, 0).name),
     P1P1(new BoostCounter(1, 1).name),
@@ -87,15 +94,18 @@ public enum CounterType {
     P2P2(new BoostCounter(2, 2).name),
     PAGE("page"),
     PAIN("pain"),
+    PARALYZATION("paralyzation"),
     PETAL("petal"),
     PETRIFICATION("petrification"),
     PHYLACTERY("phylactery"),
+    PIN("pin"),
     PLAGUE("plague"),
     PLOT("plot"),
     POLYP("polyp"),
     POISON("poison"),
     PRESSURE("pressure"),
     PREY("prey"),
+    PUPA("pupa"),
     REPAIR("repair"),
     RUST("rust"),
     QUEST("quest"),
@@ -104,7 +114,9 @@ public enum CounterType {
     SHELL("shell"),
     SHIELD("shield"),
     SHRED("shred"),
+    SLEEP("sleep"),
     SLIME("slime"),
+    SLUMBER("slumber"),
     SOOT("soot"),
     SPITE("spite"),
     SPORE("spore"),
@@ -122,6 +134,9 @@ public enum CounterType {
     VELOCITY("velocity"),
     VERSE("verse"),
     VITALITY("vitality"),
+    VORTEX("vortex"),
+    WAGE("wage"),
+    WINCH("winch"),
     WIND("wind"),
     WISH("wish");
 
@@ -177,6 +192,11 @@ public enum CounterType {
             default:
                 return new Counter(name, amount);
         }
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     public static CounterType findByName(String name) {

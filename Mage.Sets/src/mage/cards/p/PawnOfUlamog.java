@@ -70,11 +70,11 @@ class PawnOfUlamogTriggeredAbility extends TriggeredAbilityImpl {
     public boolean checkTrigger(GameEvent event, Game game) {
             UUID targetId = event.getTargetId();
             MageObject card = game.getLastKnownInformation(targetId, Zone.BATTLEFIELD);
-            if (card != null && card instanceof Permanent && !(card instanceof PermanentToken)) {
+            if (card instanceof Permanent && !(card instanceof PermanentToken)) {
                 Permanent permanent = (Permanent) card;
                 ZoneChangeEvent zEvent = (ZoneChangeEvent) event;
-                if (zEvent.getFromZone() == Zone.BATTLEFIELD && zEvent.getToZone() == Zone.GRAVEYARD
-                        && permanent.getControllerId().equals(this.controllerId)
+                if (zEvent.isDiesEvent()
+                        && permanent.isControlledBy(this.controllerId)
                         && (targetId.equals(this.getSourceId())
                             || (permanent.isCreature()
                                 && !targetId.equals(this.getSourceId())

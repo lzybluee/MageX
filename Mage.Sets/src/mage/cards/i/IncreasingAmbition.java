@@ -1,7 +1,6 @@
 
 package mage.cards.i;
 
-import java.util.List;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.costs.mana.ManaCostsImpl;
@@ -30,7 +29,7 @@ public final class IncreasingAmbition extends CardImpl {
         super(ownerId,setInfo,new CardType[]{CardType.SORCERY},"{4}{B}");
 
 
-        // Search your library for a card and put that card into your hand. If Increasing Ambition was cast from a graveyard, instead search your library for two cards and put those cards into your hand. Then shuffle your library.
+        // Search your library for a card and put that card into your hand. If this spell was cast from a graveyard, instead search your library for two cards and put those cards into your hand. Then shuffle your library.
         this.getSpellAbility().addEffect(new IncreasingAmbitionEffect());
 
         // Flashback {7}{B}
@@ -51,7 +50,7 @@ class IncreasingAmbitionEffect extends SearchEffect {
 
     public IncreasingAmbitionEffect() {
         super(new TargetCardInLibrary(), Outcome.DrawCard);
-        staticText = "Search your library for a card and put that card into your hand. If {this} was cast from a graveyard, instead search your library for two cards and put those cards into your hand. Then shuffle your library";
+        staticText = "Search your library for a card and put that card into your hand. If this spell was cast from a graveyard, instead search your library for two cards and put those cards into your hand. Then shuffle your library";
     }
 
     public IncreasingAmbitionEffect(final IncreasingAmbitionEffect effect) {
@@ -75,9 +74,9 @@ class IncreasingAmbitionEffect extends SearchEffect {
                 else {
                     target = new TargetCardInLibrary();
                 }
-                if (player.searchLibrary(target, game)) {
+                if (player.searchLibrary(target, source, game)) {
                     if (!target.getTargets().isEmpty()) {
-                        for (UUID cardId: (List<UUID>)target.getTargets()) {
+                        for (UUID cardId: target.getTargets()) {
                             Card card = player.getLibrary().remove(cardId, game);
                             if (card != null) {
                                 card.moveToZone(Zone.HAND, source.getSourceId(), game, false);

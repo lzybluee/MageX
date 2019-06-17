@@ -1,14 +1,14 @@
-
 package mage.cards;
 
-import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
 import mage.MageObject;
 import mage.filter.FilterCard;
 import mage.game.Game;
 import mage.util.RandomUtil;
 import mage.util.ThreadLocalStringBuilder;
+
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -135,13 +135,15 @@ public class CardsImpl extends LinkedHashSet<UUID> implements Cards, Serializabl
     @Override
     public Set<Card> getCards(Game game) {
         Set<Card> cards = new LinkedHashSet<>();
-        for (Iterator<UUID> it = this.iterator(); it.hasNext();) { // Changed to iterator because of ConcurrentModificationException
+        for (Iterator<UUID> it = this.iterator(); it.hasNext(); ) { // Changed to iterator because of ConcurrentModificationException
             UUID cardId = it.next();
 
-            Card card = game.getCard(cardId);
+            // cards from battlefield must be as permanent, not card (moveCards uses instanceOf Permanent)
+            Card card = game.getPermanent(cardId);
             if (card == null) {
-                card = game.getPermanent(cardId); // needed to get TokenCard objects
+                card = game.getCard(cardId);
             }
+
             if (card != null) { // this can happen during the cancelation (player concedes) of a game
                 cards.add(card);
             }
@@ -155,7 +157,9 @@ public class CardsImpl extends LinkedHashSet<UUID> implements Cards, Serializabl
         List<String> cards = new ArrayList<>();
         for (UUID cardId : this) {
             Card card = game.getCard(cardId);
-            cards.add(card.getName());
+            if (card != null) {
+                cards.add(card.getName());
+            }
         }
         Collections.sort(cards);
         for (String name : cards) {
@@ -183,7 +187,9 @@ public class CardsImpl extends LinkedHashSet<UUID> implements Cards, Serializabl
         Map<String, Card> cards = new HashMap<>();
         for (UUID cardId : this) {
             Card card = game.getCard(cardId);
-            cards.putIfAbsent(card.getName(), card);
+            if (card != null) {
+                cards.putIfAbsent(card.getName(), card);
+            }
         }
         return cards.values();
     }

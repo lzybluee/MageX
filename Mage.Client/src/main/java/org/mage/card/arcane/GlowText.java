@@ -1,7 +1,10 @@
 package org.mage.card.arcane;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import mage.client.util.ImageCaches;
+import mage.client.util.SoftValuesLoadingCache;
+import org.jdesktop.swingx.graphics.GraphicsUtilities;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
@@ -15,9 +18,6 @@ import java.text.BreakIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import javax.swing.*;
-import mage.client.util.ImageCaches;
-import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
 public class GlowText extends JLabel {
 
@@ -28,9 +28,9 @@ public class GlowText extends JLabel {
     private Color glowColor;
     private boolean wrap;
     private int lineCount = 0;
-    private final static Map<Key, BufferedImage> IMAGE_CACHE;
+    private static final SoftValuesLoadingCache<Key, BufferedImage> IMAGE_CACHE;
 
-    private final static class Key {
+    private static final class Key {
 
         final int width;
         final int height;
@@ -117,15 +117,12 @@ public class GlowText extends JLabel {
             if (!Objects.equals(this.color, other.color)) {
                 return false;
             }
-            if (!Objects.equals(this.glowColor, other.glowColor)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(this.glowColor, other.glowColor);
         }
     }
 
     static {
-        IMAGE_CACHE = ImageCaches.register(new MapMaker().softValues().makeComputingMap((Function<Key, BufferedImage>) GlowText::createImage));
+        IMAGE_CACHE = ImageCaches.register(SoftValuesLoadingCache.from(GlowText::createGlowImage));
     }
 
     public void setGlow(Color glowColor, int size, float intensity) {
@@ -152,10 +149,14 @@ public class GlowText extends JLabel {
             return;
         }
 
-        g.drawImage(IMAGE_CACHE.get(new Key(getWidth(), getHeight(), getText(), getFont(), getForeground(), glowSize, glowIntensity, glowColor, wrap)), 0, 0, null);
+        g.drawImage(getGlowImage(), 0, 0, null);
     }
 
-    private static BufferedImage createImage(Key key) {
+    public BufferedImage getGlowImage() {
+        return IMAGE_CACHE.getOrThrow(new Key(getWidth(), getHeight(), getText(), getFont(), getForeground(), glowSize, glowIntensity, glowColor, wrap));
+    }
+
+    private static BufferedImage createGlowImage(Key key) {
         Dimension size = new Dimension(key.width, key.height);
         BufferedImage image = GraphicsUtilities.createCompatibleTranslucentImage(size.width, size.height);
         Graphics2D g2d = image.createGraphics();

@@ -8,7 +8,7 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfEndStepTriggeredAbility;
 import mage.abilities.condition.Condition;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.counter.AddCountersSourceEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -34,7 +34,7 @@ public final class FairgroundsTrumpeter extends CardImpl {
         this.toughness = new MageInt(2);
 
         // At the beginning of each end step, if a +1/+1 counter was put on a permanent under your control this turn, put a +1/+1 counter on Fairgrounds Trumpeter.
-        this.addAbility(new ConditionalTriggeredAbility(new BeginningOfEndStepTriggeredAbility(
+        this.addAbility(new ConditionalInterveningIfTriggeredAbility(new BeginningOfEndStepTriggeredAbility(
                         new AddCountersSourceEffect(CounterType.P1P1.createInstance()),
                         TargetController.ANY, false), FairgroundsTrumpeterCondition.instance,
                         "At the beginning of each end step, if a +1/+1 counter was put on a permanent under your control this turn, put a +1/+1 counter on {this}."),
@@ -57,7 +57,7 @@ enum FairgroundsTrumpeterCondition implements Condition {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        FairgroundsTrumpeterWatcher watcher = (FairgroundsTrumpeterWatcher) game.getState().getWatchers().get(FairgroundsTrumpeterWatcher.class.getSimpleName());
+        FairgroundsTrumpeterWatcher watcher = game.getState().getWatcher(FairgroundsTrumpeterWatcher.class);
         return watcher != null && watcher.p1p1AddedToPermanent(source.getControllerId());
     }
 
@@ -73,7 +73,7 @@ class FairgroundsTrumpeterWatcher extends Watcher {
     private final Set<UUID> players = new HashSet<>();
 
     public FairgroundsTrumpeterWatcher() {
-        super(FairgroundsTrumpeterWatcher.class.getSimpleName(), WatcherScope.GAME);
+        super(WatcherScope.GAME);
     }
 
     public FairgroundsTrumpeterWatcher(final FairgroundsTrumpeterWatcher watcher) {

@@ -1,9 +1,5 @@
-
 package mage.game.permanent.token;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import mage.abilities.Ability;
 import mage.abilities.costs.common.SacrificeSourceCost;
 import mage.abilities.costs.common.TapSourceCost;
@@ -12,18 +8,20 @@ import mage.abilities.mana.SimpleManaAbility;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
-import mage.util.RandomUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- *
  * @author TheElk801
  */
 public final class TreasureToken extends TokenImpl {
 
-    final static private List<String> tokenImageSets = new ArrayList<>();
+    static final private List<String> tokenImageSets = new ArrayList<>();
 
     static {
-        tokenImageSets.addAll(Arrays.asList("XLN"));
+        tokenImageSets.addAll(Arrays.asList("XLN", "RNA"));
     }
 
     public TreasureToken() {
@@ -44,12 +42,6 @@ public final class TreasureToken extends TokenImpl {
         Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, new AddManaOfAnyColorEffect(), new TapSourceCost());
         ability.addCost(new SacrificeSourceCost());
         this.addAbility(ability);
-    }
-
-    @Override
-    public void setExpansionSetCodeForImage(String code) {
-        super.setExpansionSetCodeForImage(code);
-        this.setTokenType(RandomUtil.nextInt(4) + 1); // 4 different images
     }
 
     public TreasureToken(final TreasureToken token) {

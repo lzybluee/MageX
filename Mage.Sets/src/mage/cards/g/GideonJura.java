@@ -1,11 +1,10 @@
 package mage.cards.g;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.LoyaltyAbility;
-import mage.abilities.common.PlanswalkerEntersWithLoyalityCountersAbility;
+import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.RequirementEffect;
 import mage.abilities.effects.common.DestroyTargetEffect;
@@ -13,11 +12,7 @@ import mage.abilities.effects.common.PreventAllDamageToSourceEffect;
 import mage.abilities.effects.common.continuous.BecomesCreatureSourceEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.Duration;
-import mage.constants.SubType;
-import mage.constants.SuperType;
-import mage.constants.TurnPhase;
+import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
@@ -26,8 +21,9 @@ import mage.game.permanent.token.TokenImpl;
 import mage.target.common.TargetCreaturePermanent;
 import mage.target.common.TargetOpponent;
 
+import java.util.UUID;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public final class GideonJura extends CardImpl {
@@ -35,7 +31,7 @@ public final class GideonJura extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("tapped creature");
 
     static {
-        filter.add(new TappedPredicate());
+        filter.add(TappedPredicate.instance);
     }
 
     public GideonJura(UUID ownerId, CardSetInfo setInfo) {
@@ -43,7 +39,7 @@ public final class GideonJura extends CardImpl {
         this.addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.GIDEON);
 
-        this.addAbility(new PlanswalkerEntersWithLoyalityCountersAbility(6));
+        this.addAbility(new PlaneswalkerEntersWithLoyaltyCountersAbility(6));
 
         // +2: During target opponent's next turn, creatures that player controls attack Gideon Jura if able.
         LoyaltyAbility ability1 = new LoyaltyAbility(new GideonJuraEffect(), 2);
@@ -118,20 +114,21 @@ class GideonJuraEffect extends RequirementEffect {
     public void init(Ability source, Game game) {
         super.init(source, game);
         creatingPermanent = new MageObjectReference(source.getSourceId(), game);
+        setStartingControllerAndTurnNum(game, source.getFirstTarget(), game.getActivePlayerId()); // setup startingController to calc isYourTurn calls
     }
 
     @Override
     public boolean applies(Permanent permanent, Ability source, Game game) {
-        return permanent.getControllerId().equals(source.getFirstTarget());
+        return permanent.isControlledBy(source.getFirstTarget()) && this.isYourNextTurn(game);
     }
 
     @Override
     public boolean isInactive(Ability source, Game game) {
-        return (startingTurn != game.getTurnNum()
-                && (game.getPhase().getType() == TurnPhase.END
-                && game.getActivePlayerId().equals(source.getFirstTarget())))
-                || // 6/15/2010: If a creature controlled by the affected player can't attack Gideon Jura (because he's no longer on the battlefield, for example), that player may have it attack you, another one of your planeswalkers, or nothing at all.
-                creatingPermanent.getPermanent(game) == null;
+        return (game.getPhase().getType() == TurnPhase.END && this.isYourNextTurn(game))
+                // 6/15/2010: If a creature controlled by the affected player can't attack Gideon Jura
+                // (because he's no longer on the battlefield, for example), that player may have it attack you,
+                // another one of your planeswalkers, or nothing at all.
+                || creatingPermanent.getPermanent(game) == null;
     }
 
     @Override

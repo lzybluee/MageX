@@ -64,7 +64,7 @@ class CavernOfSoulsManaBuilder extends ConditionalManaBuilder {
 
     @Override
     public ConditionalManaBuilder setMana(Mana mana, Ability source, Game game) {
-        SubType subType = ChooseCreatureTypeEffect.getChoosenCreatureType(source.getSourceId(), game);
+        SubType subType = ChooseCreatureTypeEffect.getChosenCreatureType(source.getSourceId(), game);
         if (subType != null) {
             creatureType = subType;
         }
@@ -111,7 +111,7 @@ class CavernOfSoulsManaCondition extends CreatureCastManaCondition {
         if (super.apply(game, source)) {
             // check: ... of the chosen type
             MageObject object = game.getObject(source.getSourceId());
-            if (creatureType != null && object.hasSubtype(creatureType, game)) {
+            if (creatureType != null && object != null && object.hasSubtype(creatureType, game)) {
                 return true;
             }
         }
@@ -125,7 +125,7 @@ class CavernOfSoulsWatcher extends Watcher {
     private final String originalId;
 
     public CavernOfSoulsWatcher(UUID originalId) {
-        super(CavernOfSoulsWatcher.class.getSimpleName(), WatcherScope.CARD);
+        super(WatcherScope.CARD);
         this.originalId = originalId.toString();
     }
 
@@ -197,7 +197,7 @@ class CavernOfSoulsCantCounterEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        CavernOfSoulsWatcher watcher = (CavernOfSoulsWatcher) game.getState().getWatchers().get(CavernOfSoulsWatcher.class.getSimpleName(), source.getSourceId());
+        CavernOfSoulsWatcher watcher = game.getState().getWatcher(CavernOfSoulsWatcher.class, source.getSourceId());
         Spell spell = game.getStack().getSpell(event.getTargetId());
         return spell != null && watcher != null && watcher.spellCantBeCountered(spell.getId());
     }

@@ -2,6 +2,7 @@
 package mage.cards.d;
 
 import java.util.UUID;
+
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbility;
@@ -9,14 +10,13 @@ import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.condition.common.NoSpellsWereCastLastTurnCondition;
 import mage.abilities.costs.common.TapSourceCost;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.DamageTargetEffect;
 import mage.abilities.effects.common.TransformSourceEffect;
 import mage.abilities.keyword.FlyingAbility;
 import mage.abilities.keyword.TransformAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.cards.n.NightfallPredator;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.TargetController;
@@ -26,7 +26,6 @@ import mage.filter.predicate.mageobject.AbilityPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
- *
  * @author North
  */
 public final class DaybreakRanger extends CardImpl {
@@ -38,13 +37,13 @@ public final class DaybreakRanger extends CardImpl {
     }
 
     public DaybreakRanger(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{2}{G}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{G}");
         this.subtype.add(SubType.HUMAN);
         this.subtype.add(SubType.ARCHER);
         this.subtype.add(SubType.WEREWOLF);
 
         this.transformable = true;
-        this.secondSideCardClazz = NightfallPredator.class;
+        this.secondSideCardClazz = mage.cards.n.NightfallPredator.class;
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
@@ -56,7 +55,7 @@ public final class DaybreakRanger extends CardImpl {
         // At the beginning of each upkeep, if no spells were cast last turn, transform Daybreak Ranger.
         this.addAbility(new TransformAbility());
         TriggeredAbility ability = new BeginningOfUpkeepTriggeredAbility(new TransformSourceEffect(true), TargetController.ANY, false);
-        this.addAbility(new ConditionalTriggeredAbility(ability, NoSpellsWereCastLastTurnCondition.instance, TransformAbility.NO_SPELLS_TRANSFORM_RULE));
+        this.addAbility(new ConditionalInterveningIfTriggeredAbility(ability, NoSpellsWereCastLastTurnCondition.instance, TransformAbility.NO_SPELLS_TRANSFORM_RULE));
     }
 
     public DaybreakRanger(final DaybreakRanger card) {

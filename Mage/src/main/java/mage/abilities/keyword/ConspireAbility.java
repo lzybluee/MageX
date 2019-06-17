@@ -55,7 +55,7 @@ public class ConspireAbility extends StaticAbility implements OptionalAdditional
     protected static final String CONSPIRE_ACTIVATION_KEY = "ConspireActivation";
 
     static {
-        filter.add(Predicates.not(new TappedPredicate()));
+        filter.add(Predicates.not(TappedPredicate.instance));
         filter.add(new SharesColorWithSourcePredicate());
         filter.add(new CardTypePredicate(CardType.CREATURE));
     }
@@ -272,7 +272,7 @@ class ConspireEffect extends OneShotEffect {
             Card card = game.getCard(conspiredSpell.getSourceId());
             if (card != null) {
                 StackObject newStackObject = conspiredSpell.createCopyOnStack(game, source, source.getControllerId(), true);
-                if (newStackObject != null && newStackObject instanceof Spell && !game.isSimulation()) {
+                if (newStackObject instanceof Spell && !game.isSimulation()) {
                     game.informPlayers(controller.getLogName() + ((Spell) newStackObject).getActivatedMessage(game));
                 }
                 return true;
