@@ -42,8 +42,8 @@ public final class Commander2017Edition extends ExpansionSet {
         cards.add(new SetCardInfo("Blind Obedience", 57, Rarity.RARE, mage.cards.b.BlindObedience.class));
         cards.add(new SetCardInfo("Blood Artist", 99, Rarity.UNCOMMON, mage.cards.b.BloodArtist.class));
         cards.add(new SetCardInfo("Blood Baron of Vizkopa", 164, Rarity.MYTHIC, mage.cards.b.BloodBaronOfVizkopa.class));
-        cards.add(new SetCardInfo("Bloodlord of Vaasgoth", 164, Rarity.MYTHIC, mage.cards.b.BloodlordOfVaasgoth.class));
-        cards.add(new SetCardInfo("Blood Tribute", 102, Rarity.RARE, mage.cards.b.BloodTribute.class));
+        cards.add(new SetCardInfo("Bloodlord of Vaasgoth", 102, Rarity.MYTHIC, mage.cards.b.BloodlordOfVaasgoth.class));
+        cards.add(new SetCardInfo("Blood Tribute", 100, Rarity.RARE, mage.cards.b.BloodTribute.class));
         cards.add(new SetCardInfo("Bloodfell Caves", 236, Rarity.COMMON, mage.cards.b.BloodfellCaves.class));
         cards.add(new SetCardInfo("Bloodforged Battle-Axe", 50, Rarity.RARE, mage.cards.b.BloodforgedBattleAxe.class));
         cards.add(new SetCardInfo("Bloodhusk Ritualist", 101, Rarity.UNCOMMON, mage.cards.b.BloodhuskRitualist.class));
