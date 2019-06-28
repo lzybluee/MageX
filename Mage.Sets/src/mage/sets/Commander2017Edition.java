@@ -42,7 +42,8 @@ public final class Commander2017Edition extends ExpansionSet {
         cards.add(new SetCardInfo("Blind Obedience", 57, Rarity.RARE, mage.cards.b.BlindObedience.class));
         cards.add(new SetCardInfo("Blood Artist", 99, Rarity.UNCOMMON, mage.cards.b.BloodArtist.class));
         cards.add(new SetCardInfo("Blood Baron of Vizkopa", 164, Rarity.MYTHIC, mage.cards.b.BloodBaronOfVizkopa.class));
-        cards.add(new SetCardInfo("Blood Tribute", 100, Rarity.RARE, mage.cards.b.BloodTribute.class));
+        cards.add(new SetCardInfo("Bloodlord of Vaasgoth", 164, Rarity.MYTHIC, mage.cards.b.BloodlordOfVaasgoth.class));
+        cards.add(new SetCardInfo("Blood Tribute", 102, Rarity.RARE, mage.cards.b.BloodTribute.class));
         cards.add(new SetCardInfo("Bloodfell Caves", 236, Rarity.COMMON, mage.cards.b.BloodfellCaves.class));
         cards.add(new SetCardInfo("Bloodforged Battle-Axe", 50, Rarity.RARE, mage.cards.b.BloodforgedBattleAxe.class));
         cards.add(new SetCardInfo("Bloodhusk Ritualist", 101, Rarity.UNCOMMON, mage.cards.b.BloodhuskRitualist.class));
@@ -83,6 +84,7 @@ public final class Commander2017Edition extends ExpansionSet {
         cards.add(new SetCardInfo("Curse of Opulence", 24, Rarity.UNCOMMON, mage.cards.c.CurseOfOpulence.class));
         cards.add(new SetCardInfo("Curse of Verbosity", 9, Rarity.UNCOMMON, mage.cards.c.CurseOfVerbosity.class));
         cards.add(new SetCardInfo("Curse of Vitality", 3, Rarity.UNCOMMON, mage.cards.c.CurseOfVitality.class));
+        cards.add(new SetCardInfo("Dark Impostor", 109, Rarity.RARE, mage.cards.d.DarkImpostor.class));
         cards.add(new SetCardInfo("Damnable Pact", 108, Rarity.RARE, mage.cards.d.DamnablePact.class));
         cards.add(new SetCardInfo("Darksteel Ingot", 207, Rarity.UNCOMMON, mage.cards.d.DarksteelIngot.class));
         cards.add(new SetCardInfo("Deathbringer Regent", 110, Rarity.RARE, mage.cards.d.DeathbringerRegent.class));
