@@ -40,7 +40,7 @@ public final class ToppleTheStatue extends CardImpl {
 class ToppleTheStatueEffect extends OneShotEffect {
 
     ToppleTheStatueEffect() {
-        super(Outcome.Benefit);
+        super(Outcome.Detriment);
         staticText = "Tap target permanent. If it's an artifact, destroy it.<br>Draw a card.";
     }
 
