@@ -1189,11 +1189,17 @@ public abstract class PlayerImpl implements Player, Serializable {
         //20091005 - 305.1
         if (!game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.PLAY_LAND, card.getId(), card.getId(), playerId, activationStatus.getPermittingObject()))) {
             // int bookmark = game.bookmarkState();
-            game.fireEvent(GameEvent.getEvent(GameEvent.EventType.PLAY_LAND, card.getId(), card.getId(), playerId, activationStatus.getPermittingObject()));
+            // land events must return original zone (uses for commander watcher)
+            Zone cardZoneBefore = game.getState().getZone(card.getId());
+            GameEvent landEventBefore = GameEvent.getEvent(GameEvent.EventType.PLAY_LAND, card.getId(), card.getId(), playerId, activationStatus.getPermittingObject());
+            landEventBefore.setZone(cardZoneBefore);
+            game.fireEvent(landEventBefore);
 
             if (moveCards(card, Zone.BATTLEFIELD, playLandAbility, game, false, false, false, null)) {
                 landsPlayed++;
-                game.fireEvent(GameEvent.getEvent(GameEvent.EventType.LAND_PLAYED, card.getId(), card.getId(), playerId, activationStatus.getPermittingObject()));
+                GameEvent landEventAfter = GameEvent.getEvent(GameEvent.EventType.LAND_PLAYED, card.getId(), card.getId(), playerId, activationStatus.getPermittingObject());
+                landEventAfter.setZone(cardZoneBefore);
+                game.fireEvent(landEventAfter);
                 game.fireInformEvent(getLogName() + " plays " + card.getLogName());
                 // game.removeBookmark(bookmark);
                 resetStoredBookmark(game); // prevent undo after playing a land
@@ -3049,13 +3055,10 @@ public abstract class PlayerImpl implements Player, Serializable {
     protected boolean canLandPlayAlternateSourceCostsAbility(Card sourceObject, ManaOptions available, Ability
             ability, Game game) {
         if (!(sourceObject instanceof Permanent)) {
-            Ability sourceAbility = null;
-            for (Ability landAbility : sourceObject.getAbilities()) {
-                if (landAbility.getAbilityType() == AbilityType.PLAY_LAND) {
-                    sourceAbility = landAbility;
-                    break;
-                }
-            }
+            Ability sourceAbility = sourceObject.getAbilities().stream()
+                    .filter(landAbility -> landAbility.getAbilityType() == AbilityType.PLAY_LAND)
+                    .findFirst().orElse(null);
+
             if (sourceAbility != null && ((AlternativeSourceCosts) ability).isAvailable(sourceAbility, game)) {
                 if (ability.getCosts().canPay(ability, sourceObject.getId(), this.getId(), game)) {
                     ManaCostsImpl manaCosts = new ManaCostsImpl();
