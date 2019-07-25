@@ -96,6 +96,10 @@
 |Generate|EMBLEM:GRN|Ral, Izzet Viceroy||Emblem Ral|RalIzzetViceroyEmblem|
 |Generate|EMBLEM:GRN|Vraska, Golgari Queen||Emblem Vraska|VraskaGolgariQueenEmblem|
 |Generate|EMBLEM:WAR|Nissa, Who Shakes the World||Emblem Nissa|NissaWhoShakesTheWorldEmblem|
+|Generate|EMBLEM:MH1|Serra the Benevolent||Emblem Serra|SerraTheBenevolentEmblem|
+|Generate|EMBLEM:MH1|Wrenn and Six||Emblem Wrenn|WrennAndSixEmblem|
+|Generate|EMBLEM:M20|Chandra, Awakened Inferno||Emblem Chandra|ChandraAwakenedInfernoEmblem|
+|Generate|EMBLEM:M20|Mu Yanling, Sky Dancer||Emblem Yanling|MuYanlingSkyDancerEmblem|
 |Generate|PLANE:PCA|Plane - Academy At Tolaria West|||AcademyAtTolariaWestPlane|
 |Generate|PLANE:PCA|Plane - Agyrem|||AgyremPlane|
 |Generate|PLANE:PCA|Plane - Akoum|||AkoumPlane|
@@ -875,6 +879,16 @@
 |Generate|TOK:M19|Soldier|||SoldierToken|
 |Generate|TOK:M19|Thopter|||ThopterToken|
 |Generate|TOK:M19|Zombie|||ZombieToken|
+|Generate|TOK:M20|Ajani's Pridemate|||AjanisPridemateToken|
+|Generate|TOK:M20|Demon|||DemonToken|
+|Generate|TOK:M20|Elemental|||YoungPyromancerElementalToken|
+|Generate|TOK:M20|Elemental Bird|||MuYanlingSkyDancerToken|
+|Generate|TOK:M20|Golem|||GolemToken|
+|Generate|TOK:M20|Soldier|||SoldierToken|
+|Generate|TOK:M20|Spirit|||SpiritWhiteToken|
+|Generate|TOK:M20|Treasure|||TreasureToken|
+|Generate|TOK:M20|Wolf|||WolfToken|
+|Generate|TOK:M20|Zombie|||ZombieToken|
 |Generate|TOK:MBS|Cat|||CatToken|
 |Generate|TOK:MBS|Germ|||GermToken|
 |Generate|TOK:MBS|Golem|||TitanForgeGolemToken|
@@ -901,6 +915,25 @@
 |Generate|TOK:MED|Snake|||SerpentGeneratorSnakeToken|
 |Generate|TOK:MED|Thrull|||BreedingPitBlackInsectToken|
 |Generate|TOK:MED|Zombie|||ZombieToken|
+|Generate|TOK:MH1|Shapeshifter|||ShapeshifterToken|
+|Generate|TOK:MH1|Angel|||AngelVigilanceToken|
+|Generate|TOK:MH1|Bear|||BearToken|
+|Generate|TOK:MH1|Bird|||BirdToken|
+|Generate|TOK:MH1|Construct|||KarnConstructToken|
+|Generate|TOK:MH1|Elemental|1||YoungPyromancerElementalToken|
+|Generate|TOK:MH1|Elemental|2||AkoumStonewakerElementalToken|
+|Generate|TOK:MH1|Elephant|||ElephantToken|
+|Generate|TOK:MH1|Goblin|||GoblinToken|
+|Generate|TOK:MH1|Golem|||GolemToken|
+|Generate|TOK:MH1|Illusion|||MelokuTheCloudedMirrorToken|
+|Generate|TOK:MH1|Marit Lage|||MaritLageToken|
+|Generate|TOK:MH1|Myr|||MyrToken|
+|Generate|TOK:MH1|Rhino|||RhinoToken|
+|Generate|TOK:MH1|Soldier|||SoldierToken|
+|Generate|TOK:MH1|Spider|||SpiderToken|
+|Generate|TOK:MH1|Spirit|||WhiteBlackSpiritToken|
+|Generate|TOK:MH1|Squirrel|||SquirrelToken|
+|Generate|TOK:MH1|Zombie|||ZombieToken|
 |Generate|TOK:MIR|Cat|||WaitingInTheWeedsCatToken|
 |Generate|TOK:MIR|Goblin Scout|||GoblinScountsToken|
 |Generate|TOK:MIR|Pegasus|||PegasusToken|
