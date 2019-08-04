@@ -383,7 +383,10 @@ public final class CardUtil {
         }
 
         try {
-            if (!Character.isDigit(cardNumber.charAt(0))) {
+            if (cardNumber.length() > 2 && !Character.isDigit(cardNumber.charAt(0)) && !Character.isDigit(cardNumber.charAt(1))) {
+                // GP1
+                return Integer.parseInt(cardNumber.substring(2));
+            } else if (!Character.isDigit(cardNumber.charAt(0))) {
                 // U123
                 return Integer.parseInt(cardNumber.substring(1));
             } else if (!Character.isDigit(cardNumber.charAt(cardNumber.length() - 1))) {
