@@ -1044,8 +1044,8 @@
 |Generate|TOK:OGW|Eldrazi Scion|4||EldraziScionToken|
 |Generate|TOK:OGW|Eldrazi Scion|5||EldraziScionToken|
 |Generate|TOK:OGW|Eldrazi Scion|6||EldraziScionToken|
-|Generate|TOK:OGW|Elemental|1||SeedGuardianToken|
-|Generate|TOK:OGW|Elemental|2||ElementalToken|
+|Generate|TOK:OGW|Elemental|1||ElementalToken|
+|Generate|TOK:OGW|Elemental|2||SeedGuardianToken|
 |Generate|TOK:OGW|Knight Ally|||KnightAllyToken|
 |Generate|TOK:OGW|Kor Ally|||KorAllyToken|
 |Generate|TOK:OGW|Octopus|||OctopusToken|
