@@ -76,7 +76,7 @@ public class SoulbondAbility extends EntersBattlefieldTriggeredAbility {
         boolean self = false;
         boolean other = false;
         for (Permanent permanent : game.getBattlefield().getAllActivePermanents(getControllerId())) {
-            if (permanent.isCreature()) {
+            if (permanent.isCreature() && permanent.getPairedCard() == null) {
                 if (permanent.getId().equals(getSourceId())) {
                     if (permanent.isControlledBy(getControllerId())) {
                         self = true;
@@ -86,7 +86,7 @@ public class SoulbondAbility extends EntersBattlefieldTriggeredAbility {
                     } else {
                         return false;
                     }
-                } else if (permanent.getPairedCard() == null) {
+                } else {
                     other = true;
                     if (self) {
                         return true;
