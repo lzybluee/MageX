@@ -238,6 +238,8 @@ public class ScryfallImageSupportCards {
             add("MH1");
             add("WAR");
             add("M20");
+            add("C19");
+            add("ELD");
             //
             add("EURO");
             add("GPX");
@@ -245,6 +247,12 @@ public class ScryfallImageSupportCards {
             add("GRC");
             add("ANA");
             add("G18");
+            add("PM20");
+            add("PS19");
+            add("SS1");
+            add("SS2");
+            add("PPP1");
+            add("PF19");
         }
     };
 
