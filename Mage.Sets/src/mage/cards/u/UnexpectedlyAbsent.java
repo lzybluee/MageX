@@ -41,7 +41,7 @@ public final class UnexpectedlyAbsent extends CardImpl {
 class UnexpectedlyAbsentEffect extends OneShotEffect {
 
     public UnexpectedlyAbsentEffect() {
-        super(Outcome.Benefit);
+        super(Outcome.Detriment);
         this.staticText = "Put target nonland permanent into its owner's library just beneath the top X cards of that library";
     }
 
