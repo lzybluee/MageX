@@ -1,6 +1,7 @@
 package mage.cards.k;
 
 import mage.MageInt;
+import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.common.SimpleStaticAbility;
@@ -19,7 +20,6 @@ import mage.players.Player;
 import mage.target.common.TargetCardInYourGraveyard;
 
 import java.util.UUID;
-import mage.MageObjectReference;
 
 /**
  * @author TheElk801
@@ -79,34 +79,41 @@ class KethisTheHiddenHandEffect extends ContinuousEffectImpl {
     @Override
     public void init(Ability source, Game game) {
         super.init(source, game);
-        if (this.affectedObjectsSet) {
-            Player player = game.getPlayer(source.getControllerId());
-            if (player != null) {
-                player.getGraveyard().stream().map((cardId) -> game.getCard(cardId)).filter((card) -> (card.isLegendary())).forEachOrdered((card) -> {
-                    affectedObjectList.add(new MageObjectReference(card, game));
-                });
-            }
+        if (!this.affectedObjectsSet) {
+            return;
         }
+        Player player = game.getPlayer(source.getControllerId());
+        if (player == null) {
+            return;
+        }
+        player.getGraveyard()
+                .stream()
+                .map(game::getCard)
+                .filter(Card::isLegendary)
+                .forEach(card -> affectedObjectList.add(new MageObjectReference(card, game)));
     }
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Player player = game.getPlayer(source.getControllerId());
-        if (player != null) {
-            player.getGraveyard().stream().filter((cardId) -> (affectedObjectList.contains(new MageObjectReference(cardId, game)))).forEachOrdered((cardId) -> {
-                Card card = game.getCard(cardId);
-                if (card != null && card.isLegendary()) {
-                    Ability ability = new SimpleStaticAbility(
-                            Zone.GRAVEYARD, new KethisTheHiddenHandGraveyardEffect()
-                    );
-                    ability.setSourceId(cardId);
-                    ability.setControllerId(card.getOwnerId());
-                    game.getState().addOtherAbility(card, ability);
-                }
-            });
-            return true;
+        Player controller = game.getPlayer(source.getControllerId());
+        if (controller == null) {
+            return false;
         }
-        return false;
+        controller.getGraveyard()
+                .getCards(game)
+                .stream()
+                .filter(card -> affectedObjectList
+                        .stream()
+                        .anyMatch(mor -> mor.refersTo(card, game))
+                ).forEach(card -> {
+            Ability ability = new SimpleStaticAbility(
+                    Zone.GRAVEYARD, new KethisTheHiddenHandGraveyardEffect()
+            );
+            ability.setSourceId(card.getId());
+            ability.setControllerId(card.getOwnerId());
+            game.getState().addOtherAbility(card, ability);
+        });
+        return true;
     }
 
     @Override
