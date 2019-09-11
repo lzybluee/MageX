@@ -54,6 +54,7 @@
 |Generate|EMBLEM!:C14|Emblem Nixilis|||ObNixilisOfTheBlackOathEmblem|
 |Generate|EMBLEM!:C14|Emblem Teferi|||TeferiTemporalArchmageEmblem|
 |Generate|EMBLEM!:C16|Emblem Daretti|||DarettiScrapSavantEmblem|
+|Generate|EMBLEM!:C19|Emblem Nixilis|||ObNixilisReignitedEmblem|
 |Generate|EMBLEM!:CNS|Emblem Dack Fayden||Emblem Dack|DackFaydenEmblem|
 |Generate|EMBLEM!:DTK|Emblem Narset|||NarsetTranscendentEmblem|
 |Generate|EMBLEM!:EMA|Emblem Dack Fayden||Emblem Dack|DackFaydenEmblem|
@@ -424,6 +425,29 @@
 |Generate|TOK:C18|Thopter|3||ThopterToken|
 |Generate|TOK:C18|Worm|||WormHarvestToken|
 |Generate|TOK:C18|Zombie|||ZombieToken|
+|Generate|TOK:C19|Assassin|||AssassinToken|
+|Generate|TOK:C19|Beast|1||BeastToken|
+|Generate|TOK:C19|Beast|2||BeastToken2|
+|Generate|TOK:C19|Bird|1||WingmateRocToken|
+|Generate|TOK:C19|Bird|2||RocEggToken|
+|Generate|TOK:C19|Dragon|||DragonToken2|
+|Generate|TOK:C19|Drake|||DrakeToken|
+|Generate|TOK:C19|Egg|||AtlaPalaniToken|
+|Generate|TOK:C19|Eldrazi|||EldraziToken|
+|Generate|TOK:C19|Gargoyle|||GargoyleToken|
+|Generate|TOK:C19|Horror|||PhyrexianRebirthHorrorToken|
+|Generate|TOK:C19|Human|||HumanToken|
+|Generate|TOK:C19|Pegasus|||PegasusToken|
+|Generate|TOK:C19|Plant|||GrismoldPlantToken|
+|Generate|TOK:C19|Rhino|||RhinoToken|
+|Generate|TOK:C19|Saproling|||SaprolingToken|
+|Generate|TOK:C19|Sculpture|||DoomedArtisanToken|
+|Generate|TOK:C19|Snake|||SnakeToken|
+|Generate|TOK:C19|Spirit|||SpiritWhiteToken|
+|Generate|TOK:C19|Treasure|||TreasureToken|
+|Generate|TOK:C19|Wurm|||WurmToken|
+|Generate|TOK:C19|Zombie|1||ZombieToken|
+|Generate|TOK:C19|Zombie|2||ZombieToken|
 |Generate|TOK:CHK|Dragon Spirit|||TatsumaDragonToken|
 |Generate|TOK:CHK|Elemental|||SeedGuardianToken|
 |Generate|TOK:CHK|Illusion|||MelokuTheCloudedMirrorToken|
