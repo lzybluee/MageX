@@ -1,7 +1,5 @@
-
 package mage.cards.s;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.common.DealsCombatDamageToAPlayerTriggeredAbility;
 import mage.abilities.common.SimpleEvasionAbility;
@@ -15,8 +13,9 @@ import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author Alvin
  * @author ayratn
  */
@@ -34,7 +33,6 @@ public final class StromkirkNoble extends CardImpl {
                 new CantBeBlockedByCreaturesSourceEffect(new FilterCreaturePermanent(SubType.HUMAN, "Humans"), Duration.WhileOnBattlefield)));
         // Whenever Stromkirk Noble deals combat damage to a player, put a +1/+1 counter on it.
         this.addAbility(new DealsCombatDamageToAPlayerTriggeredAbility(new AddCountersSourceEffect(CounterType.P1P1.createInstance()), false));
-
     }
 
     public StromkirkNoble(final StromkirkNoble card) {
