@@ -17,7 +17,6 @@ import mage.constants.*;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreatureCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
 import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.Game;
@@ -177,14 +176,17 @@ class ChainerNightmareAdeptTriggeredAbility extends EntersBattlefieldAllTriggere
     private final static String abilityText = "Whenever a nontoken creature enters the battlefield under your control, " +
             "if you didn't cast it from your hand, it gains haste until your next turn.";
     private final static ContinuousEffect gainHasteUntilNextTurnEffect = new GainAbilityTargetEffect(HasteAbility.getInstance(), Duration.UntilYourNextTurn);
-    private final static FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("another nontoken creature");
+    private final static FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("a nontoken creature");
 
     static {
         filter.add(Predicates.not(TokenPredicate.instance));
         filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(AnotherPredicate.instance);
     }
-
+    
+    public ChainerNightmareAdeptTriggeredAbility(ChainerNightmareAdeptTriggeredAbility ability) {
+        super(ability);
+    }
+    
     public ChainerNightmareAdeptTriggeredAbility() {
         super(Zone.BATTLEFIELD, gainHasteUntilNextTurnEffect, filter, false, SetTargetPointer.PERMANENT, abilityText);
     }
@@ -197,5 +199,10 @@ class ChainerNightmareAdeptTriggeredAbility extends EntersBattlefieldAllTriggere
 
         CastFromHandWatcher watcher = game.getState().getWatcher(CastFromHandWatcher.class);
         return watcher != null && !watcher.spellWasCastFromHand(event.getSourceId());
+    }
+
+    @Override
+    public ChainerNightmareAdeptTriggeredAbility copy() {
+        return new ChainerNightmareAdeptTriggeredAbility(this);
     }
 }
