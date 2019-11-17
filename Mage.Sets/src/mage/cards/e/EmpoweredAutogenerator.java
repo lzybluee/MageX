@@ -83,14 +83,15 @@ class AstralCornucopiaManaEffect extends ManaEffect {
         if (sourcePermanent == null) {
             return mana;
         }
-        sourcePermanent.addCounters(CounterType.CHARGE.createInstance(), source, game);
-        game.applyEffects();
         int counters = sourcePermanent.getCounters(game).getCount(CounterType.CHARGE);
-        if (counters <= 0) {
-            return mana;
-        }
         if (netMana) {
             return new Mana(0, 0, 0, 0, 0, 0, counters, 0);
+        }
+        sourcePermanent.addCounters(CounterType.CHARGE.createInstance(), source, game);
+        game.applyEffects();
+        counters = sourcePermanent.getCounters(game).getCount(CounterType.CHARGE);
+        if (counters <= 0) {
+            return mana;
         }
         Player controller = game.getPlayer(source.getControllerId());
         if (controller == null) {
