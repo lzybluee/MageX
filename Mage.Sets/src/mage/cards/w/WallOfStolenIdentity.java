@@ -15,6 +15,7 @@ import mage.abilities.keyword.DefenderAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
+import mage.filter.StaticFilters;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
@@ -102,7 +103,7 @@ class WallOfStolenIdentityETBEffect extends OneShotEffect {
         if (!player.choose(outcome, target, source.getSourceId(), game)) {
             return false;
         }
-        Effect effect = new CopyPermanentEffect(null, applier, true);
+        Effect effect = new CopyPermanentEffect(StaticFilters.FILTER_PERMANENT_CREATURE, applier, true);
         effect.setTargetPointer(new FixedTarget(target.getFirstTarget(), game));
         effect.apply(game, source);
         DelayedTriggeredAbility ability = new WallOfStolenIdentityReflexiveTriggeredAbility();
