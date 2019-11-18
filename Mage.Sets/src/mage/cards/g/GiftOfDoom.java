@@ -61,7 +61,9 @@ public final class GiftOfDoom extends CardImpl {
         )));
 
         // As Gift of Doom is turned face up, you may attach it to a creature.
-        this.addAbility(new SimpleStaticAbility(new AsTurnedFaceUpEffect(new GiftOfDoomEffect(), true)));
+        ability = new SimpleStaticAbility(new AsTurnedFaceUpEffect(new GiftOfDoomEffect(), true));
+        ability.setWorksFaceDown(true);
+        this.addAbility(ability);
     }
 
     private GiftOfDoom(final GiftOfDoom card) {
