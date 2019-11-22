@@ -49,7 +49,7 @@ public final class GiftOfDoom extends CardImpl {
         this.subtype.add(SubType.AURA);
 
         // Enchant creature
-        TargetPermanent auraTarget = new TargetCreaturePermanent();
+        TargetPermanent auraTarget = new TargetCreaturePermanent(0, 1);
         this.getSpellAbility().addTarget(auraTarget);
         this.getSpellAbility().addEffect(new AttachEffect(Outcome.AddAbility));
         this.getSpellAbility().setTargetAdjuster(GiftOfDoomAdjuster.instance);  // to remove the target set if Morph casting cost is paid
@@ -95,6 +95,9 @@ enum GiftOfDoomAdjuster implements TargetAdjuster {
         // if the Morph casting cost is paid, clear the target of Enchant Creature
         if (game.getState().getValue("MorphAbility" + ability.getSourceId()) == "activated") {
             ability.getTargets().clear();
+        } else {
+            ability.getTargets().clear();
+            ability.addTarget(new TargetCreaturePermanent());
         }
     }
 }
