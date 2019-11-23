@@ -45,14 +45,14 @@ public class GoadTargetEffect extends OneShotEffect {
             // https://github.com/magefree/mage/issues/5283
             /*
             If the creature doesn’t meet any of the above exceptions and can attack, it must attack a player other than
-            the controller of the spell or ability that goaded it if able. It the creature can’t attack any of those
+            the controller of the spell or ability that goaded it if able. If the creature can’t attack any of those
             players but could otherwise attack, it must attack an opposing planeswalker (controlled by any opponent)
             or the player that goaded it. (2016-08-23)
              */
             ContinuousEffect effect = new AttacksIfAbleTargetEffect(Duration.UntilYourNextTurn);
             effect.setTargetPointer(new FixedTarget(getTargetPointer().getFirst(game, source)));
             game.addEffect(effect, source);
-            effect = new CantAttackYouEffect(Duration.UntilYourNextTurn);
+            effect = new CantAttackYouIfAbleEffect(Duration.UntilYourNextTurn);
             effect.setTargetPointer(new FixedTarget(getTargetPointer().getFirst(game, source)));
             game.addEffect(effect, source);
             game.informPlayers(controller.getLogName() + " is goading " + targetCreature.getLogName());
