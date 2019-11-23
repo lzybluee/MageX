@@ -84,6 +84,17 @@ class BloodthirstyBladeAttackEffect extends RestrictionEffect {
         if (defenderId == null) {
             return true;
         }
+        if(game.getCombat() != null && game.getCombat().getDefenders() != null) {
+            if(game.getCombat().getDefenders().size() == 1) {
+                for (UUID playerId : game.getCombat().getDefenders()) {
+                    if(defenderId.equals(playerId)) {
+                        return true;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
         return !defenderId.equals(source.getControllerId());
     }
 }

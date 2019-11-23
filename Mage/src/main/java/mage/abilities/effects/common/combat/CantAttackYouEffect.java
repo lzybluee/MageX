@@ -12,6 +12,8 @@ import java.util.UUID;
  * @author TheElk801
  */
 public class CantAttackYouEffect extends RestrictionEffect {
+    
+    private boolean ifAble = false;
 
     public CantAttackYouEffect(Duration duration) {
         super(duration);
@@ -19,6 +21,11 @@ public class CantAttackYouEffect extends RestrictionEffect {
 
     public CantAttackYouEffect(final CantAttackYouEffect effect) {
         super(effect);
+    }
+
+    public CantAttackYouEffect(final CantAttackYouEffect effect, boolean able) {
+        super(effect);
+        ifAble = able;
     }
 
     @Override
@@ -35,6 +42,19 @@ public class CantAttackYouEffect extends RestrictionEffect {
     public boolean canAttack(Permanent attacker, UUID defenderId, Ability source, Game game, boolean canUseChooseDialogs) {
         if (defenderId == null) {
             return true;
+        }
+        if(ifAble) {
+            if(game.getCombat() != null && game.getCombat().getDefenders() != null) {
+                if(game.getCombat().getDefenders().size() == 1) {
+                    for (UUID playerId : game.getCombat().getDefenders()) {
+                        if(defenderId.equals(playerId)) {
+                            return true;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
         }
         return !defenderId.equals(source.getControllerId());
     }
