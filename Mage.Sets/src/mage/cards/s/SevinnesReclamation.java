@@ -80,7 +80,7 @@ class SevinnesReclamationEffect extends OneShotEffect {
             return false;
         }
         effect.apply(game, source);
-        if (spell.getFromZone() == Zone.GRAVEYARD
+        if (spell.getFromZone() == Zone.GRAVEYARD && !spell.isCopy()
                 && player.chooseUse(outcome, "Copy this spell?", source, game)) {
             spell.createCopyOnStack(game, source, source.getControllerId(), true);
         }

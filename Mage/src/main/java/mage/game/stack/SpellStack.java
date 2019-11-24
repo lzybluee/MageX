@@ -116,6 +116,15 @@ public class SpellStack extends ArrayDeque<StackObject> {
         for (StackObject stackObject : this) {
             if (stackObject instanceof Spell) {
                 if (stackObject.getId().equals(id) || stackObject.getSourceId().equals(id)) {
+                    if(((Spell) stackObject).isResolving()) {
+                        return (Spell) stackObject;
+                    }
+                }
+            }
+        }
+        for (StackObject stackObject : this) {
+            if (stackObject instanceof Spell) {
+                if (stackObject.getId().equals(id) || stackObject.getSourceId().equals(id)) {
                     return (Spell) stackObject;
                 }
             }
