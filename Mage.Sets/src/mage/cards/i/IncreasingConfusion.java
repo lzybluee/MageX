@@ -60,7 +60,7 @@ class IncreasingConfusionEffect extends OneShotEffect {
             int amount = source.getManaCostsToPay().getX();
             Spell spell = (Spell) game.getStack().getStackObject(source.getSourceId());
             if (spell != null) {
-                if (spell.getFromZone() == Zone.GRAVEYARD) {
+                if (spell.getFromZone() == Zone.GRAVEYARD && !spell.isCopy()) {
                     amount *= 2;
                 }
                 player.moveCards(player.getLibrary().getTopCards(game, amount), Zone.GRAVEYARD, source, game);

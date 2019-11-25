@@ -69,7 +69,7 @@ class IgniteTheFutureEffect extends OneShotEffect {
         if (controller == null || spell == null) {
             return false;
         }
-        boolean forFree = spell.getFromZone() == Zone.GRAVEYARD;
+        boolean forFree = (spell.getFromZone() == Zone.GRAVEYARD && !spell.isCopy());
         Set<Card> cards = controller.getLibrary().getTopCards(game, 3);
         controller.moveCards(cards, Zone.EXILED, source, game);
 

@@ -59,7 +59,7 @@ class IncreasingSavageryEffect extends OneShotEffect {
         int amount = 5;
         Spell spell = (Spell) game.getStack().getStackObject(source.getSourceId());
         if (spell != null) {
-            if (spell.getFromZone() == Zone.GRAVEYARD) {
+            if (spell.getFromZone() == Zone.GRAVEYARD && !spell.isCopy()) {
                 amount = 10;
             }
             Permanent permanent = game.getPermanent(targetPointer.getFirst(game, source));

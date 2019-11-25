@@ -68,7 +68,7 @@ class IncreasingAmbitionEffect extends SearchEffect {
         if (player != null) {
             Spell spell = (Spell) game.getStack().getStackObject(source.getSourceId());
             if (spell != null) {
-                if (spell.getFromZone() == Zone.GRAVEYARD) {
+                if (spell.getFromZone() == Zone.GRAVEYARD && !spell.isCopy()) {
                     target = new TargetCardInLibrary(2, new FilterCard());
                 }
                 else {
