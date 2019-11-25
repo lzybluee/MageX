@@ -16,7 +16,7 @@ public final class RatToken extends TokenImpl {
     static final private List<String> tokenImageSets = new ArrayList<>();
 
     static {
-        tokenImageSets.addAll(Arrays.asList("GTC", "ELD"));
+        tokenImageSets.addAll(Arrays.asList("GTC"));
     }
 
     public RatToken() {
