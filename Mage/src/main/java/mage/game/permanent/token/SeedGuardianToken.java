@@ -1,12 +1,10 @@
-
-
 package mage.game.permanent.token;
+
+import mage.MageInt;
 import mage.constants.CardType;
 import mage.constants.SubType;
-import mage.MageInt;
 
 /**
- *
  * @author spjspj
  */
 public final class SeedGuardianToken extends TokenImpl {
@@ -14,6 +12,7 @@ public final class SeedGuardianToken extends TokenImpl {
     public SeedGuardianToken() {
         this(1);
     }
+
     public SeedGuardianToken(int xValue) {
         super("Elemental", "X/X green Elemental creature token");
         setTokenType(2);
