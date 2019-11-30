@@ -70,6 +70,7 @@ class SevinneTheChronoclasmTriggeredAbility extends SpellCastControllerTriggered
         if (watcher == null || !watcher.checkFirstSpellThisTurn(this.getControllerId(), event.getTargetId())) {
             return false;
         }
+        watcher.setCheckedFirstSpellThisTurn(this.getControllerId());
         this.getEffects().clear();
         Effect effect = new CopyTargetSpellEffect(true);
         effect.setTargetPointer(new FixedTarget(event.getTargetId(), game));
@@ -92,6 +93,7 @@ class SevinneTheChronoclasmTriggeredAbility extends SpellCastControllerTriggered
 class SevinneTheChronoclasmWatcher extends Watcher {
 
     private final Map<UUID, UUID> firstSpellThisTurn = new HashMap<>();
+    private final Map<UUID, Boolean> firstSpellCheckedThisTurn = new HashMap<>();
 
     SevinneTheChronoclasmWatcher() {
         super(WatcherScope.GAME);
@@ -100,6 +102,7 @@ class SevinneTheChronoclasmWatcher extends Watcher {
     private SevinneTheChronoclasmWatcher(final SevinneTheChronoclasmWatcher watcher) {
         super(watcher);
         this.firstSpellThisTurn.putAll(watcher.firstSpellThisTurn);
+        this.firstSpellCheckedThisTurn.putAll(watcher.firstSpellCheckedThisTurn);
     }
 
     @Override
@@ -117,10 +120,16 @@ class SevinneTheChronoclasmWatcher extends Watcher {
     @Override
     public void reset() {
         firstSpellThisTurn.clear();
+        firstSpellCheckedThisTurn.clear();
     }
 
     boolean checkFirstSpellThisTurn(UUID playerId, UUID targetId) {
-        return targetId != null && targetId.equals(firstSpellThisTurn.getOrDefault(playerId, null));
+        return targetId != null && targetId.equals(firstSpellThisTurn.getOrDefault(playerId, null))
+                && !firstSpellCheckedThisTurn.getOrDefault(playerId, false);
+    }
+
+    void setCheckedFirstSpellThisTurn(UUID playerId) {
+        firstSpellCheckedThisTurn.put(playerId, true);
     }
 
     @Override
