@@ -19,7 +19,6 @@ import mage.target.targetpointer.FixedTarget;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import mage.filter.common.FilterControlledLandPermanent;
 
 /**
  * @author TheElk801
@@ -71,9 +70,8 @@ class TectonicHellionEffect extends OneShotEffect {
         Map<UUID, Integer> landMap = new HashMap<>();
         game.getState()
                 .getPlayersInRange(source.getControllerId(), game)
-                .stream()
                 .forEach(uuid -> landMap.put(uuid, game.getBattlefield().getActivePermanents(
-                        new FilterControlledLandPermanent(), uuid, source.getSourceId(), game
+                        StaticFilters.FILTER_CONTROLLED_PERMANENT_LAND, uuid, source.getSourceId(), game
                 ).size()));
         int max = landMap
                 .values()
