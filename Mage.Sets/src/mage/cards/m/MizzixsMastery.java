@@ -73,7 +73,7 @@ class MizzixsMasteryEffect extends OneShotEffect {
             if (card != null) {
                 if (controller.moveCards(card, Zone.EXILED, source, game)) {
                     Card cardCopy = game.copyCard(card, source, source.getControllerId());
-                    if (cardCopy.getSpellAbility().canChooseTarget(game)
+                    if (cardCopy.getSpellAbility() != null
                             && controller.chooseUse(outcome, "Cast copy of " + card.getName() + " without paying its mana cost?", source, game)) {
                         controller.cast(cardCopy.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
                     }
@@ -118,7 +118,7 @@ class MizzixsMasteryOverloadEffect extends OneShotEffect {
                         targetCard.setNotTarget(true);
                         if (controller.choose(outcome, copiedCards, targetCard, game)) {
                             Card selectedCard = game.getCard(targetCard.getFirstTarget());
-                            if (selectedCard != null && selectedCard.getSpellAbility().canChooseTarget(game)) {
+                            if (selectedCard != null && selectedCard.getSpellAbility() != null) {
                                 if (controller.cast(selectedCard.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game))) {
                                     copiedCards.remove(selectedCard);
                                 }

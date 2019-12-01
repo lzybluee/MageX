@@ -20,6 +20,8 @@ import mage.target.common.TargetCardInGraveyard;
 import org.apache.log4j.Logger;
 
 import java.util.UUID;
+import mage.players.PlayerList;
+import mage.util.RandomUtil;
 
 /**
  * @author TheElk801
@@ -75,15 +77,14 @@ class WildfireDevilsEffect extends OneShotEffect {
         if (controller == null) {
             return false;
         }
-        TargetPlayer targetPlayer = new TargetPlayer();
-        targetPlayer.setRandom(true);
-        targetPlayer.setNotTarget(true);
-        if (!controller.choose(outcome, targetPlayer, source.getSourceId(), game)) {
+        PlayerList players = game.getState().getPlayersInRange(source.getControllerId(), game);
+        Player player = game.getPlayer(players.get(RandomUtil.nextInt(players.size())));
+        if (player == null) {
             return false;
         }
-        Player player = game.getPlayer(targetPlayer.getFirstTarget());
-        if (player == null || player.getGraveyard().getCards(game).stream().noneMatch(Card::isInstantOrSorcery)) {
-            return false;
+        game.informPlayers(player.getLogName() + " was chosen at random.");
+        if (player.getGraveyard().getCards(game).stream().noneMatch(Card::isInstantOrSorcery)) {
+             return false;
         }
         TargetCard targetCard = new TargetCardInGraveyard(StaticFilters.FILTER_CARD_INSTANT_OR_SORCERY);
         targetCard.setNotTarget(true);
@@ -99,8 +100,6 @@ class WildfireDevilsEffect extends OneShotEffect {
         if (copiedCard == null) {
             return false;
         }
-        game.getExile().add(source.getSourceId(), "", card);
-        game.setZone(copiedCard.getId(), Zone.EXILED);
         if (!controller.chooseUse(outcome, "Cast the exiled card?", source, game)) {
             return true;
         }
