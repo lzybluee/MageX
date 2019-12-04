@@ -141,7 +141,7 @@ class ObzedatGhostCouncilReturnEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Card card = mor.getCard(game);
+        Card card = game.getCard(mor.getSourceId());
         if (card == null) {
             return false;
         }
