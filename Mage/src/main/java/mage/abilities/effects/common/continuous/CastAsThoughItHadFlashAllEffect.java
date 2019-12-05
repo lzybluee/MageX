@@ -9,6 +9,7 @@ import mage.cards.Card;
 import mage.constants.AsThoughEffectType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
+import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.game.Game;
 
@@ -21,15 +22,25 @@ public class CastAsThoughItHadFlashAllEffect extends AsThoughEffectImpl {
 
     private final FilterCard filter;
     private final boolean anyPlayer;
+    private final boolean inLibrary;
 
     public CastAsThoughItHadFlashAllEffect(Duration duration, FilterCard filter) {
-        this(duration, filter, false);
+        this(duration, filter, false, false);
+    }
+
+    public CastAsThoughItHadFlashAllEffect(Duration duration, FilterCard filter, boolean anyPlayer, boolean inLibrary) {
+        super(AsThoughEffectType.CAST_AS_INSTANT, duration, Outcome.Benefit);
+        this.filter = filter;
+        this.anyPlayer = anyPlayer;
+        this.inLibrary = inLibrary;
+        staticText = setText();
     }
 
     public CastAsThoughItHadFlashAllEffect(Duration duration, FilterCard filter, boolean anyPlayer) {
         super(AsThoughEffectType.CAST_AS_INSTANT, duration, Outcome.Benefit);
         this.filter = filter;
         this.anyPlayer = anyPlayer;
+        this.inLibrary = false;
         staticText = setText();
     }
 
@@ -37,6 +48,7 @@ public class CastAsThoughItHadFlashAllEffect extends AsThoughEffectImpl {
         super(effect);
         this.filter = effect.filter;
         this.anyPlayer = effect.anyPlayer;
+        this.inLibrary = effect.inLibrary;
     }
 
     @Override
@@ -53,7 +65,13 @@ public class CastAsThoughItHadFlashAllEffect extends AsThoughEffectImpl {
     public boolean applies(UUID affectedSpellId, Ability source, UUID affectedControllerId, Game game) {
         if (anyPlayer || source.isControlledBy(affectedControllerId)) {
             Card card = game.getCard(affectedSpellId);
-            return card != null && filter.match(card, game);
+            if(card == null) {
+                return false;
+            }
+            if(inLibrary && game.getState().getZone(affectedSpellId) != Zone.LIBRARY) {
+                return false;
+            }
+            return filter.match(card, game);
         }
         return false;
     }

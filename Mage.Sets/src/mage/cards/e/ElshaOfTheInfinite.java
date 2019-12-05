@@ -53,7 +53,7 @@ public final class ElshaOfTheInfinite extends CardImpl {
                 )
         );
         ability.addEffect(new CastAsThoughItHadFlashAllEffect(
-                Duration.WhileOnBattlefield, filter
+                Duration.WhileOnBattlefield, filter, false, true
         ).setText("and you may cast it as though it had flash"));
         this.addAbility(ability);
     }
