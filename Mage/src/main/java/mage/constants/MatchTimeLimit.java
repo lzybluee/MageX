@@ -17,7 +17,8 @@ public enum MatchTimeLimit {
     MIN__50(3000, "50 Minutes"),
     MIN__60(3600, "60 Minutes"),
     MIN__90(5400, "90 Minutes"),
-    MIN_120(7200, "120 Minutes");
+    MIN__120(7200, "120 Minutes"),
+    MIN__2880(172800, "2 Days");
 
     private final int matchSeconds;
     private final String name;
