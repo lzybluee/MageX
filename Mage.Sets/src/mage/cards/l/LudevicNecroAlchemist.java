@@ -61,11 +61,11 @@ enum LudevicNecroAlchemistCondition implements Condition {
     public boolean apply(Game game, Ability source) {
         PlayerLostLifeWatcher watcher = game.getState().getWatcher(PlayerLostLifeWatcher.class);
         Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null
-                && !controller.getId().equals(game.getActivePlayerId())
-                && watcher != null
-                && watcher.getLifeLost(controller.getId()) == 0) {
+        if (controller != null && watcher != null) {
             for (UUID playerId : controller.getInRange()) {
+                if (playerId.equals(controller.getId())) {
+                    continue;
+                }
                 if (watcher.getLifeLost(playerId) > 0) {
                     return true;
                 }
