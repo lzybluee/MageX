@@ -3243,7 +3243,7 @@ public abstract class PlayerImpl implements Player, Serializable {
     }
 
     private void getPlayableFromNonHandCardAll(Game game, Zone fromZone, Card card, ManaOptions availableMana, List<Ability> output) {
-        if (fromZone == null) {
+        if (fromZone == null || card == null) {
             return;
         }
 
