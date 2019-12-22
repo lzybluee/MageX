@@ -47,7 +47,7 @@ public final class MassDiminish extends CardImpl {
 class MassDiminishEffect extends OneShotEffect {
 
     MassDiminishEffect() {
-        super(Outcome.Benefit);
+        super(Outcome.Detriment);
         staticText = "until your next turn, creatures target player controls have base power and toughness 1/1";
     }
 
