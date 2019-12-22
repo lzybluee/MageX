@@ -17,6 +17,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
+import mage.filter.common.FilterCreatureCard;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.Target;
@@ -35,7 +36,7 @@ public final class BoneyardParley extends CardImpl {
 
         // Exile up to five target creature cards from graveyards. An opponent separates those cards into two piles. Put all cards from the pile of your choice onto the battlefield under your control and the rest into their owners' graveyards.
         this.getSpellAbility().addEffect(new BoneyardParleyEffect());
-        this.getSpellAbility().addTarget(new TargetCardInGraveyard(0, 5, new FilterCard("cards from graveyards")));
+        this.getSpellAbility().addTarget(new TargetCardInGraveyard(0, 5, new FilterCreatureCard("cards from graveyards")));
     }
 
     public BoneyardParley(final BoneyardParley card) {
