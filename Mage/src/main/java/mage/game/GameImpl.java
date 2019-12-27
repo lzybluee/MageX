@@ -1,5 +1,9 @@
 package mage.game;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
+import java.util.Map.Entry;
 import mage.MageException;
 import mage.MageObject;
 import mage.abilities.*;
@@ -65,11 +69,6 @@ import mage.util.functions.ApplyToPermanent;
 import mage.watchers.common.*;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
-import java.util.Map.Entry;
-
 public abstract class GameImpl implements Game, Serializable {
 
     private static final int ROLLBACK_TURNS_MAX = 4;
@@ -77,7 +76,9 @@ public abstract class GameImpl implements Game, Serializable {
     private static final Logger logger = Logger.getLogger(GameImpl.class);
 
     private transient Object customData;
+
     protected boolean simulation = false;
+    protected boolean checkPlayableState = false;
 
     protected final UUID id;
 
@@ -163,6 +164,7 @@ public abstract class GameImpl implements Game, Serializable {
         this.state = game.state.copy();
         this.gameCards = game.gameCards;
         this.simulation = game.simulation;
+        this.checkPlayableState = game.checkPlayableState;
         this.gameOptions = game.gameOptions;
         this.lki.putAll(game.lki);
         this.lkiExtended.putAll(game.lkiExtended);
@@ -186,6 +188,16 @@ public abstract class GameImpl implements Game, Serializable {
     @Override
     public void setSimulation(boolean simulation) {
         this.simulation = simulation;
+    }
+
+    @Override
+    public void setCheckPlayableState(boolean checkPlayableState) {
+        this.checkPlayableState = checkPlayableState;
+    }
+
+    @Override
+    public boolean inCheckPlayableState() {
+        return checkPlayableState;
     }
 
     @Override
@@ -754,7 +766,7 @@ public abstract class GameImpl implements Game, Serializable {
             state.getTurn().resumePlay(this, wasPaused);
             if (!isPaused() && !checkIfGameIsOver()) {
                 endOfTurn();
-                player = playerList.getNext(this);
+                player = playerList.getNext(this, true);
                 state.setTurnNum(state.getTurnNum() + 1);
             }
         }
@@ -779,7 +791,7 @@ public abstract class GameImpl implements Game, Serializable {
                 if (!playExtraTurns()) {
                     break;
                 }
-                playerByOrder = playerList.getNext(this);
+                playerByOrder = playerList.getNext(this, true);
                 state.setPlayerByOrderId(playerByOrder.getId());
             }
         }
@@ -1312,6 +1324,8 @@ public abstract class GameImpl implements Game, Serializable {
                         } else {
                             throw new MageException("Error in testclass");
                         }
+                    } finally {
+                        setCheckPlayableState(false);
                     }
                     state.getPlayerList().getNext();
                 }
@@ -1323,6 +1337,7 @@ public abstract class GameImpl implements Game, Serializable {
         } finally {
             resetLKI();
             clearAllBookmarks();
+            setCheckPlayableState(false);
         }
     }
 
@@ -1480,7 +1495,7 @@ public abstract class GameImpl implements Game, Serializable {
     /**
      * @param emblem
      * @param sourceObject
-     * @param toPlayerId   controller and owner of the emblem
+     * @param toPlayerId controller and owner of the emblem
      */
     @Override
     public void addEmblem(Emblem emblem, MageObject sourceObject, UUID toPlayerId) {
@@ -1498,8 +1513,8 @@ public abstract class GameImpl implements Game, Serializable {
     /**
      * @param plane
      * @param sourceObject
-     * @param toPlayerId   controller and owner of the plane (may only be one per
-     *                     game..)
+     * @param toPlayerId controller and owner of the plane (may only be one per
+     * game..)
      * @return boolean - whether the plane was added successfully or not
      */
     @Override
@@ -1728,7 +1743,7 @@ public abstract class GameImpl implements Game, Serializable {
                     break;
                 }
                 // triggered abilities that don't use the stack have to be executed first (e.g. Banisher Priest Return exiled creature
-                for (Iterator<TriggeredAbility> it = abilities.iterator(); it.hasNext(); ) {
+                for (Iterator<TriggeredAbility> it = abilities.iterator(); it.hasNext();) {
                     TriggeredAbility triggeredAbility = it.next();
                     if (!triggeredAbility.isUsesStack()) {
                         state.removeTriggeredAbility(triggeredAbility);
@@ -2444,8 +2459,8 @@ public abstract class GameImpl implements Game, Serializable {
      * exist. Then, if there are any objects still controlled by that player,
      * those objects are exiled. This is not a state-based action. It happens as
      * soon as the player leaves the game. If the player who left the game had
-     * priority at the time they left, priority passes to the next player
-     * in turn order who's still in the game. #
+     * priority at the time they left, priority passes to the next player in
+     * turn order who's still in the game. #
      *
      * @param playerId
      */
@@ -2463,7 +2478,7 @@ public abstract class GameImpl implements Game, Serializable {
         }
         //20100423 - 800.4a
         Set<Card> toOutside = new HashSet<>();
-        for (Iterator<Permanent> it = getBattlefield().getAllPermanents().iterator(); it.hasNext(); ) {
+        for (Iterator<Permanent> it = getBattlefield().getAllPermanents().iterator(); it.hasNext();) {
             Permanent perm = it.next();
             if (perm.isOwnedBy(playerId)) {
                 if (perm.getAttachedTo() != null) {
@@ -2482,7 +2497,6 @@ public abstract class GameImpl implements Game, Serializable {
                     perm.removeFromCombat(this, true);
                 }
                 toOutside.add(perm);
-//                it.remove();
             } else if (perm.isControlledBy(player.getId())) {
                 // and any effects which give that player control of any objects or players end
                 Effects:
@@ -2506,7 +2520,7 @@ public abstract class GameImpl implements Game, Serializable {
         player.moveCards(toOutside, Zone.OUTSIDE, null, this);
         // triggered abilities that don't use the stack have to be executed
         List<TriggeredAbility> abilities = state.getTriggered(player.getId());
-        for (Iterator<TriggeredAbility> it = abilities.iterator(); it.hasNext(); ) {
+        for (Iterator<TriggeredAbility> it = abilities.iterator(); it.hasNext();) {
             TriggeredAbility triggeredAbility = it.next();
             if (!triggeredAbility.isUsesStack()) {
                 state.removeTriggeredAbility(triggeredAbility);
@@ -2526,7 +2540,7 @@ public abstract class GameImpl implements Game, Serializable {
 
         // Remove cards from the player in all exile zones
         for (ExileZone exile : this.getExile().getExileZones()) {
-            for (Iterator<UUID> it = exile.iterator(); it.hasNext(); ) {
+            for (Iterator<UUID> it = exile.iterator(); it.hasNext();) {
                 Card card = this.getCard(it.next());
                 if (card != null && card.isOwnedBy(playerId)) {
                     it.remove();
@@ -2536,7 +2550,7 @@ public abstract class GameImpl implements Game, Serializable {
 
         //Remove all commander/emblems/plane the player controls
         boolean addPlaneAgain = false;
-        for (Iterator<CommandObject> it = this.getState().getCommand().iterator(); it.hasNext(); ) {
+        for (Iterator<CommandObject> it = this.getState().getCommand().iterator(); it.hasNext();) {
             CommandObject obj = it.next();
             if (obj.isControlledBy(playerId)) {
                 if (obj instanceof Emblem) {
@@ -2579,7 +2593,7 @@ public abstract class GameImpl implements Game, Serializable {
             if (!isActivePlayer(playerId)) {
                 setMonarchId(null, getActivePlayerId());
             } else {
-                Player nextPlayer = getPlayerList().getNext(this);
+                Player nextPlayer = getPlayerList().getNext(this, true);
                 if (nextPlayer != null) {
                     setMonarchId(null, nextPlayer.getId());
                 }

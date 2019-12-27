@@ -1,6 +1,9 @@
 package mage.players;
 
 import com.google.common.collect.ImmutableMap;
+import java.io.Serializable;
+import java.util.*;
+import java.util.Map.Entry;
 import mage.ConditionalMana;
 import mage.MageObject;
 import mage.MageObjectReference;
@@ -65,9 +68,6 @@ import mage.util.GameLog;
 import mage.util.RandomUtil;
 import org.apache.log4j.Logger;
 
-import java.io.Serializable;
-import java.util.*;
-import java.util.Map.Entry;
 
 public abstract class PlayerImpl implements Player, Serializable {
 
@@ -459,11 +459,7 @@ public abstract class PlayerImpl implements Player, Serializable {
     }
 
     @Override
-    public void otherPlayerLeftGame(Game game) {
-        findRange(game);
-    }
 
-    @Override
     public void beginTurn(Game game) {
         this.landsPlayed = 0;
         findRange(game);
@@ -493,10 +489,10 @@ public abstract class PlayerImpl implements Player, Serializable {
             inRange.add(playerId);
             PlayerList players = game.getState().getPlayerList(playerId);
             for (int i = 0; i < range.getRange(); i++) {
-                Player player = players.getNext(game);
+                Player player = players.getNext(game, false);
                 if (player != null) {
                     while (player.hasLeft()) {
-                        player = players.getNext(game);
+                        player = players.getNext(game, false);
                     }
                     inRange.add(player.getId());
                 }
@@ -1589,6 +1585,7 @@ public abstract class PlayerImpl implements Player, Serializable {
 
     @Override
     public LinkedHashMap<UUID, ActivatedAbility> getUseableActivatedAbilities(MageObject object, Zone zone, Game game) {
+        game.setCheckPlayableState(true);
         LinkedHashMap<UUID, ActivatedAbility> useable = new LinkedHashMap<>();
         if (object instanceof StackAbility) { // It may not be possible to activate abilities of stack abilities
             return useable;
@@ -1606,7 +1603,7 @@ public abstract class PlayerImpl implements Player, Serializable {
                     zone, game, object.getAbilities(), useable);
         }
         getOtherUseableActivatedAbilities(object, zone, game, useable);
-
+        game.setCheckPlayableState(false);
         return useable;
     }
 
@@ -3050,7 +3047,6 @@ public abstract class PlayerImpl implements Player, Serializable {
     protected boolean canPlay(ActivatedAbility ability, ManaOptions available, MageObject sourceObject, Game game) {
         if (!(ability instanceof ActivatedManaAbilityImpl)) {
             ActivatedAbility copy = ability.copy();
-            copy.setCheckPlayableMode(); // prevents from endless loops for asking player to use effects by checking this mode
             if (!copy.canActivate(playerId, game).canActivate()) {
                 return false;
             }
@@ -3330,7 +3326,7 @@ public abstract class PlayerImpl implements Player, Serializable {
 
     public List<Ability> getPlayable(Game game, boolean hidden, Zone fromZone, boolean hideDuplicatedAbilities) {
         List<Ability> playable = new ArrayList<>();
-
+        game.setCheckPlayableState(true);
         if (!shouldSkipGettingPlayable(game)) {
             ManaOptions availableMana = getManaAvailable(game);
             availableMana.addMana(manaPool.getMana());
@@ -3455,7 +3451,7 @@ public abstract class PlayerImpl implements Player, Serializable {
                 playable.addAll(activatedAll);
             }
         }
-
+        game.setCheckPlayableState(false);
         return playable;
     }
 
@@ -3748,10 +3744,9 @@ public abstract class PlayerImpl implements Player, Serializable {
         if (null != game.getContinuousEffects().asThough(card.getId(),
                 AsThoughEffectType.LOOK_AT_FACE_DOWN, card.getSpellAbility(), this.getId(), game)) {
             // two modes: look at card or not to look and activate other abilities
-            String lookMessage = abilitiesToActivate > 0 ? "Look at that card (it's have "
-                    + abilitiesToActivate + " abilities to activate)?" : "Look at that card?";
-            String lookYes = "Yes, look at card";
-            String lookNo = abilitiesToActivate > 0 ? "No, activate ability" : "No";
+            String lookMessage = "Look at " + card.getIdName();
+            String lookYes = "Yes, look at the card";
+            String lookNo = "No, play/activate the card/ability";
             if (chooseUse(Outcome.Benefit, lookMessage, "", lookYes, lookNo, null, game)) {
                 Cards cards = new CardsImpl(card);
                 this.lookAtCards(getName() + " - " + card.getIdName() + " - "
