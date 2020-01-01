@@ -1,4 +1,3 @@
-
 package mage.abilities.effects.mana;
 
 import mage.ConditionalMana;
@@ -13,6 +12,9 @@ import mage.game.Game;
 import mage.players.Player;
 import mage.util.CardUtil;
 import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author noxx
@@ -40,10 +42,10 @@ public class AddConditionalManaOfAnyColorEffect extends ManaEffect {
         this.oneChoice = oneChoice;
         //
         staticText = "Add "
-                + (amount instanceof StaticValue ? (CardUtil.numberToText(((StaticValue) amount).toString())) : "")
+                + (amount instanceof StaticValue ? (CardUtil.numberToText(amount.toString())) : "")
                 + " mana "
-                + (oneChoice || (amount instanceof StaticValue && (((StaticValue) amount).toString()).equals("1"))
-                ? "of any" + (amount instanceof StaticValue && (((StaticValue) amount).toString()).equals("1") ? "" : " one") + " color"
+                + (oneChoice || (amount instanceof StaticValue && (amount.toString()).equals("1"))
+                ? "of any" + (amount instanceof StaticValue && (amount.toString()).equals("1") ? "" : " one") + " color"
                 : "in any combination of colors")
                 + ". " + manaBuilder.getRule();
     }
@@ -61,23 +63,19 @@ public class AddConditionalManaOfAnyColorEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            Mana mana = getMana(game, source);
-            if (mana != null) {
-                checkToFirePossibleEvents(mana, game, source);
-                controller.getManaPool().addMana(mana, game, source);
-            } else {
-                logger.error("There was no mana created: " + source.getSourceObject(game).getName() + " - Ability: " + source.getRule());
-            }
-            return true;
+    public List<Mana> getNetMana(Game game, Ability source) {
+        List<Mana> netMana = new ArrayList<>();
+
+        int value = amount.calculate(game, source, this);
+        if (value > 0) {
+            netMana.add(Mana.AnyMana(value));
         }
-        return false;
+
+        return netMana;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller == null) {
             return null;

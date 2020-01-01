@@ -1,8 +1,5 @@
 package mage.cards.v;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.ConditionalMana;
 import mage.MageInt;
 import mage.MageObject;
@@ -23,8 +20,11 @@ import mage.constants.Zone;
 import mage.game.Game;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class VedalkenEngineer extends CardImpl {
@@ -91,11 +91,7 @@ class VedalkenEngineerEffect extends ManaEffect {
         super();
         this.amount = amount;
         this.manaBuilder = manaBuilder;
-        netMana.add(Mana.GreenMana(amount));
-        netMana.add(Mana.BlueMana(amount));
-        netMana.add(Mana.BlackMana(amount));
-        netMana.add(Mana.WhiteMana(amount));
-        netMana.add(Mana.RedMana(amount));
+        netMana.add(Mana.AnyMana(amount));
         staticText = "Add " + amount + " mana of any one color. " + manaBuilder.getRule();
     }
 
@@ -112,28 +108,16 @@ class VedalkenEngineerEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            checkToFirePossibleEvents(getMana(game, source), game, source);
-            controller.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public List<Mana> getNetMana(Game game, Ability source) {
         return netMana;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         ChoiceColor choiceColor = new ChoiceColor(true);
         if (controller != null && controller.choose(Outcome.Benefit, choiceColor, game)) {
-            Mana condMana = manaBuilder.setMana(choiceColor.getMana(amount), source, game).build();
-            return condMana;
+            return manaBuilder.setMana(choiceColor.getMana(amount), source, game).build();
         }
         return null;
     }
