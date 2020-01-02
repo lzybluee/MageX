@@ -15,8 +15,10 @@ import mage.constants.Zone;
 import mage.game.ExileZone;
 import mage.game.Game;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author phulin
@@ -29,10 +31,7 @@ public class AdventureCardSpellImpl extends CardImpl implements AdventureCardSpe
         super(ownerId, setInfo, cardTypes, costs, SpellAbilityType.ADVENTURE_SPELL);
         this.subtype.add(SubType.ADVENTURE);
 
-        AdventureCardSpellAbility newSpellAbility = new AdventureCardSpellAbility(getSpellAbility());
-        newSpellAbility.setName(adventureName, costs);
-        newSpellAbility.addEffect(ExileAdventureSpellEffect.getInstance());
-        newSpellAbility.setCardName(adventureName);
+        AdventureCardSpellAbility newSpellAbility = new AdventureCardSpellAbility(getSpellAbility(), adventureName, cardTypes, costs);
         this.replaceSpellAbility(newSpellAbility);
         spellAbility = newSpellAbility;
 
@@ -100,11 +99,28 @@ public class AdventureCardSpellImpl extends CardImpl implements AdventureCardSpe
     public AdventureCard getParentCard() {
         return this.adventureCardParent;
     }
+
+    @Override
+    public String getIdName() {
+        // id must send to main card (popup card hint in game logs)
+        return getName() + " [" + adventureCardParent.getId().toString().substring(0, 3) + ']';
+    }
 }
 
 class AdventureCardSpellAbility extends SpellAbility {
-    public AdventureCardSpellAbility(final SpellAbility ability) {
+
+    String nameFull;
+
+    public AdventureCardSpellAbility(final SpellAbility baseSpellAbility, String adventureName, CardType[] cardTypes, String costs) {
+        super(baseSpellAbility);
+        this.setName(cardTypes, adventureName, costs);
+        this.addEffect(ExileAdventureSpellEffect.getInstance());
+        this.setCardName(adventureName);
+    }
+
+    public AdventureCardSpellAbility(final AdventureCardSpellAbility ability) {
         super(ability);
+        this.nameFull = ability.nameFull;
     }
 
     @Override
@@ -120,8 +136,9 @@ class AdventureCardSpellAbility extends SpellAbility {
         return super.canActivate(playerId, game);
     }
 
-    public void setName(String name, String costs) {
-        this.name = "Adventure &mdash; " + name + " " + costs;
+    public void setName(CardType[] cardTypes, String name, String costs) {
+        this.nameFull = "Adventure " + Arrays.stream(cardTypes).map(CardType::toString).collect(Collectors.joining(" ")) + " &mdash; " + name;
+        this.name = this.nameFull + " " + costs;
     }
 
     @Override
@@ -132,8 +149,7 @@ class AdventureCardSpellAbility extends SpellAbility {
     @Override
     public String getRule() {
         StringBuilder sbRule = new StringBuilder();
-        sbRule.append("Adventure &mdash; ");
-        sbRule.append(this.getCardName());
+        sbRule.append(this.nameFull);
         sbRule.append(" ");
         sbRule.append(manaCosts.getText());
         sbRule.append(" &mdash; ");
