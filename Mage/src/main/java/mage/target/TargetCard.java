@@ -209,6 +209,9 @@ public class TargetCard extends TargetObject {
     }
 
     public boolean canTarget(UUID playerId, UUID id, Ability source, Cards cards, Game game) {
+        if(source == null) {
+            return cards.contains(id) && canTarget(id, game);
+        }
         return cards.contains(id) && canTarget(playerId, id, source, game);
     }
 
