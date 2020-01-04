@@ -1,9 +1,6 @@
 package mage.players;
 
 import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
-import java.util.*;
-import java.util.Map.Entry;
 import mage.ConditionalMana;
 import mage.MageObject;
 import mage.MageObjectReference;
@@ -68,6 +65,9 @@ import mage.util.GameLog;
 import mage.util.RandomUtil;
 import org.apache.log4j.Logger;
 
+import java.io.Serializable;
+import java.util.*;
+import java.util.Map.Entry;
 
 public abstract class PlayerImpl implements Player, Serializable {
 
@@ -1537,14 +1537,17 @@ public abstract class PlayerImpl implements Player, Serializable {
                 for (ActivatedAbility ability : candidateAbilites.getPlayableAbilities(Zone.HAND)) {
                     if (canUse
                             || ability.getAbilityType() == AbilityType.SPECIAL_ACTION) {
+                        if (ability.getZone().equals(zone) || ability.getZone().equals(Zone.HAND)) {
                         if (ability.canActivate(playerId, game).canActivate()) {
                             output.put(ability.getId(), ability);
+                            }
                         }
                     }
                 }
             }
             if (zone != Zone.BATTLEFIELD) {
                 for (Ability ability : candidateAbilites) {
+                    if (ability.getZone().equals(zone) || ability.getZone().equals(Zone.HAND)) {
                     if (game.getContinuousEffects().asThough(object.getId(),
                             AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE,
                             null,
@@ -1571,6 +1574,7 @@ public abstract class PlayerImpl implements Player, Serializable {
                 }
             }
         }
+    }
     }
 
     @Override
@@ -3271,16 +3275,33 @@ public abstract class PlayerImpl implements Player, Serializable {
     }
 
     private void getPlayableFromNonHandCardSingle(Game game, Zone fromZone, Card card, Abilities<Ability> candidateAbilities, ManaOptions availableMana, List<Ability> output) {
+        // check "can play" condition as affected controller (BUT play from not own hand zone must be checked as original controller)
+        for (ActivatedAbility ability : candidateAbilities.getActivatedAbilities(Zone.ALL)) {
+            boolean isPlaySpell = (ability instanceof SpellAbility);
+            boolean isPlayLand = (ability instanceof PlayLandAbility);
 
-        // check "can play from hand" condition as original controller (effects checks affected controller with source controller)
-        // TODO: remove card.getSpellAbility() ?
-        MageObjectReference permittingObject = game.getContinuousEffects().asThough(card.getId(),
-                AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE, card.getSpellAbility(), this.getId(), game);
+            // as original controller
+
+            // land restrictions
+            if (isPlayLand && game.getContinuousEffects().preventedByRuleModification(
+                    GameEvent.getEvent(GameEvent.EventType.PLAY_LAND, ability.getSourceId(),
+                            ability.getSourceId(), this.getId()), ability, game, true)) {
+                continue;
+            }
+
+            MageObjectReference permittingObject;
+            if (isPlaySpell || isPlayLand) {
+                // play hand from non hand zone
+                permittingObject = game.getContinuousEffects().asThough(card.getId(),
+                        AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE, ability, this.getId(), game);
+            } else {
+                // other abilities from direct zones
+                permittingObject = null;
+            }
         boolean canActivateAsHandZone = permittingObject != null
                 || (fromZone == Zone.GRAVEYARD && canPlayCardsFromGraveyard());
 
         // check "can play" condition as affected controller
-        for (ActivatedAbility ability : candidateAbilities.getActivatedAbilities(Zone.ALL)) {
             UUID savedControllerId = ability.getControllerId();
             ability.setControllerId(this.getId());
             try {
@@ -3290,7 +3311,7 @@ public abstract class PlayerImpl implements Player, Serializable {
                 // need permitingObject or canPlayCardsFromGraveyard
                 if (canActivateAsHandZone
                         && ability.getZone().match(Zone.HAND)
-                        && (ability instanceof SpellAbility || ability instanceof PlayLandAbility)) {
+                        && (isPlaySpell || isPlayLand)) {
                     possibleToPlay = true;
                 }
 
