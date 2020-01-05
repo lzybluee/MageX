@@ -105,7 +105,7 @@ class TahngarthFirstMateEffect extends OneShotEffect {
     }
 
     TahngarthFirstMateEffect() {
-        super(Outcome.Benefit);
+        super(Outcome.AIDontUseIt);
     }
 
     private TahngarthFirstMateEffect(final TahngarthFirstMateEffect effect) {
