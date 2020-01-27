@@ -13,6 +13,7 @@ public final class RedGreenBeastToken extends TokenImpl {
 
     public RedGreenBeastToken() {
         super("Beast", "4/4 red and green Beast creature token with trample");
+        setOriginalExpansionSetCode("RNA");
         cardType.add(CardType.CREATURE);
         color.setRed(true);
         color.setGreen(true);

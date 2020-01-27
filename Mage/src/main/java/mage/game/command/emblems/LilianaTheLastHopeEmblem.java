@@ -24,6 +24,7 @@ public final class LilianaTheLastHopeEmblem extends Emblem {
     // "At the beginning of your end step, create X 2/2 black Zombie creature tokens, where X is two plus the number of Zombies you control."
     public LilianaTheLastHopeEmblem() {
         this.setName("Emblem Liliana");
+        this.setExpansionSetCodeForImage("EMN");
         Ability ability = new BeginningOfEndStepTriggeredAbility(Zone.COMMAND, new CreateTokenEffect(new ZombieToken(), new LilianaZombiesCount()),
                 TargetController.YOU, null, false);
         this.getAbilities().add(ability);
