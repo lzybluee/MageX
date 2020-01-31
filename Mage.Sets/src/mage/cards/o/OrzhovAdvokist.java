@@ -59,7 +59,7 @@ public final class OrzhovAdvokist extends CardImpl {
 class OrzhovAdvokistEffect extends OneShotEffect {
 
     public OrzhovAdvokistEffect() {
-        super(Outcome.Benefit);
+        super(Outcome.AIDontUseIt);
         this.staticText = "each player may put two +1/+1 counters on a creature they control. "
                 + "If a player does, creatures that player controls can't attack you or a planeswalker you control until your next turn";
     }
