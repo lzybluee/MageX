@@ -13,6 +13,8 @@ import mage.abilities.keyword.LifelinkAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
+import mage.cards.AdventureCardSpell;
+import mage.cards.SplitCardHalf;
 import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.FilterObject;
@@ -100,12 +102,10 @@ class SoulfireGrandMasterCastFromHandReplacementEffect extends ReplacementEffect
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        MageObject mageObject = game.getObject(spellId);
-        if (!(mageObject instanceof Spell) || mageObject.isCopy()) {
-            return false;
-        } else {
+        Spell spell = (Spell) game.getStack().getFirst();
+        if (!spell.isCopy() && !spell.isCountered()) {
             Card sourceCard = game.getCard(spellId);
-            if (sourceCard != null) {
+            if (sourceCard != null && Zone.STACK.equals(game.getState().getZone(spellId))) {
                 Player player = game.getPlayer(sourceCard.getOwnerId());
                 if (player != null) {
                     player.moveCards(sourceCard, Zone.HAND, source, game);
@@ -142,9 +142,17 @@ class SoulfireGrandMasterCastFromHandReplacementEffect extends ReplacementEffect
             if (zEvent.getFromZone() == Zone.STACK
                     && zEvent.getToZone() == Zone.GRAVEYARD
                     && event.getTargetId().equals(spellId)) {
-                Spell spell = game.getStack().getSpell(spellId);
-                if (spell != null && !spell.isCountered()) {
-                    return true;
+                if (game.getStack().getFirst() instanceof Spell) {
+                    Card cardOfSpell = ((Spell) game.getStack().getFirst()).getCard();
+                    if (cardOfSpell instanceof SplitCardHalf) {
+                        return ((SplitCardHalf) cardOfSpell).getParentCard().getId().equals(spellId);
+                    } else if (cardOfSpell instanceof AdventureCardSpell) {
+                        return (((AdventureCardSpell) cardOfSpell).getParentCard().getId().equals(spellId));
+                    } else {
+                        if (cardOfSpell.getId().equals(spellId)) {
+                            return true;
+                        }
+                    }
                 }
             }
         }

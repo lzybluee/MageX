@@ -11,8 +11,10 @@ import mage.abilities.effects.Effect;
 import mage.abilities.effects.ReplacementEffectImpl;
 import mage.abilities.effects.common.ReturnToHandTargetEffect;
 import mage.abilities.keyword.FlyingAbility;
+import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
+import mage.cards.SplitCardHalf;
 import mage.constants.*;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -141,7 +143,7 @@ class FeatherTheRedeemedEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        Spell sourceSpell = game.getStack().getSpell(event.getTargetId());
+        Spell sourceSpell = (Spell) game.getStack().getFirst();
         if (sourceSpell == null || sourceSpell.isCopy()) {
             return false;
         }
@@ -167,9 +169,20 @@ class FeatherTheRedeemedEffect extends ReplacementEffectImpl {
         if (zEvent.getFromZone() == Zone.STACK
                 && zEvent.getToZone() == Zone.GRAVEYARD
                 && event.getSourceId() != null) {
-            if (event.getSourceId().equals(event.getTargetId()) && mor.getZoneChangeCounter() == game.getState().getZoneChangeCounter(event.getSourceId())) {
-                Spell spell = game.getStack().getSpell(mor.getSourceId());
-                return spell != null && spell.isInstantOrSorcery();
+            if (mor.getZoneChangeCounter() == game.getState().getZoneChangeCounter(event.getSourceId())) {
+                if(event.getSourceId().equals(event.getTargetId())) {
+                    Spell spell = game.getStack().getSpell(mor.getSourceId());
+                    return spell != null && spell.isInstantOrSorcery();
+                } else {
+                    Spell spell = (Spell) game.getStack().getFirst();
+                    if(!spell.isInstantOrSorcery()) {
+                        return false;
+                    }
+                    Card cardOfSpell = ((Spell) game.getStack().getFirst()).getCard();
+                    if (cardOfSpell instanceof SplitCardHalf) {
+                        return ((SplitCardHalf) cardOfSpell).getParentCard().getId().equals(event.getTargetId());
+                    }
+                }
             }
         }
         return false;
